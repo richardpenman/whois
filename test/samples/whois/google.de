@@ -1,0 +1,24 @@
+% Restricted rights.
+%
+% Terms and Conditions of Use
+%
+% The above data may only be used within the scope of technical or
+% administrative necessities of Internet operation or to remedy legal
+% problems.
+% The use for other purposes, in particular for advertising, is not permitted.
+%
+% The DENIC whois service on port 43 doesn't disclose any information concerning
+% the domain holder, general request and abuse contact.
+% This information can be obtained through use of our web-based whois service
+% available at the DENIC website:
+% http://www.denic.de/en/domains/whois-service/web-whois.html
+%
+%
+
+Domain: google.de
+Nserver: ns1.google.com
+Nserver: ns2.google.com
+Nserver: ns3.google.com
+Nserver: ns4.google.com
+Status: connect
+Changed: 2018-03-12T21:44:25+01:00

@@ -1,0 +1,2 @@
+include whois/data/public_suffix_list.dat
+include README.rst

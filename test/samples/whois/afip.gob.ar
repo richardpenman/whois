@@ -1,0 +1,28 @@
+% La información a la que estás accediendo se provee exclusivamente para
+% fines relacionados con operaciones sobre nombres de dominios y DNS,
+% quedando absolutamente prohibido su uso para otros fines.
+%
+% La DIRECCIÓN NACIONAL DEL REGISTRO DE DOMINIOS DE INTERNET es depositaria
+% de la información que los usuarios declaran con la sola finalidad de
+% registrar nombres de dominio en ‘.ar’, para ser publicada en el sitio web
+% de NIC Argentina.
+%
+% La información personal que consta en la base de datos generada a partir
+% del sistema de registro de nombres de dominios se encuentra amparada por
+% la Ley N° 25326 “Protección de Datos Personales” y el Decreto
+% Reglamentario 1558/01.
+domain:		afip.gob.ar
+registrant:	33693450239
+registrar:	nicar
+registered:	1997-05-26 00:00:00
+changed:	2018-05-19 12:18:44.329522
+expire:		2019-05-26 00:00:00
+contact:	33693450239
+name:		ADMINISTRACION FEDERAL DE INGRESOS PUBLICOS
+registrar:	nicar
+created:	2013-10-30 00:00:00
+changed:	2019-03-21 20:38:40.827111
+nserver:	ns1.afip.gov.ar (200.1.116.10/32)
+nserver:	ns2.afip.gov.ar (200.1.116.11/32)
+registrar:	nicar
+created:	2016-06-30 22:15:47.314461

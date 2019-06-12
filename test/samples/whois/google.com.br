@@ -1,0 +1,55 @@
+% Copyright (c) Nic.br
+%  The use of the data below is only permitted as described in
+%  full by the terms of use at https://registro.br/termo/en.html ,
+%  being prohibited its distribution, commercialization or
+%  reproduction, in particular, to use it for advertising or
+%  any similar purpose.
+%  2019-04-19T03:22:06-03:00
+
+domain:      google.com.br
+owner:       Google Brasil Internet Ltda
+ownerid:     06.990.590/0001-23
+responsible: Domain Administrator
+country:     BR
+owner-c:     DOADM17
+admin-c:     DOADM17
+tech-c:      DOADM17
+billing-c:   NAB51
+nserver:     ns1.google.com
+nsstat:      20190418 AA
+nslastaa:    20190418
+nserver:     ns2.google.com
+nsstat:      20190418 AA
+nslastaa:    20190418
+nserver:     ns3.google.com
+nsstat:      20190418 AA
+nslastaa:    20190418
+nserver:     ns4.google.com
+nsstat:      20190418 NOT SYNC ZONE
+nslastaa:    20190418
+created:     19990518 #162310
+changed:     20190417
+expires:     20200518
+status:      published
+
+nic-hdl-br:  DOADM17
+person:      Domain Admin
+e-mail:      ccops@markmonitor.com
+country:     BR
+created:     20100520
+changed:     20180324
+
+nic-hdl-br:  NAB51
+person:      NameAction do Brasil
+e-mail:      mail@nameaction.com
+country:     BR
+created:     20020619
+changed:     20181011
+
+% Security and mail abuse issues should also be addressed to
+% cert.br, http://www.cert.br/ , respectivelly to cert@cert.br
+% and mail-abuse@cert.br
+%
+% whois.registro.br accepts only direct match queries. Types
+% of queries are: domain (.br), registrant (tax ID), ticket,
+% provider, contact handle (ID), CIDR block, IP and ASN.

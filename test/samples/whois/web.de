@@ -1,0 +1,68 @@
+% Copyright (c) 2010 by DENIC
+% Version: 2.0
+%
+% Restricted rights.
+%
+% Terms and Conditions of Use
+%
+% The data in this record is provided by DENIC for informational purposes only.
+% DENIC does not guarantee its accuracy and cannot, under any circumstances,
+% be held liable in case the stored information would prove to be wrong,
+% incomplete or not accurate in any sense.
+%
+% All the domain data that is visible in the whois service is protected by law.
+% It is not permitted to use it for any purpose other than technical or
+% administrative requirements associated with the operation of the Internet.
+% It is explicitly forbidden to extract, copy and/or use or re-utilise in any
+% form and by any means (electronically or not) the whole or a quantitatively
+% or qualitatively substantial part of the contents of the whois database
+% without prior and explicit written permission by DENIC.
+% It is prohibited, in particular, to use it for transmission of unsolicited
+% and/or commercial and/or advertising by phone, fax, e-mail or for any similar
+% purposes.
+%
+% By maintaining the connection you assure that you have a legitimate interest
+% in the data and that you will only use it for the stated purposes. You are
+% aware that DENIC maintains the right to initiate legal proceedings against
+% you in the event of any breach of this assurance and to bar you from using
+% its whois service.
+%
+% The DENIC whois service on port 43 never discloses any information concerning
+% the domain holder/administrative contact. Information concerning the domain
+% holder/administrative contact can be obtained through use of our web-based
+% whois service available at the DENIC website:
+% http://www.denic.de/en/domains/whois-service/web-whois.html
+%
+
+Domain: web.de
+Nserver: ns-webde.ui-dns.biz
+Nserver: ns-webde.ui-dns.com
+Nserver: ns-webde.ui-dns.de
+Nserver: ns-webde.ui-dns.org
+Dnskey: 257 3 8 AwEAAcBs30zgmOeYcUYzJetRzRYGQXlnXpv2gO3KWf5BYRn9OqFtUBzFOqO16Ow2XPqR8SWqpAVpnToQICICZyf58SHaefGn94fTj+PlwJi4HhoCbim2U3G5sYtl5xoNfUCaDXDQFJp+HnZlaA9afHutOVFtqCmMHV+2ApSyOFFETQNmq4YoxLxiJoxSjvQAaaiJKVoA4wykjXALMyCmbXGH4aMVbW2m0Fuqe+nKU8myW14nCASBo0mDO6cBNsBwu7IiL4SxxnflDCSTkn/FnCKtzf7aVzzrRM4SqTe4NOm7wPmCZiAGoxOL15PZ7YQSt9BEXU6gMdGxCGVBdtgM13NfziM=
+Status: connect
+Changed: 2016-04-11T11:09:54+02:00
+
+[Tech-C]
+Type: PERSON
+Name: Hostmaster of the day
+Address: Elgendorfer Str. 57
+PostalCode: 56410
+City: Montabaur
+CountryCode: DE
+Phone: +49-721-9600
+Fax: +49-721-91374-215
+Email: ui-hostmaster@1and1.com
+Changed: 2011-08-10T17:09:10+02:00
+
+[Zone-C]
+Type: PERSON
+Name: Hostmaster of the day
+Address: Elgendorfer Str. 57
+PostalCode: 56410
+City: Montabaur
+CountryCode: DE
+Phone: +49-721-9600
+Fax: +49-721-91374-215
+Email: ui-hostmaster@1and1.com
+Changed: 2011-08-10T17:09:10+02:00
