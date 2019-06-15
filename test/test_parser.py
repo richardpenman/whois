@@ -20,7 +20,7 @@ except:
 from glob import glob
 
 from whois.parser import WhoisEntry, cast_date, WhoisCl, WhoisAr, WhoisBy, \
-    WhoisCa, WhoisBiz, WhoisCr, WhoisDe
+    WhoisCa, WhoisBiz, WhoisCr, WhoisDe, WhoisNl
 
 
 class TestParser(unittest.TestCase):
@@ -296,6 +296,105 @@ class TestParser(unittest.TestCase):
             "tech_id": "JM474-IEDR"
         }
         self._parse_and_compare('rte.ie', data, expected_results)
+
+    def test_nl_parse(self):
+        data = """
+        Domain name: utwente.nl
+        Status:      active
+
+        Registrar:
+           Universiteit Twente
+           Drienerlolaan 5
+           7522NB ENSCHEDE
+           Netherlands
+
+        Abuse Contact:
+
+        DNSSEC:      yes
+
+        Domain nameservers:
+           ns3.utwente.nl          131.155.0.37
+           ns1.utwente.nl          130.89.1.2
+           ns1.utwente.nl          2001:67c:2564:a102::3:1
+           ns2.utwente.nl          130.89.1.3
+           ns2.utwente.nl          2001:67c:2564:a102::3:2
+
+        Record maintained by: NL Domain Registry
+        """
+
+        expected_results = {
+            "domain_name": "utwente.nl",
+            "name_servers": [
+                "ns1.utwente.nl",
+                "ns2.utwente.nl",
+                "ns3.utwente.nl",
+            ],
+            "status": "active",
+            'registrar_address': 'Drienerlolaan 5',
+            'registrar': 'Universiteit Twente',
+            'registrar_zip_code': '7522NB',
+            'registrar_city': 'ENSCHEDE',
+            'registrar_country': 'Netherlands',
+            'dnssec': 'yes'
+        }
+        self._parse_and_compare('utwente.nl', data, expected_results)
+
+    def test_dk_parse(self):
+        data = """
+#
+# Copyright (c) 2002 - 2019 by DK Hostmaster A/S
+#
+# Version:
+#
+# The data in the DK Whois database is provided by DK Hostmaster A/S
+# for information purposes only, and to assist persons in obtaining
+# information about or related to a domain name registration record.
+# We do not guarantee its accuracy. We will reserve the right to remove
+# access for entities abusing the data, without notice.
+#
+# Any use of this material to target advertising or similar activities
+# are explicitly forbidden and will be prosecuted. DK Hostmaster A/S
+# requests to be notified of any such activities or suspicions thereof.
+
+Domain:               dk-hostmaster.dk
+DNS:                  dk-hostmaster.dk
+Registered:           1998-01-19
+Expires:              2022-03-31
+Registration period:  5 years
+VID:                  yes
+Dnssec:               Signed delegation
+Status:               Active
+
+Registrant
+Handle:               DKHM1-DK
+Name:                 DK HOSTMASTER A/S
+Address:              Ørestads Boulevard 108, 11.
+Postalcode:           2300
+City:                 København S
+Country:              DK
+
+Nameservers
+Hostname:             auth01.ns.dk-hostmaster.dk
+Hostname:             auth02.ns.dk-hostmaster.dk
+Hostname:             p.nic.dk
+"""
+
+        expected_results = {
+            "domain_name": "dk-hostmaster.dk",
+            "name_servers": [
+                'auth01.ns.dk-hostmaster.dk',
+                'auth02.ns.dk-hostmaster.dk',
+                'p.nic.dk'
+            ],
+            "status": "Active",
+            'registrant': 'DK HOSTMASTER A/S',
+            'registrant_address': 'Ørestads Boulevard 108, 11.',
+            'registrant_zip_code': '2300',
+            'registrant_city': 'København S',
+            'registrant_country': 'DK',
+            'dnssec': 'Signed delegation'
+        }
+        self._parse_and_compare('dk-hostmaster.dk', data, expected_results)
 
     def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
         results = whois_entry.load(domain_name, data)

@@ -70,6 +70,7 @@ class NICClient(object):
     CL_HOST = "whois.nic.cl"
     CR_HOST = "whois.nic.cr"
     DE_HOST = "whois.denic.de"
+    DK_HOST = "whois.dk-hostmaster.dk"
     DO_HOST = "whois.nic.do"
     CA_HOST = "whois.ca.fury.ca"
     HK_HOST = "whois.hkirc.hk"
@@ -142,6 +143,8 @@ class NICClient(object):
 
         if hostname == NICClient.DENICHOST:
             query_bytes = "-T dn,ace -C UTF-8 " + query
+        elif hostname == NICClient.DK_HOST:
+            query_bytes = " --show-handles " + query
         elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
             query_bytes = '=' + query
         else:

@@ -477,18 +477,20 @@ class WhoisRu(WhoisEntry):
 
 class WhoisNl(WhoisEntry):
     """Whois parser for .nl domains
-    """
+        """
     regex = {
-        'domain_name': 'Domain Name: *(.+)',
-        'expiration_date': None,
-        'updated_date': None,
-        'creation_date': None,
-        'status': 'Status: *(.+)',  # list of statuses
-        'name': None,
-        'address': None,
-        'zip_code': None,
-        'city': None,
-        'country': None
+        'domain_name':         'Domain Name: *(.+)',
+        'expiration_date':     None,
+        'updated_date':        None,
+        'creation_date':       None,
+        'status':              'Status: *(.+)',  # list of statuses
+        'name':                None,
+        'registrar':           'Registrar:\s*(.*\n)',
+        'registrar_address':   'Registrar:\s*(?:.*\n){1}\s*(.*)',
+        'registrar_zip_code':  'Registrar:\s*(?:.*\n){2}\s*(\S*)\s(?:.*)',
+        'registrar_city':      'Registrar:\s*(?:.*\n){2}\s*(?:\S*)\s(.*)',
+        'registrar_country':   'Registrar:\s*(?:.*\n){3}\s*(.*)',
+        'dnssec':              'DNSSEC: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -497,14 +499,14 @@ class WhoisNl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-        match = re.compile('Registrar:(.*?)DNSSEC', re.DOTALL).search(text)
+        match = re.compile('Domain nameservers:(.*?)Record maintained by', re.DOTALL).search(text)
         if match:
-            lines = [line.strip() for line in match.groups()[0].strip().splitlines()]
-            self['registrar'] = lines[0]
-            self['registrar_address'] = lines[1]
-            if len(lines) == 4:
-                self['registrar_zip_code'], _, self['registrar_city'] = lines[2].partition(' ')
-            self['registrar_country'] = lines[-1]
+            duplicate_nameservers_with_ip = [line.strip()
+                                             for line in match.groups()[0].strip().splitlines()]
+            duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
+                                                for nameserver in duplicate_nameservers_with_ip]
+            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
+
 
 
 class WhoisName(WhoisEntry):
@@ -1699,12 +1701,18 @@ class WhoisDk(WhoisEntry):
     """Whois parser for .dk domains
     """
     regex = {
-        'domain_name':     'Domain: *(.+)',
-        'creation_date':   'Registered: *(.+)',
-        'expiration_date': 'Expires: *(.+)',
-        'dnssec':          'Dnssec: *(.+)',
-        'status':          'Status: *(.+)',
-        'name_servers':     'Nameservers\n *([\n\S\s]+)'
+        'domain_name':         'Domain: *(.+)',
+        'creation_date':       'Registered: *(.+)',
+        'expiration_date':     'Expires: *(.+)',
+        'dnssec':              'Dnssec: *(.+)',
+        'status':              'Status: *(.+)',
+        'registrant_handle':   'Registrant\s*(?:.*\n){1}\s*Handle: *(.+)',
+        'registrant':          'Registrant\s*(?:.*\n){2}\s*Name: *(.+)',
+        'registrant_address':  'Registrant\s*(?:.*\n){3}\s*Address: *(.+)',
+        'registrant_zip_code': 'Registrant\s*(?:.*\n){4}\s*Postalcode: *(.+)',
+        'registrant_city':     'Registrant\s*(?:.*\n){5}\s*City: *(.+)',
+        'registrant_country':  'Registrant\s*(?:.*\n){6}\s*Country: *(.+)',
+        'name_servers':        'Nameservers\n *([\n\S\s]+)'
     }
 
     def __init__(self, domain, text):
