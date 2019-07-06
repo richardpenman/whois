@@ -194,6 +194,8 @@ class WhoisEntry(dict):
             return WhoisName(domain, text)
         elif domain.endswith('.me'):
             return WhoisMe(domain, text)
+        elif domain.endswith('ae'):
+            return WhoisAe(domain, text)
         elif domain.endswith('.au'):
             return WhoisAU(domain, text)
         elif domain.endswith('.ru'):
@@ -2504,6 +2506,23 @@ class WhoisDo(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'Extensión de dominio no válido.':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisAe(WhoisEntry):
+    """Whois parser for .ae domains
+    """
+    regex = {
+        'domain_name':     'Domain Name: *(.+)',
+        'status':          'Status: *(.+)',
+        'registrant':      'Registrant Contact Name: *(.+)',
+        'tech_name':       'Tech Contact Name: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No Data Found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
