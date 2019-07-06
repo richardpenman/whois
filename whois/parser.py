@@ -475,7 +475,7 @@ class WhoisRu(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip() == 'No entries found':
+        if 'No entries found' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -646,6 +646,7 @@ class WhoisCa(WhoisEntry):
         'registrar_url':                  'Registrar URL: *(.+)',
         'registrant_name':                'Registrant Name: *(.+)',
         'registrant_number':              'Registry Registrant ID: *(.+)',
+        'admin_name':                     'Admin Name: *(.+)',
         'domain_status':                  'Domain status: *(.+)',
         'emails':                         'Email: *(.+)',
         'updated_date':                   'Updated Date: *(.+)',
@@ -657,7 +658,7 @@ class WhoisCa(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if 'Domain status:         available' in text:
+        if 'Domain status:         available' in text or 'Not found:' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -837,6 +838,7 @@ class WhoisAU(WhoisEntry):
         'registrar':                      'Registrar Name: *(.+)\n',
         'status':                         'Status: *(.+)',
         'registrant_name':                'Registrant: *(.+)',
+        'registrant_contact_name':        'Registrant Contact Name: (.+)',
         'name_servers':                   'Name Server: *(.+)',
     }
 
@@ -932,7 +934,7 @@ class WhoisKr(WhoisEntry):
     """
     regex = {
         'domain_name': 'Domain Name\s*: *(.+)',
-        'registrant_org': 'Registrant\s*: *(.+)',
+        'registrant': 'Registrant\s*: *(.+)',
         'registrant_address': 'Registrant Address\s*: *(.+)',
         'registrant_zip': 'Registrant Zip Code\s*: *(.+)',
         'admin_name': 'Administrative Contact\(AC\)\s*: *(.+)',
@@ -1030,6 +1032,7 @@ class WhoisAt(WhoisEntry):
         'phone': 'phone: *(.+)',
         'fax': 'fax-no: *(.+)',
         'changed': 'changed: *(.+)',
+        'email': 'e-mail: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1302,7 +1305,8 @@ class WhoisChLi(WhoisEntry):
     """
     regex = {
         'domain_name':                      '\nDomain name:\n*(.+)',
-        'registrant':                       'Holder of domain name:\n*([\n\s\S]+)\nContractual Language:',
+        'registrant':                       'Holder of domain name:\s*(?:.*\n){1}\s*(.+)',
+        'registrant_address':               'Holder of domain name:\s*(?:.*\n){2}\s*(.+)',
         'registrar':                        'Registrar:\n*(.+)',
         'creation_date':                    'First registration date:\n*(.+)',
         'dnssec':                           'DNSSEC:*([\S]+)',
@@ -1365,6 +1369,7 @@ class WhoisSe(WhoisEntry):
     """
     regex = {
         'domain_name':                    'domain\.*: *(.+)',
+        'registrant':                     'holder\.*: *(.+)',
         'creation_date':                  'created\.*: *(.+)',
         'updated_date':                   'modified\.*: *(.+)',
         'expiration_date':                'expires\.*: *(.+)',
@@ -1529,7 +1534,10 @@ class WhoisSK(WhoisEntry):
         'expiration_date':                'Valid Until: *(.+)',
         'name_servers':                   'Nameserver: *(.+)',
 
-        'registrant':                     'Registrant:\s*(.+)',
+        'registrant':                     'Name:\s*(.+)',
+        'registrant_email':               'Email:\s*(.+)',
+        'registrant_phone':               'Phone:\s*(.+)',
+        'registrant_address':             'Street:\s*(.+)',
 
         'registrar':                      '(?<=Registrar)[\s\S]*?Organization:(.*)',
         'registrar_organization_id':      '(?<=Registrar)[\s\S]*?Organization ID:(.*)',
@@ -1688,10 +1696,12 @@ class WhoisIs(WhoisEntry):
     """
     regex = {
         'domain_name':      'domain\.*: *(.+)',
+        'registrant':       'registrant: *(.+)',
         'name':             'person\.*: *(.+)',
         'address':          'address\.*: *(.+)',
         'creation_date':    'created\.*: *(.+)',
         'expiration_date':  'expires\.*: *(.+)',
+        'email':            'e-mail: *(.+)',
         'name_servers':     'nserver\.*: *(.+)',  # list of name servers
         'dnssec':           'dnssec\.*: *(.+)',
     }
@@ -1763,16 +1773,17 @@ class WhoisIl(WhoisEntry):
     """Whois parser for .il domains
     """
     regex = {
-        'domain_name':     'domain: *(.+)',
-        'expiration_date': 'validity: *(.+)',
-        'registrant_name': 'person: *(.+)',
-        'dnssec':          'DNSSEC: *(.+)',
-        'status':          'status: *(.+)',
-        'name_servers':    'nserver: *(.+)',
-        'emails':          'e-mail: *(.+)',
-        'phone':           'phone: *(.+)',
-        'registrar':       'registrar name: *(.+)',
-        'referral_url':    'registrar info: *(.+)',
+        'domain_name':        'domain: *(.+)',
+        'expiration_date':    'validity: *(.+)',
+        'registrant':         'person: *(.+)',
+        'registrant_address': 'address *(.+)',
+        'dnssec':             'DNSSEC: *(.+)',
+        'status':             'status: *(.+)',
+        'name_servers':       'nserver: *(.+)',
+        'emails':             'e-mail: *(.+)',
+        'phone':              'phone: *(.+)',
+        'registrar':          'registrar name: *(.+)',
+        'referral_url':       'registrar info: *(.+)',
     }
     dayfirst = True
 
@@ -1844,6 +1855,7 @@ class WhoisIe(WhoisEntry):
     """
     regex = {
         'domain_name':      'Domain: *(.+)',
+        'registrant':       'Domain Holder: *(.+)',
         'description':      'descr: *(.+)',
         'source':           'Source: *(.+)',
         'creation_date':    'Registration Date: *(.+)',
@@ -1929,7 +1941,7 @@ class WhoisCz(WhoisEntry):
     """
     regex = {
         'domain_name':              'domain: *(.+)',
-        'registrant_name':          'registrant: *(.+)',
+        'registrant':               'registrant: *(.+)',
         'registrar':                'registrar: *(.+)',
         'creation_date':            'registered: *(.+)',
         'updated_date':             'changed: *(.+)',
@@ -1938,7 +1950,7 @@ class WhoisCz(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if '% No entries found.' in text:
+        if '% No entries found.' in text or 'Your connection limit exceeded' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1983,7 +1995,9 @@ class WhoisHr(WhoisEntry):
         'updated_date':                   'Updated Date: *(.+)',
         'creation_date':                  'Creation Date: *(.+)',
         'expiration_date':                'Registrar Registration Expiration Date: *(.+)',
-        'name_servers':                   'Name Server: *(.+)'
+        'name_servers':                   'Name Server: *(.+)',
+        'registrant':                     'Registrant Name:\s(.+)',
+        'registrant_address':             'Reigstrant Street:\s*(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2038,7 +2052,7 @@ class WhoisHk(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if 'ERROR: No entries found' in text:
+        if 'ERROR: No entries found' in text or 'The domain has not been registered in text':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
