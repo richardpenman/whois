@@ -246,6 +246,8 @@ class WhoisEntry(dict):
             return WhoisInfo(domain, text)
         elif domain.endswith('.su'):
             return WhoisSu(domain, text)
+        elif domain.endswith('si'):
+            return WhoisSi(domain, text)
         elif domain.endswith('.kg'):
             return WhoisKg(domain, text)
         elif domain.endswith('.io'):
@@ -264,6 +266,8 @@ class WhoisEntry(dict):
             return WhoisSK(domain, text)
         elif domain.endswith('.se'):
             return WhoisSe(domain, text)
+        elif domain.endswith('no'):
+            return WhoisNo(domain, text)
         elif domain.endswith('.nu'):
             return WhoisSe(domain, text)
         elif domain.endswith('.is'):
@@ -2523,6 +2527,41 @@ class WhoisAe(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'No Data Found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisSi(WhoisEntry):
+    """Whois parser for .si domains
+    """
+    regex = {
+        'domain_name':     'domain: *(.+)',
+        'registrar':       'registrar: *(.+)',
+        'name_servers':    'nameserver: *(.+)',
+        'registrant':      'registrant: *(.+)',
+        'creation_date':   'created: *(.+)',
+        'expiration_date': 'expire: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if 'No entries found for the selected source(s).' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisNo(WhoisEntry):
+    """Whois parser for .no domains
+    """
+    regex = {
+        'domain_name':     'Domain Name.*:\s*(.+)',
+        'creation_date':   'Additional information:\nCreated:\s*(.+)',
+        'updated_date':    'Additional information:\n(?:.*\n)Last updated:\s*(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if 'No match' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
