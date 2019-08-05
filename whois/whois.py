@@ -130,7 +130,7 @@ class NICClient(object):
             else:
                 proxy = os.environ["SOCKS"]
             socksproxy, port = proxy.split(":")
-            socks_proto = None
+            socks_proto = socket.AF_INET
             if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
                 socks_proto=socket.AF_INET6
             s = socks.socksocket(socks_proto)
