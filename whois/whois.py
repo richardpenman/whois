@@ -82,6 +82,7 @@ class NICClient(object):
     LI_HOST = "whois.nic.li"
     MX_HOST = "whois.mx"
     PE_HOST = "kero.yachay.pe"
+    ONLINE_HOST = "whois.nic.online"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -196,7 +197,7 @@ class NICClient(object):
         elif tld == 'money':
             return NICClient.MONEY_HOST
         elif tld == 'online':
-            return 'whois.nic.online'
+            return NICClient.ONLINE_HOST
         elif tld == 'cl':
             return NICClient.CL_HOST
         elif tld == 'ar':

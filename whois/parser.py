@@ -2236,6 +2236,7 @@ class WhoisCn(WhoisEntry):
         'status':               'Status: *(.+)',  # list of statuses
         'emails':               EMAIL_REGEX,  # list of email s
         'dnssec':               'dnssec: *([\S]+)',
+        'name':                 'Registrant: *(.+)',
     }
 
     def __init__(self, domain, text):
