@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
@@ -97,7 +98,7 @@ class TestParser(unittest.TestCase):
                     print("%s \t(%s):\t Missing in results" % (domain, key,))
                     fail += 1
                     continue
-                
+
                 result = results.get(key)
                 if isinstance(result, list):
                     result = [str(element) for element in result]
@@ -125,7 +126,7 @@ class TestParser(unittest.TestCase):
         Registry Registrant ID: 70
 
         Registrant Name:       Test Industries
-        Registrant Organization: 
+        Registrant Organization:
 
         Admin Name:            Test Person1
         Admin Street:          Test Address
