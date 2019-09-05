@@ -31,3 +31,17 @@ class TestExtractDomain(unittest.TestCase):
         url = 'http://россия.рф/'
         domain = 'россия.рф'
         self.assertEqual(domain, extract_domain(url))
+
+    def test_ipv6(self):
+        """ Verify that ipv6 addresses work """
+        url = '2607:f8b0:4006:802::200e'
+        domain = '1e100.net'
+        # double extract_domain() so we avoid possibly changing hostnames like lga34s12-in-x0e.1e100.net
+        self.assertEqual(domain, extract_domain(extract_domain(url)))
+
+    def test_ipv4(self):
+        """ Verify that ipv4 addresses work """
+        url = '172.217.3.110'
+        domain = '1e100.net'
+        # double extract_domain() so we avoid possibly changing hostnames like lga34s18-in-f14.1e100.net
+        self.assertEqual(domain, extract_domain(extract_domain(url)))
