@@ -958,13 +958,24 @@ class WhoisPt(WhoisEntry):
     """Whois parser for .pt domains
     """
     regex = {
-        'domain_name': 'domain name: *(.+)',
-        'creation_date': 'creation date \(dd\/mm\/yyyy\): *(.+)',
-        'expiration_date': 'expiration date \(dd\/mm\/yyyy\): *(.+)',
-        'name_servers': '\tNS\t(.+).',  # list of name servers
-        'status': 'status: *(.+)',  # list of statuses
+        'domain_name': 'Domain: *(.+)',
+        'creation_date': 'Creation Date: *(.+)',
+        'expiration_date': 'Expiration Date: *(.+)',
+        'registrant': 'Owner Name: *(.+)',
+        'registrant_street': 'Owner Address: *(.+)',
+        'registrant_city': 'Owner Locality: *(.+)',
+        'registrant_postal_code': 'Owner ZipCode: *(.+)',
+        'registrant_email': 'Owner Email: *(.+)',
+        'admin': 'Admin Name: *(.+)',
+        'admin_street': 'Admin Address: *(.+)',
+        'admin_city': 'Admin Locality: *(.+)',
+        'admin_postal_code':'Admin ZipCode: *(.+)',
+        'admin_email': 'Admin Email: *(.+)',
+        'name_servers': 'Name Server: *(.+) \|',  # list of name servers
+        'status': 'Domain Status: *(.+)',  # list of statuses
         'emails': EMAIL_REGEX,  # list of email addresses
     }
+    dayfirst = True
 
     def __init__(self, domain, text):
         if text.strip() == 'No entries found':
