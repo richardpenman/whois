@@ -169,6 +169,39 @@ class TestParser(unittest.TestCase):
         }
         self._parse_and_compare('testcompany.ca', data, expected_results,
                                 whois_entry=WhoisCa)
+    
+    def test_cn_parse(self):
+        data = """
+            Domain Name: cnnic.com.cn
+            ROID: 20021209s10011s00047242-cn
+            Domain Status: serverDeleteProhibited
+            Domain Status: serverUpdateProhibited
+            Domain Status: serverTransferProhibited
+            Registrant ID: s1255673574881
+            Registrant: 中国互联网络信息中心
+            Registrant Contact Email: servicei@cnnic.cn
+            Sponsoring Registrar: 北京新网数码信息技术有限公司
+            Name Server: a.cnnic.cn
+            Name Server: b.cnnic.cn
+            Name Server: c.cnnic.cn
+            Name Server: d.cnnic.cn
+            Name Server: e.cnnic.cn
+            Registration Time: 2000-09-14 00:00:00
+            Expiration Time: 2023-08-16 16:26:39
+            DNSSEC: unsigned
+        """
+        expected_results = {
+            "domain_name": "cnnic.com.cn",
+            "registrar": "北京新网数码信息技术有限公司",
+            "creation_date": "2000-09-14 00:00:00",
+            "expiration_date": "2023-08-16 16:26:39",
+            "name_servers": ["a.cnnic.cn", "b.cnnic.cn", "c.cnnic.cn", "d.cnnic.cn", "e.cnnic.cn"],
+            "status": ["serverDeleteProhibited", "serverUpdateProhibited", "serverTransferProhibited"],
+            "emails": "servicei@cnnic.cn",
+            "dnssec": "unsigned",
+            "name": "中国互联网络信息中心"
+        }
+        self._parse_and_compare('cnnic.com.cn', data, expected_results)
 
     def test_il_parse(self):
         data = """
