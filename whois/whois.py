@@ -172,7 +172,10 @@ class NICClient(object):
         if flags & NICClient.WHOIS_RECURSE and nhost is None:
             nhost = self.findwhois_server(response, hostname, query)
         if nhost is not None:
-            response += self.whois(query, nhost, 0)
+            try:
+                response += self.whois(query, nhost, 0)
+            except socket.gaierror:
+                pass
         return response
 
     def choose_server(self, domain):
