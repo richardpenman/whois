@@ -75,6 +75,7 @@ class NICClient(object):
     CA_HOST = "whois.ca.fury.ca"
     HK_HOST = "whois.hkirc.hk"
     HN_HOST = "whois.nic.hn"
+    KZ_HOST = "whois.nic.kz"
     DEFAULT_PORT = "nicname"
     MONEY_HOST = "whois.nic.money"
     JOBS_HOST = "whois.nic.jobs"
@@ -235,6 +236,8 @@ class NICClient(object):
             return NICClient.MX_HOST
         elif tld == 'pe':
             return NICClient.PE_HOST
+        elif tld == 'kz':
+            return NICClient.KZ_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
 
