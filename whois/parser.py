@@ -1292,7 +1292,7 @@ class WhoisKg(WhoisEntry):
         'domain_name':                    'Domain\s*([\w]+\.[\w]{2,5})',
         'registrar':                      'Domain support: \s*(.+)',
         'registrant_name':                'Name: *(.+)',
-        'registrant_address1':            'Address: *(.+)',
+        'registrant_address':             'Address: *(.+)',
         'registrant_phone_number':        'phone: *(.+)',
         'registrant_email':               'Email: *(.+)',
         # # list of name servers
