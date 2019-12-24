@@ -139,43 +139,44 @@ class NICClient(object):
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
-        s.connect((hostname, 43))
-
-        try:
-            query = query.decode('utf-8')
-        except UnicodeEncodeError:
-            pass  # Already Unicode (python2's error)
-        except AttributeError:
-            pass  # Already Unicode (python3's error)
-
-        if hostname == NICClient.DENICHOST:
-            query_bytes = "-T dn,ace -C UTF-8 " + query
-        elif hostname == NICClient.DK_HOST:
-            query_bytes = " --show-handles " + query
-        elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
-            query_bytes = '=' + query
-        else:
-            query_bytes = query
-        s.send(bytes(query_bytes, 'utf-8') + b"\r\n")
-        # recv returns bytes
-        while True:
-            d = s.recv(4096)
-            response += d
-            if not d:
-                break
-        s.close()
-
-        nhost = None
-        response = response.decode('utf-8', 'replace')
-        if 'with "=xxx"' in response:
-            return self.whois(query, hostname, flags, True)
-        if flags & NICClient.WHOIS_RECURSE and nhost is None:
-            nhost = self.findwhois_server(response, hostname, query)
-        if nhost is not None:
+        try: # socket.connect in a try, in order to allow things like looping whois on different domains without stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
+            s.connect((hostname, 43))
             try:
+                query = query.decode('utf-8')
+            except UnicodeEncodeError:
+                pass  # Already Unicode (python2's error)
+            except AttributeError:
+                pass  # Already Unicode (python3's error)
+
+            if hostname == NICClient.DENICHOST:
+                query_bytes = "-T dn,ace -C UTF-8 " + query
+            elif hostname == NICClient.DK_HOST:
+                query_bytes = " --show-handles " + query
+            elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
+                query_bytes = '=' + query
+            else:
+                query_bytes = query
+            s.send(bytes(query_bytes, 'utf-8') + b"\r\n")
+            # recv returns bytes
+            while True:
+                d = s.recv(4096)
+                response += d
+                if not d:
+                    break
+            s.close()
+
+            nhost = None
+            response = response.decode('utf-8', 'replace')
+            if 'with "=xxx"' in response:
+                return self.whois(query, hostname, flags, True)
+            if flags & NICClient.WHOIS_RECURSE and nhost is None:
+                nhost = self.findwhois_server(response, hostname, query)
+            if nhost is not None:
                 response += self.whois(query, nhost, 0)
-            except socket.gaierror:
-                pass
+        except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
+            print("Error trying to connect to socket: closing socket") 
+            s.close()
+            response = "Socket not responding"   
         return response
 
     def choose_server(self, domain):
