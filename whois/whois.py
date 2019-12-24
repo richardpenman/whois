@@ -67,6 +67,9 @@ class NICClient(object):
     BY_HOST = "whois.cctld.by"
     HR_HOST = "whois.dns.hr"
     APP_HOST = "whois.nic.google"
+    DEV_HOST = "whois.nic.google"
+    GAMES_HOST = "whois.nic.games"
+    PAGE_HOST = "whois.nic.page"
     CL_HOST = "whois.nic.cl"
     CR_HOST = "whois.nic.cr"
     DE_HOST = "whois.denic.de"
@@ -203,6 +206,12 @@ class NICClient(object):
             return NICClient.AI_HOST
         elif tld == 'app':
             return NICClient.APP_HOST
+        elif tld == 'dev':
+            return NICClient.DEV_HOST
+        elif tld == 'games':
+            return NICClient.GAMES_HOST
+        elif tld == 'page':
+            return NICClient.PAGE_HOST
         elif tld == 'money':
             return NICClient.MONEY_HOST
         elif tld == 'online':
