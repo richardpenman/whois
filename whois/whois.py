@@ -82,6 +82,7 @@ class NICClient(object):
     LI_HOST = "whois.nic.li"
     MX_HOST = "whois.mx"
     PE_HOST = "kero.yachay.pe"
+    ONLINE_HOST = "whois.nic.online"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -123,12 +124,18 @@ class NICClient(object):
             except ImportError as e:
                 print("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
                 raise e
-            socksproxy, port = os.environ["SOCKS"].split(":")
-            socks_proto = None
+            socks_user, socks_password = None, None
+            if "@" in os.environ["SOCKS"]:
+                creds, proxy = os.environ["SOCKS"].split("@")
+                socks_user, socks_password = creds.split(":")
+            else:
+                proxy = os.environ["SOCKS"]
+            socksproxy, port = proxy.split(":")
+            socks_proto = socket.AF_INET
             if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
                 socks_proto=socket.AF_INET6
             s = socks.socksocket(socks_proto)
-            s.set_proxy(socks.SOCKS5, socksproxy, int(port))
+            s.set_proxy(socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
@@ -165,7 +172,10 @@ class NICClient(object):
         if flags & NICClient.WHOIS_RECURSE and nhost is None:
             nhost = self.findwhois_server(response, hostname, query)
         if nhost is not None:
-            response += self.whois(query, nhost, 0)
+            try:
+                response += self.whois(query, nhost, 0)
+            except socket.gaierror:
+                pass
         return response
 
     def choose_server(self, domain):
@@ -196,7 +206,7 @@ class NICClient(object):
         elif tld == 'money':
             return NICClient.MONEY_HOST
         elif tld == 'online':
-            return 'whois.nic.online'
+            return NICClient.ONLINE_HOST
         elif tld == 'cl':
             return NICClient.CL_HOST
         elif tld == 'ar':
