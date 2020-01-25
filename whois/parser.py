@@ -834,7 +834,7 @@ class WhoisAU(WhoisEntry):
     """
     regex = {
         'domain_name':                    'Domain Name: *(.+)\n',
-        'last_modified':                  'Last Modified: *(.+)\n',
+        'updated_date':                  'Last Modified: *(.+)\n',
         'registrar':                      'Registrar Name: *(.+)\n',
         'status':                         'Status: *(.+)',
         'registrant_name':                'Registrant: *(.+)',
@@ -876,9 +876,9 @@ class WhoisEe(WhoisEntry):
     regex = {
         'domain_name': r'Domain: *[\n\r]+\s*name: *([^\n\r]+)',
         'status': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *([^\n\r]+)',
-        'registered': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *([^\n\r]+)',
-        'changed': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *([^\n\r]+)',
-        'expire': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *[^\n\r]+\sexpire: *([^\n\r]+)',
+        'creation_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *([^\n\r]+)',
+        'updated_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *([^\n\r]+)',
+        'expiration_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *[^\n\r]+\sexpire: *([^\n\r]+)',
 
         # 'tech_name': r'Technical: *Name: *([^\n\r]+)',
         # 'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
@@ -912,9 +912,9 @@ class WhoisBr(WhoisEntry):
         'nsstat':                        'nsstat: *(.+)',
         'nslastaa':                      'nslastaa: *(.+)',
         'saci':                          'saci: *(.+)',
-        'created':                       'created: *(.+)',
-        'expires':                       'expires: *(.+)',
-        'changed':                       'changed: *(.+)',
+        'creation_date':                 'created: *(.+)',
+        'updated_date':                  'changed: *(.+)',
+        'expiration_date':               'expires: *(.+)',
         'status':                        'status: *(.+)',
         'nic_hdl_br':                    'nic-hdl-br: *(.+)',
         'person':                        'person: *([\S ]+)',
@@ -1042,7 +1042,7 @@ class WhoisAt(WhoisEntry):
         'country': 'country: *(.+)',
         'phone': 'phone: *(.+)',
         'fax': 'fax-no: *(.+)',
-        'changed': 'changed: *(.+)',
+        'updated_date': 'changed: *(.+)',
         'email': 'e-mail: *(.+)',
     }
 
