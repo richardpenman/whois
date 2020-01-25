@@ -332,6 +332,8 @@ class WhoisEntry(dict):
             return WhoisVe(domain, text)
         elif domain.endswith('.ua'):
             return WhoisUA(domain, text)
+        elif domain.endswith('.kz'):
+            return WhoisKZ(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2588,6 +2590,28 @@ class WhoisNo(WhoisEntry):
 
     def __init__(self, domain, text):
         if 'No match' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisKZ(WhoisEntry):
+    """Whois parser for .kz domains
+    """
+    regex = {
+        'domain_name':      'Domain Name............: *(.+)',
+        'registar_created': 'Registar Created: *(.+)',
+        'curent_registrar': 'Current Registar: *(.+)',
+        'creation_date':    'Domain created: *(.+)',
+        'lats_modified':    'Last modified : *(.+)',
+        'name_servers':     'server.*: *(.+)',  # list of name servers
+        'status':           ' (.+?) -',  # list of statuses
+        'emails':           EMAIL_REGEX,  # list of email addresses
+        'org':              'Organization Name.*: *(.+)'
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No entries found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
