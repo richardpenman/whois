@@ -902,7 +902,7 @@ class WhoisBr(WhoisEntry):
     """Whois parser for .br domains
     """
     regex = {
-        'domain':                        'domain: *(.+)\n',
+        'domain_name':                    'domain: *(.+)\n',
         'registrant_name':               'owner: *([\S ]+)',
         'registrant_id':                 'ownerid: *(.+)',
         'country':                       'country: *(.+)',
@@ -910,7 +910,7 @@ class WhoisBr(WhoisEntry):
         'admin_c':                       'admin-c: *(.+)',
         'tech_c':                        'tech-c: *(.+)',
         'billing_c':                     'billing-c: *(.+)',
-        'nserver':                       'nserver: *(.+)',
+        'name_server':                   'nserver: *(.+)',
         'nsstat':                        'nsstat: *(.+)',
         'nslastaa':                      'nslastaa: *(.+)',
         'saci':                          'saci: *(.+)',
@@ -930,6 +930,17 @@ class WhoisBr(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+    def _preprocess(self, attr, value):
+        value = value.strip()
+        if value and isinstance(value, basestring) and '_date' in attr:
+            # try casting to date format
+            value = re.findall(r"[\w\s:.-\\/]+", value)[0].strip()
+            value = cast_date(
+                value,
+                dayfirst=self.dayfirst,
+                yearfirst=self.yearfirst)
+        return value
+        
 
 class WhoisKr(WhoisEntry):
     """Whois parser for .kr domains
