@@ -6,7 +6,7 @@ Goal
 -  Able to extract data for all the popular TLDs (com, org, net, ...)
 -  Query a WHOIS server directly instead of going through an
    intermediate web service like many others do.
--  Works with Python 2 & 3
+-  Works with Python 3 (Python 2 compatibility was dropped after 0.7.2)
 
 
 
@@ -47,24 +47,10 @@ Or checkout latest version from repository:
 
     $ git clone git@github.com:richardpenman/pywhois.git
 
-Note that then you will need to manually install the futures module, which allows supporting both Python 2 & 3:
-
-
-.. sourcecode:: bash
-
-    $ pip install futures
-
-Run test cases for python 2 & 3:
+Run test cases for python 3:
 
 .. sourcecode:: bash
 
-    $ python -m unittest discover test
-    .............
-    ----------------------------------------------------------------------
-    Ran 13 tests in 0.812s
-    
-    OK
-    
     $ python3 -m unittest discover test
     .............
     ----------------------------------------------------------------------

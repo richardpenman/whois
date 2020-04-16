@@ -10,16 +10,13 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
-from future import standard_library
 
 import re
 from datetime import datetime
 import json
-from past.builtins import basestring
 from builtins import str
 from builtins import *
 
-standard_library.install_aliases()
 
 try:
     import dateutil.parser as dp
@@ -152,7 +149,7 @@ class WhoisEntry(dict):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and not value.isdigit() and '_date' in attr:
+        if value and isinstance(value, (bytes, str)) and not value.isdigit() and '_date' in attr:
             # try casting to date format
             value = cast_date(
                 value,
@@ -932,7 +929,7 @@ class WhoisBr(WhoisEntry):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and '_date' in attr:
+        if value and isinstance(value,  (bytes, str)) and '_date' in attr:
             # try casting to date format
             value = re.findall(r"[\w\s:.-\\/]+", value)[0].strip()
             value = cast_date(
