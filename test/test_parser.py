@@ -162,7 +162,7 @@ class TestParser(unittest.TestCase):
                 "+1.1235434123x123",
                 "+1.09876545123"
             ],
-            "domain_status": "registered",
+            "status": "registered",
             "emails": [
                 "testperson1@testcompany.ca",
                 "testpersion2@testcompany.ca"
