@@ -489,8 +489,8 @@ class WhoisNl(WhoisEntry):
     regex = {
         'domain_name':         'Domain Name: *(.+)',
         'expiration_date':     None,
-        'updated_date':        None,
-        'creation_date':       None,
+        'updated_date':        'Updated\sDate:\s*(.+)',
+        'creation_date':       'Creation\sDate:\s*(.+)',
         'status':              'Status: *(.+)',  # list of statuses
         'name':                None,
         'registrar':           'Registrar:\s*(.*\n)',
