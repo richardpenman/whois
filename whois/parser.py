@@ -334,9 +334,10 @@ class WhoisEntry(dict):
             return WhoisUA(domain, text)
         elif domain.endswith('.kz'):
             return WhoisKZ(domain, text)
+        elif domain.endswith('.ir'):
+            return WhoisIR(domain, text)
         else:
             return WhoisEntry(domain, text)
-
 
 class WhoisCl(WhoisEntry):
     """Whois parser for .cl domains."""
@@ -2623,6 +2624,26 @@ class WhoisKZ(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'No entries found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+            
+            
+class WhoisIR(WhoisEntry):
+    """Whois parser for .ir domains."""
+
+    regex = {
+        'domain_name': 'domain: *(.+)',
+        'registrant_name': 'person: *(.+)',
+        'registrant_organization': 'org: *(.+)',
+        'updated_date': 'last-updated: *(.+)',
+        'expiration_date': 'expire-date: *(.+)',
+        'name_servers': 'nserver: *(.+)',  # list of name servers
+        'emails': EMAIL_REGEX,
+    }
+
+    def __init__(self, domain, text):
+        if 'No match for "' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
