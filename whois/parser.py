@@ -28,7 +28,7 @@ try:
 except ImportError:
     DATEUTIL = False
 
-EMAIL_REGEX = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
 
 KNOWN_FORMATS = [
     '%d-%b-%Y',                 # 02-jan-2000
@@ -95,24 +95,24 @@ class WhoisEntry(dict):
     # regular expressions to extract domain data from whois profile
     # child classes will override this
     _regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'whois_server':         'Whois Server: *(.+)',
-        'referral_url':         'Referral URL: *(.+)',  # http url of whois_server
-        'updated_date':         'Updated Date: *(.+)',
-        'creation_date':        'Creation Date: *(.+)',
-        'expiration_date':      'Expir\w+ Date: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'status':               'Status: *(.+)',  # list of statuses
+        'domain_name':          r'Domain Name: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'whois_server':         r'Whois Server: *(.+)',
+        'referral_url':         r'Referral URL: *(.+)',  # http url of whois_server
+        'updated_date':         r'Updated Date: *(.+)',
+        'creation_date':        r'Creation Date: *(.+)',
+        'expiration_date':      r'Expir\w+ Date: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'status':               r'Status: *(.+)',  # list of statuses
         'emails':               EMAIL_REGEX,  # list of email s
-        'dnssec':               'dnssec: *([\S]+)',
-        'name':                 'Registrant Name: *(.+)',
-        'org':                  'Registrant\s*Organization: *(.+)',
-        'address':              'Registrant Street: *(.+)',
-        'city':                 'Registrant City: *(.+)',
-        'state':                'Registrant State/Province: *(.+)',
-        'zipcode':              'Registrant Postal Code: *(.+)',
-        'country':              'Registrant Country: *(.+)',
+        'dnssec':               r'dnssec: *([\S]+)',
+        'name':                 r'Registrant Name: *(.+)',
+        'org':                  r'Registrant\s*Organization: *(.+)',
+        'address':              r'Registrant Street: *(.+)',
+        'city':                 r'Registrant City: *(.+)',
+        'state':                r'Registrant State/Province: *(.+)',
+        'zipcode':              r'Registrant Postal Code: *(.+)',
+        'country':              r'Registrant Country: *(.+)',
     }
     dayfirst = False
     yearfirst = False
@@ -334,22 +334,23 @@ class WhoisEntry(dict):
             return WhoisUA(domain, text)
         elif domain.endswith('.kz'):
             return WhoisKZ(domain, text)
+        elif domain.endswith('.ir'):
+            return WhoisIR(domain, text)
         else:
             return WhoisEntry(domain, text)
-
 
 class WhoisCl(WhoisEntry):
     """Whois parser for .cl domains."""
 
     regex = {
-        'domain_name': 'Domain name: *(.+)',
-        'registrant_name': 'Registrant name: *(.+)',
-        'registrant_organization': 'Registrant organisation: *(.+)',
-        'registrar': 'registrar name: *(.+)',
-        'registrar_url': 'Registrar URL: *(.+)',
-        'creation_date': 'Creation date: *(.+)',
-        'expiration_date': 'Expiration date: *(.+)',
-        'name_servers': 'Name server: *(.+)',  # list of name servers
+        'domain_name': r'Domain name: *(.+)',
+        'registrant_name': r'Registrant name: *(.+)',
+        'registrant_organization': r'Registrant organisation: *(.+)',
+        'registrar': r'registrar name: *(.+)',
+        'registrar_url': r'Registrar URL: *(.+)',
+        'creation_date': r'Creation date: *(.+)',
+        'expiration_date': r'Expiration date: *(.+)',
+        'name_servers': r'Name server: *(.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -363,15 +364,15 @@ class WhoisPe(WhoisEntry):
     """Whois parser for .pe domains."""
 
     regex = {
-        'domain_name':              'Domain name: *(.+)',
-        'status':                   'Domain Status: *(.+)',
-        'whois_server':             'WHOIS Server: *(.+)',
-        'registrant_name':          'Registrant name: *(.+)',
-        'registrar':                'Sponsoring Registrar: *(.+)',
-        'admin':                    'Admin Name: *(.+)',
-        'admin_email':              'Admin Email: *(.+)',
-        'dnssec':                   'DNSSEC: *(.+)',
-        'name_servers':             'Name server: *(.+)',  # list of name servers
+        'domain_name':              r'Domain name: *(.+)',
+        'status':                   r'Domain Status: *(.+)',
+        'whois_server':             r'WHOIS Server: *(.+)',
+        'registrant_name':          r'Registrant name: *(.+)',
+        'registrar':                r'Sponsoring Registrar: *(.+)',
+        'admin':                    r'Admin Name: *(.+)',
+        'admin_email':              r'Admin Email: *(.+)',
+        'dnssec':                   r'DNSSEC: *(.+)',
+        'name_servers':             r'Name server: *(.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -418,15 +419,15 @@ class WhoisOrg(WhoisEntry):
     """Whois parser for .org domains
     """
     regex = {
-        'domain_name':      'Domain Name: *(.+)',
-        'registrar':        'Registrar: *(.+)',
-        'whois_server':     'Whois Server: *(.+)',  # empty usually
-        'referral_url':     'Referral URL: *(.+)',  # http url of whois_server: empty usually
-        'updated_date':     'Updated Date: *(.+)',
-        'creation_date':    'Creation Date: *(.+)',
-        'expiration_date':  'Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)',  # list of name servers
-        'status':           'Status: *(.+)',  # list of statuses
+        'domain_name':      r'Domain Name: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'whois_server':     r'Whois Server: *(.+)',  # empty usually
+        'referral_url':     r'Referral URL: *(.+)',  # http url of whois_server: empty usually
+        'updated_date':     r'Updated Date: *(.+)',
+        'creation_date':    r'Creation Date: *(.+)',
+        'expiration_date':  r'Registry Expiry Date: *(.+)',
+        'name_servers':     r'Name Server: *(.+)',  # list of name servers
+        'status':           r'Status: *(.+)',  # list of statuses
         'emails':           EMAIL_REGEX,  # list of email addresses
     }
 
@@ -441,17 +442,17 @@ class WhoisRo(WhoisEntry):
     """Whois parser for .ro domains
     """
     regex = {
-        'domain_name':      'Domain Name: *(.+)',
-        'domain_status':    'Domain Status: *(.+)',
-        'registrar':        'Registrar: *(.+)',
+        'domain_name':      r'Domain Name: *(.+)',
+        'domain_status':    r'Domain Status: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
 
-        'referral_url':     'Referral URL: *(.+)',  # http url of whois_server: empty usually
+        'referral_url':     r'Referral URL: *(.+)',  # http url of whois_server: empty usually
 
-        'creation_date':    'Registered On: *(.+)',
-        'expiration_date':  'Expires On: *(.+)',
-        'name_servers':     'Nameserver: *(.+)',  # list of name servers
-        'status':           'Status: *(.+)',  # list of statuses
-        'dnssec':           'DNSSEC: *(.+)',
+        'creation_date':    r'Registered On: *(.+)',
+        'expiration_date':  r'Expires On: *(.+)',
+        'name_servers':     r'Nameserver: *(.+)',  # list of name servers
+        'status':           r'Status: *(.+)',  # list of statuses
+        'dnssec':           r'DNSSEC: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -465,15 +466,15 @@ class WhoisRu(WhoisEntry):
     """Whois parser for .ru domains
     """
     regex = {
-        'domain_name': 'domain: *(.+)',
-        'registrar': 'registrar: *(.+)',
-        'creation_date': 'created: *(.+)',
-        'expiration_date': 'paid-till: *(.+)',
+        'domain_name': r'domain: *(.+)',
+        'registrar': r'registrar: *(.+)',
+        'creation_date': r'created: *(.+)',
+        'expiration_date': r'paid-till: *(.+)',
         'updated_date': None,
-        'name_servers': 'nserver: *(.+)',  # list of name servers
-        'status': 'state: *(.+)',  # list of statuses
+        'name_servers': r'nserver: *(.+)',  # list of name servers
+        'status': r'state: *(.+)',  # list of statuses
         'emails': EMAIL_REGEX,  # list of email addresses
-        'org': 'org: *(.+)'
+        'org': r'org: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -487,18 +488,18 @@ class WhoisNl(WhoisEntry):
     """Whois parser for .nl domains
         """
     regex = {
-        'domain_name':         'Domain Name: *(.+)',
+        'domain_name':         r'Domain Name: *(.+)',
         'expiration_date':     None,
         'updated_date':        'Updated\sDate:\s*(.+)',
         'creation_date':       'Creation\sDate:\s*(.+)',
         'status':              'Status: *(.+)',  # list of statuses
         'name':                None,
-        'registrar':           'Registrar:\s*(.*\n)',
-        'registrar_address':   'Registrar:\s*(?:.*\n){1}\s*(.*)',
-        'registrar_zip_code':  'Registrar:\s*(?:.*\n){2}\s*(\S*)\s(?:.*)',
-        'registrar_city':      'Registrar:\s*(?:.*\n){2}\s*(?:\S*)\s(.*)',
-        'registrar_country':   'Registrar:\s*(?:.*\n){3}\s*(.*)',
-        'dnssec':              'DNSSEC: *(.+)',
+        'registrar':           r'Registrar:\s*(.*\n)',
+        'registrar_address':   r'Registrar:\s*(?:.*\n){1}\s*(.*)',
+        'registrar_zip_code':  r'Registrar:\s*(?:.*\n){2}\s*(\S*)\s(?:.*)',
+        'registrar_city':      r'Registrar:\s*(?:.*\n){2}\s*(?:\S*)\s(.*)',
+        'registrar_country':   r'Registrar:\s*(?:.*\n){3}\s*(.*)',
+        'dnssec':              r'DNSSEC: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -507,7 +508,7 @@ class WhoisNl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-        match = re.compile('Domain nameservers:(.*?)Record maintained by', re.DOTALL).search(text)
+        match = re.compile(r'Domain nameservers:(.*?)Record maintained by', re.DOTALL).search(text)
         if match:
             duplicate_nameservers_with_ip = [line.strip()
                                              for line in match.groups()[0].strip().splitlines()]
@@ -521,20 +522,20 @@ class WhoisName(WhoisEntry):
     """Whois parser for .name domains
     """
     regex = {
-        'domain_name_id':  'Domain Name ID: *(.+)',
-        'domain_name':     'Domain Name: *(.+)',
-        'registrar_id':    'Sponsoring Registrar ID: *(.+)',
-        'registrar':       'Sponsoring Registrar: *(.+)',
-        'registrant_id':   'Registrant ID: *(.+)',
-        'admin_id':        'Admin ID: *(.+)',
-        'technical_id':    'Tech ID: *(.+)',
-        'billing_id':      'Billing ID: *(.+)',
-        'creation_date':   'Created On: *(.+)',
-        'expiration_date': 'Expires On: *(.+)',
-        'updated_date':    'Updated On: *(.+)',
-        'name_server_ids': 'Name Server ID: *(.+)',  # list of name server ids
-        'name_servers':    'Name Server: *(.+)',  # list of name servers
-        'status':          'Domain Status: *(.+)',  # list of statuses
+        'domain_name_id':  r'Domain Name ID: *(.+)',
+        'domain_name':     r'Domain Name: *(.+)',
+        'registrar_id':    r'Sponsoring Registrar ID: *(.+)',
+        'registrar':       r'Sponsoring Registrar: *(.+)',
+        'registrant_id':   r'Registrant ID: *(.+)',
+        'admin_id':        r'Admin ID: *(.+)',
+        'technical_id':    r'Tech ID: *(.+)',
+        'billing_id':      r'Billing ID: *(.+)',
+        'creation_date':   r'Created On: *(.+)',
+        'expiration_date': r'Expires On: *(.+)',
+        'updated_date':    r'Updated On: *(.+)',
+        'name_server_ids': r'Name Server ID: *(.+)',  # list of name server ids
+        'name_servers':    r'Name Server: *(.+)',  # list of name servers
+        'status':          r'Domain Status: *(.+)',  # list of statuses
     }
 
     def __init__(self, domain, text):
@@ -548,65 +549,65 @@ class WhoisUs(WhoisEntry):
     """Whois parser for .us domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain__id':                     'Domain ID: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Domain ID: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
 
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_id':                   'Registrar IANA ID: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar_email':                'Registrar Abuse Contact Email: *(.+)',
-        'registrar_phone':                'Registrar Abuse Contact Phone: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_id':                   r'Registrar IANA ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar_email':                r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':                r'Registrar Abuse Contact Phone: *(.+)',
 
-        'status':                         'Domain Status: *(.+)',  # list of statuses
+        'status':                         r'Domain Status: *(.+)',  # list of statuses
 
-        'registrant_id':                  'Registry Registrant ID: *(.+)',
-        'registrant_name':                'Registrant Name: *(.+)',
-        'registrant_organization':        'Registrant Organization: *(.+)',
-        'registrant_street':              'Registrant Street: *(.+)',
-        'registrant_city':                'Registrant City: *(.+)',
-        'registrant_state_province':      'Registrant State/Province: *(.+)',
-        'registrant_postal_code':         'Registrant Postal Code: *(.+)',
-        'registrant_country':             'Registrant Country: *(.+)',
-        'registrant_phone':               'Registrant Phone: *(.+)',
-        'registrant_email':               'Registrant Email: *(.+)',
-        'registrant_fax':                 'Registrant Fax: *(.+)',
-        'registrant_application_purpose': 'Registrant Application Purpose: *(.+)',
-        'registrant_nexus_category':      'Registrant Nexus Category: *(.+)',
+        'registrant_id':                  r'Registry Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_organization':        r'Registrant Organization: *(.+)',
+        'registrant_street':              r'Registrant Street: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state_province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_phone':               r'Registrant Phone: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'registrant_fax':                 r'Registrant Fax: *(.+)',
+        'registrant_application_purpose': r'Registrant Application Purpose: *(.+)',
+        'registrant_nexus_category':      r'Registrant Nexus Category: *(.+)',
 
-        'admin_id':                       'Registry Admin ID: *(.+)',
-        'admin':                          'Admin Name: *(.+)',
-        'admin_organization':             'Admin Organization: *(.+)',
-        'admin_street':                   'Admin Street: *(.+)',
-        'admin_city':                     'Admin City: *(.+)',
-        'admin_state_province':           'Admin State/Province: *(.+)',
-        'admin_postal_code':              'Admin Postal Code: *(.+)',
-        'admin_country':                  'Admin Country: *(.+)',
-        'admin_phone':                    'Admin Phone: *(.+)',
-        'admin_email':                    'Admin Email: *(.+)',
-        'admin_fax':                      'Admin Fax: *(.+)',
-        'admin_application_purpose':      'Admin Application Purpose: *(.+)',
-        'admin_nexus_category':           'Admin Nexus Category: *(.+)',
+        'admin_id':                       r'Registry Admin ID: *(.+)',
+        'admin':                          r'Admin Name: *(.+)',
+        'admin_organization':             r'Admin Organization: *(.+)',
+        'admin_street':                   r'Admin Street: *(.+)',
+        'admin_city':                     r'Admin City: *(.+)',
+        'admin_state_province':           r'Admin State/Province: *(.+)',
+        'admin_postal_code':              r'Admin Postal Code: *(.+)',
+        'admin_country':                  r'Admin Country: *(.+)',
+        'admin_phone':                    r'Admin Phone: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'admin_fax':                      r'Admin Fax: *(.+)',
+        'admin_application_purpose':      r'Admin Application Purpose: *(.+)',
+        'admin_nexus_category':           r'Admin Nexus Category: *(.+)',
 
-        'tech_id':                        'Registry Tech ID: *(.+)',
-        'tech_name':                      'Tech Name: *(.+)',
-        'tech_organization':              'Tech Organization: *(.+)',
-        'tech_street':                    'Tech Street: *(.+)',
-        'tech_city':                      'Tech City: *(.+)',
-        'tech_state_province':            'Tech State/Province: *(.+)',
-        'tech_postal_code':               'Tech Postal Code: *(.+)',
-        'tech_country':                   'Tech Country: *(.+)',
-        'tech_phone':                     'Tech Phone: *(.+)',
-        'tech_email':                     'Tech Email: *(.+)',
-        'tech_fax':                       'Tech Fax: *(.+)',
-        'tech_application_purpose':       'Tech Application Purpose: *(.+)',
-        'tech_nexus_category':            'Tech Nexus Category: *(.+)',
+        'tech_id':                        r'Registry Tech ID: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_organization':              r'Tech Organization: *(.+)',
+        'tech_street':                    r'Tech Street: *(.+)',
+        'tech_city':                      r'Tech City: *(.+)',
+        'tech_state_province':            r'Tech State/Province: *(.+)',
+        'tech_postal_code':               r'Tech Postal Code: *(.+)',
+        'tech_country':                   r'Tech Country: *(.+)',
+        'tech_phone':                     r'Tech Phone: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'tech_fax':                       r'Tech Fax: *(.+)',
+        'tech_application_purpose':       r'Tech Application Purpose: *(.+)',
+        'tech_nexus_category':            r'Tech Nexus Category: *(.+)',
 
-        'name_servers':                   'Name Server: *(.+)',  # list of name servers
+        'name_servers':                   r'Name Server: *(.+)',  # list of name servers
 
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -620,15 +621,15 @@ class WhoisPl(WhoisEntry):
     """Whois parser for .pl domains
     """
     regex = {
-        'domain_name':                    'DOMAIN NAME: *(.+)\n',
-        'name_servers':                   'nameservers:((?:\s+.+\n+)*)',
-        'registrar':                      'REGISTRAR:\s*(.+)',
-        'registrar_url':                  'URL: *(.+)',        # not available
-        'status':                         'Registration status:\n\s*(.+)',  # not available
-        'registrant_name':                'Registrant:\n\s*(.+)',   # not available
-        'creation_date':                  '(?<! )created: *(.+)\n',
-        'expiration_date':                'renewal date: *(.+)',
-        'updated_date':                   'last modified: *(.+)\n',
+        'domain_name':                    r'DOMAIN NAME: *(.+)\n',
+        'name_servers':                   r'nameservers:((?:\s+.+\n+)*)',
+        'registrar':                      r'REGISTRAR:\s*(.+)',
+        'registrar_url':                  r'URL: *(.+)',        # not available
+        'status':                         r'Registration status:\n\s*(.+)',  # not available
+        'registrant_name':                r'Registrant:\n\s*(.+)',   # not available
+        'creation_date':                  r'(?<! )created: *(.+)\n',
+        'expiration_date':                r'renewal date: *(.+)',
+        'updated_date':                   r'last modified: *(.+)\n',
     }
 
     def __init__(self, domain, text):
@@ -642,21 +643,21 @@ class WhoisCa(WhoisEntry):
     """Whois parser for .ca domains
     """
     regex = {
-        'domain_name':                    'Domain name: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrant_name':                'Registrant Name: *(.+)',
-        'registrant_number':              'Registry Registrant ID: *(.+)',
-        'admin_name':                     'Admin Name: *(.+)',
-        'domain_status':                  'Domain status: *(.+)',
-        'emails':                         'Email: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Expiry Date: *(.+)',
-        'phone':                          'Phone: *(.+)',
-        'fax':                            'Fax: *(.+)',
-        'dnssec':                         'dnssec: *([\S]+)'
+        'domain_name':                    r'Domain name: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_number':              r'Registry Registrant ID: *(.+)',
+        'admin_name':                     r'Admin Name: *(.+)',
+        'domain_status':                  r'Domain status: *(.+)',
+        'emails':                         r'Email: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Expiry Date: *(.+)',
+        'phone':                          r'Phone: *(.+)',
+        'fax':                            r'Fax: *(.+)',
+        'dnssec':                         r'dnssec: *([\S]+)'
     }
 
     def __init__(self, domain, text):
@@ -670,59 +671,59 @@ class WhoisMe(WhoisEntry):
     """Whois parser for .me domains
     """
     regex = {
-        'domain_id':                   'Registry Domain ID:(.+)',
-        'domain_name':                 'Domain Name:(.+)',
-        'creation_date':               'Creation Date:(.+)',
-        'updated_date':                'Updated Date:(.+)',
-        'expiration_date':             'Registry Expiry Date: (.+)',
-        'registrar':                   'Registrar:(.+)',
-        'status':                      'Domain Status:(.+)',  # list of statuses
-        'registrant_id':               'Registrant ID:(.+)',
-        'registrant_name':             'Registrant Name:(.+)',
-        'registrant_org':              'Registrant Organization:(.+)',
-        'registrant_address':          'Registrant Address:(.+)',
-        'registrant_address2':         'Registrant Address2:(.+)',
-        'registrant_address3':         'Registrant Address3:(.+)',
-        'registrant_city':             'Registrant City:(.+)',
-        'registrant_state_province':   'Registrant State/Province:(.+)',
-        'registrant_country':          'Registrant Country/Economy:(.+)',
-        'registrant_postal_code':      'Registrant Postal Code:(.+)',
-        'registrant_phone':            'Registrant Phone:(.+)',
-        'registrant_phone_ext':        'Registrant Phone Ext\.:(.+)',
-        'registrant_fax':              'Registrant FAX:(.+)',
-        'registrant_fax_ext':          'Registrant FAX Ext\.:(.+)',
-        'registrant_email':            'Registrant E-mail:(.+)',
-        'admin_id':                    'Admin ID:(.+)',
-        'admin_name':                  'Admin Name:(.+)',
-        'admin_org':                   'Admin Organization:(.+)',
-        'admin_address':               'Admin Address:(.+)',
-        'admin_address2':              'Admin Address2:(.+)',
-        'admin_address3':              'Admin Address3:(.+)',
-        'admin_city':                  'Admin City:(.+)',
-        'admin_state_province':        'Admin State/Province:(.+)',
-        'admin_country':               'Admin Country/Economy:(.+)',
-        'admin_postal_code':           'Admin Postal Code:(.+)',
-        'admin_phone':                 'Admin Phone:(.+)',
-        'admin_phone_ext':             'Admin Phone Ext\.:(.+)',
-        'admin_fax':                   'Admin FAX:(.+)',
-        'admin_fax_ext':               'Admin FAX Ext\.:(.+)',
-        'admin_email':                 'Admin E-mail:(.+)',
-        'tech_id':                     'Tech ID:(.+)',
-        'tech_name':                   'Tech Name:(.+)',
-        'tech_org':                    'Tech Organization:(.+)',
-        'tech_address':                'Tech Address:(.+)',
-        'tech_address2':               'Tech Address2:(.+)',
-        'tech_address3':               'Tech Address3:(.+)',
-        'tech_city':                   'Tech City:(.+)',
-        'tech_state_province':         'Tech State/Province:(.+)',
-        'tech_country':                'Tech Country/Economy:(.+)',
-        'tech_postal_code':            'Tech Postal Code:(.+)',
-        'tech_phone':                  'Tech Phone:(.+)',
-        'tech_phone_ext':              'Tech Phone Ext\.:(.+)',
-        'tech_fax':                    'Tech FAX:(.+)',
-        'tech_fax_ext':                'Tech FAX Ext\.:(.+)',
-        'tech_email':                  'Tech E-mail:(.+)',
-        'name_servers':                'Nameservers:(.+)',  # list of name servers
+        'domain_id':                   r'Registry Domain ID:(.+)',
+        'domain_name':                 r'Domain Name:(.+)',
+        'creation_date':               r'Creation Date:(.+)',
+        'updated_date':                r'Updated Date:(.+)',
+        'expiration_date':             r'Registry Expiry Date: (.+)',
+        'registrar':                   r'Registrar:(.+)',
+        'status':                      r'Domain Status:(.+)',  # list of statuses
+        'registrant_id':               r'Registrant ID:(.+)',
+        'registrant_name':             r'Registrant Name:(.+)',
+        'registrant_org':              r'Registrant Organization:(.+)',
+        'registrant_address':          r'Registrant Address:(.+)',
+        'registrant_address2':         r'Registrant Address2:(.+)',
+        'registrant_address3':         r'Registrant Address3:(.+)',
+        'registrant_city':             r'Registrant City:(.+)',
+        'registrant_state_province':   r'Registrant State/Province:(.+)',
+        'registrant_country':          r'Registrant Country/Economy:(.+)',
+        'registrant_postal_code':      r'Registrant Postal Code:(.+)',
+        'registrant_phone':            r'Registrant Phone:(.+)',
+        'registrant_phone_ext':        r'Registrant Phone Ext\.:(.+)',
+        'registrant_fax':              r'Registrant FAX:(.+)',
+        'registrant_fax_ext':          r'Registrant FAX Ext\.:(.+)',
+        'registrant_email':            r'Registrant E-mail:(.+)',
+        'admin_id':                    r'Admin ID:(.+)',
+        'admin_name':                  r'Admin Name:(.+)',
+        'admin_org':                   r'Admin Organization:(.+)',
+        'admin_address':               r'Admin Address:(.+)',
+        'admin_address2':              r'Admin Address2:(.+)',
+        'admin_address3':              r'Admin Address3:(.+)',
+        'admin_city':                  r'Admin City:(.+)',
+        'admin_state_province':        r'Admin State/Province:(.+)',
+        'admin_country':               r'Admin Country/Economy:(.+)',
+        'admin_postal_code':           r'Admin Postal Code:(.+)',
+        'admin_phone':                 r'Admin Phone:(.+)',
+        'admin_phone_ext':             r'Admin Phone Ext\.:(.+)',
+        'admin_fax':                   r'Admin FAX:(.+)',
+        'admin_fax_ext':               r'Admin FAX Ext\.:(.+)',
+        'admin_email':                 r'Admin E-mail:(.+)',
+        'tech_id':                     r'Tech ID:(.+)',
+        'tech_name':                   r'Tech Name:(.+)',
+        'tech_org':                    r'Tech Organization:(.+)',
+        'tech_address':                r'Tech Address:(.+)',
+        'tech_address2':               r'Tech Address2:(.+)',
+        'tech_address3':               r'Tech Address3:(.+)',
+        'tech_city':                   r'Tech City:(.+)',
+        'tech_state_province':         r'Tech State/Province:(.+)',
+        'tech_country':                r'Tech Country/Economy:(.+)',
+        'tech_postal_code':            r'Tech Postal Code:(.+)',
+        'tech_phone':                  r'Tech Phone:(.+)',
+        'tech_phone_ext':              r'Tech Phone Ext\.:(.+)',
+        'tech_fax':                    r'Tech FAX:(.+)',
+        'tech_fax_ext':                r'Tech FAX Ext\.:(.+)',
+        'tech_email':                  r'Tech E-mail:(.+)',
+        'name_servers':                r'Nameservers:(.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -736,24 +737,24 @@ class WhoisUk(WhoisEntry):
     """Whois parser for .uk domains
     """
     regex = {
-        'domain_name':                    'Domain name:\s*(.+)',
+        'domain_name':                    r'Domain name:\s*(.+)',
 
-        'registrar':                      'Registrar:\s*(.+)',
-        'registrar_url':                  'URL:\s*(.+)',
+        'registrar':                      r'Registrar:\s*(.+)',
+        'registrar_url':                  r'URL:\s*(.+)',
 
-        'status':                         'Registration status:\s*(.+)',  # list of statuses
+        'status':                         r'Registration status:\s*(.+)',  # list of statuses
 
-        'registrant_name':                'Registrant:\s*(.+)',
-        'registrant_type':                'Registrant type:\s*(.+)',
-        'registrant_street':              'Registrant\'s address:\s*(?:.*\n){2}\s+(.*)',
-        'registrant_city':                'Registrant\'s address:\s*(?:.*\n){3}\s+(.*)',
-        'registrant_country':             'Registrant\'s address:\s*(?:.*\n){5}\s+(.*)',
+        'registrant_name':                r'Registrant:\s*(.+)',
+        'registrant_type':                r'Registrant type:\s*(.+)',
+        'registrant_street':              r'Registrant\'s address:\s*(?:.*\n){2}\s+(.*)',
+        'registrant_city':                r'Registrant\'s address:\s*(?:.*\n){3}\s+(.*)',
+        'registrant_country':             r'Registrant\'s address:\s*(?:.*\n){5}\s+(.*)',
 
-        'creation_date':                  'Registered on:\s*(.+)',
-        'expiration_date':                'Expiry date:\s*(.+)',
-        'updated_date':                   'Last updated:\s*(.+)',
+        'creation_date':                  r'Registered on:\s*(.+)',
+        'expiration_date':                r'Expiry date:\s*(.+)',
+        'updated_date':                   r'Last updated:\s*(.+)',
 
-        'name_servers':                   'Name servers:\s*(.+)',
+        'name_servers':                   r'Name servers:\s*(.+)',
     }
 
     def __init__(self, domain, text):
@@ -767,14 +768,14 @@ class WhoisFr(WhoisEntry):
     """Whois parser for .fr domains
     """
     regex = {
-        'domain_name': 'domain: *(.+)',
-        'registrar': 'registrar: *(.+)',
-        'creation_date': 'created: *(.+)',
-        'expiration_date': 'Expir\w+ Date:\s?(.+)',
-        'name_servers': 'nserver: *(.+)',  # list of name servers
-        'status': 'status: *(.+)',  # list of statuses
+        'domain_name': r'domain: *(.+)',
+        'registrar': r'registrar: *(.+)',
+        'creation_date': r'created: *(.+)',
+        'expiration_date': r'Expir\w+ Date:\s?(.+)',
+        'name_servers': r'nserver: *(.+)',  # list of name servers
+        'status': r'status: *(.+)',  # list of statuses
         'emails': EMAIL_REGEX,  # list of email addresses
-        'updated_date': 'last-update: *(.+)',
+        'updated_date': r'last-update: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -788,20 +789,20 @@ class WhoisFi(WhoisEntry):
     """Whois parser for .fi domains
     """
     regex = {
-        'domain_name':                    'domain\.*: *([\S]+)',
-        'name':                           'Holder\s*name\.*:([\S\ ]+)',
-        'address':                        '[Holder\w\W]address\.*: ([\S\ ]+)',
-        'phone':                          'Holder[\s\w\W]+phone\.*: ([\S]+)',
-        'email':                          'holder email\.*: *([\S\ ]+)',
-        'status':                         'status\.*: *([\S]+)',  # list of statuses
-        'creation_date':                  'created\.*: *([\S]+)',
-        'updated_date':                   'modified\.*: *([\S]+)',
-        'expiration_date':                'expires\.*: *([\S]+)',
-        'name_servers':                   'nserver\.*: *([\S]+) \[\S+\]',  # list of name servers
-        'name_server_statuses':           'nserver\.*: *([\S]+ \[\S+\])',  # list of name servers and statuses
-        'dnssec':                         'dnssec\.*: *([\S]+)',
-        'registrar':                      'Registrar\s*registrar\.*: *([\S]+)',
-        'registrar_site':                 'Registrar[\s\w\W]+www\.*: *([\S]+)'
+        'domain_name':                    r'domain\.*: *([\S]+)',
+        'name':                           r'Holder\s*name\.*:([\S\ ]+)',
+        'address':                        r'[Holder\w\W]address\.*: ([\S\ ]+)',
+        'phone':                          r'Holder[\s\w\W]+phone\.*: ([\S]+)',
+        'email':                          r'holder email\.*: *([\S\ ]+)',
+        'status':                         r'status\.*: *([\S]+)',  # list of statuses
+        'creation_date':                  r'created\.*: *([\S]+)',
+        'updated_date':                   r'modified\.*: *([\S]+)',
+        'expiration_date':                r'expires\.*: *([\S]+)',
+        'name_servers':                   r'nserver\.*: *([\S]+) \[\S+\]',  # list of name servers
+        'name_server_statuses':           r'nserver\.*: *([\S]+ \[\S+\])',  # list of name servers and statuses
+        'dnssec':                         r'dnssec\.*: *([\S]+)',
+        'registrar':                      r'Registrar\s*registrar\.*: *([\S]+)',
+        'registrar_site':                 r'Registrar[\s\w\W]+www\.*: *([\S]+)'
 
     }
 
@@ -816,12 +817,12 @@ class WhoisJp(WhoisEntry):
     """Whois parser for .jp domains
     """
     regex = {
-        'domain_name': 'a\. \[Domain Name\]\s*(.+)',
-        'registrant_org': 'g\. \[Organization\](.+)',
+        'domain_name': r'a\. \[Domain Name\]\s*(.+)',
+        'registrant_org': r'g\. \[Organization\](.+)',
         'creation_date': r'\[Registered Date\]\s*(.+)',
-        'name_servers': 'p\. \[Name Server\]\s*(.+)',  # list of name servers
-        'updated_date':  '\[Last Update\]\s?(.+)',
-        'status': '\[State\]\s*(.+)',  # list of statuses
+        'name_servers': r'p\. \[Name Server\]\s*(.+)',  # list of name servers
+        'updated_date':  r'\[Last Update\]\s?(.+)',
+        'status': r'\[State\]\s*(.+)',  # list of statuses
     }
 
     def __init__(self, domain, text):
@@ -835,13 +836,13 @@ class WhoisAU(WhoisEntry):
     """Whois parser for .au domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)\n',
-        'updated_date':                  'Last Modified: *(.+)\n',
-        'registrar':                      'Registrar Name: *(.+)\n',
-        'status':                         'Status: *(.+)',
-        'registrant_name':                'Registrant: *(.+)',
-        'registrant_contact_name':        'Registrant Contact Name: (.+)',
-        'name_servers':                   'Name Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)\n',
+        'updated_date':                  r'Last Modified: *(.+)\n',
+        'registrar':                      r'Registrar Name: *(.+)\n',
+        'status':                         r'Status: *(.+)',
+        'registrant_name':                r'Registrant: *(.+)',
+        'registrant_contact_name':        r'Registrant Contact Name: (.+)',
+        'name_servers':                   r'Name Server: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -862,7 +863,7 @@ class WhoisEu(WhoisEntry):
         'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
         'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
         'registrar': r'Registrar: *Name: *([^\n\r]+)',
-        'name_servers': r'Name servers:\s*(.+)',  # list of name servers
+        'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -902,25 +903,25 @@ class WhoisBr(WhoisEntry):
     """Whois parser for .br domains
     """
     regex = {
-        'domain_name':                    'domain: *(.+)\n',
-        'registrant_name':               'owner: *([\S ]+)',
-        'registrant_id':                 'ownerid: *(.+)',
-        'country':                       'country: *(.+)',
-        'owner_c':                       'owner-c: *(.+)',
-        'admin_c':                       'admin-c: *(.+)',
-        'tech_c':                        'tech-c: *(.+)',
-        'billing_c':                     'billing-c: *(.+)',
-        'name_server':                   'nserver: *(.+)',
-        'nsstat':                        'nsstat: *(.+)',
-        'nslastaa':                      'nslastaa: *(.+)',
-        'saci':                          'saci: *(.+)',
-        'creation_date':                 'created: *(.+)',
-        'updated_date':                  'changed: *(.+)',
-        'expiration_date':               'expires: *(.+)',
-        'status':                        'status: *(.+)',
-        'nic_hdl_br':                    'nic-hdl-br: *(.+)',
-        'person':                        'person: *([\S ]+)',
-        'email':                         'e-mail: *(.+)',
+        'domain_name':                    r'domain: *(.+)\n',
+        'registrant_name':               r'owner: *([\S ]+)',
+        'registrant_id':                 r'ownerid: *(.+)',
+        'country':                       r'country: *(.+)',
+        'owner_c':                       r'owner-c: *(.+)',
+        'admin_c':                       r'admin-c: *(.+)',
+        'tech_c':                        r'tech-c: *(.+)',
+        'billing_c':                     r'billing-c: *(.+)',
+        'name_server':                   r'nserver: *(.+)',
+        'nsstat':                        r'nsstat: *(.+)',
+        'nslastaa':                      r'nslastaa: *(.+)',
+        'saci':                          r'saci: *(.+)',
+        'creation_date':                 r'created: *(.+)',
+        'updated_date':                  r'changed: *(.+)',
+        'expiration_date':               r'expires: *(.+)',
+        'status':                        r'status: *(.+)',
+        'nic_hdl_br':                    r'nic-hdl-br: *(.+)',
+        'person':                        r'person: *([\S ]+)',
+        'email':                         r'e-mail: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -946,18 +947,18 @@ class WhoisKr(WhoisEntry):
     """Whois parser for .kr domains
     """
     regex = {
-        'domain_name': 'Domain Name\s*: *(.+)',
-        'registrant_name': 'Registrant\s*: *(.+)',
-        'registrant_address': 'Registrant Address\s*: *(.+)',
-        'registrant_zip': 'Registrant Zip Code\s*: *(.+)',
-        'admin_name': 'Administrative Contact\(AC\)\s*: *(.+)',
-        'admin_email': 'AC E-Mail\s*: *(.+)',
-        'admin_phone': 'AC Phone Number\s*: *(.+)',
-        'creation_date': 'Registered Date\s*: *(.+)',
-        'updated_date':  'Last updated Date\s*: *(.+)',
-        'expiration_date':  'Expiration Date\s*: *(.+)',
-        'registrar':  'Authorized Agency\s*: *(.+)',
-        'name_servers': 'Host Name\s*: *(.+)',  # list of name servers
+        'domain_name': r'Domain Name\s*: *(.+)',
+        'registrant_name': r'Registrant\s*: *(.+)',
+        'registrant_address': r'Registrant Address\s*: *(.+)',
+        'registrant_zip': r'Registrant Zip Code\s*: *(.+)',
+        'admin_name': r'Administrative Contact\(AC\)\s*: *(.+)',
+        'admin_email': r'AC E-Mail\s*: *(.+)',
+        'admin_phone': r'AC Phone Number\s*: *(.+)',
+        'creation_date': r'Registered Date\s*: *(.+)',
+        'updated_date':  r'Last updated Date\s*: *(.+)',
+        'expiration_date':  r'Expiration Date\s*: *(.+)',
+        'registrar':  r'Authorized Agency\s*: *(.+)',
+        'name_servers': r'Host Name\s*: *(.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -971,21 +972,21 @@ class WhoisPt(WhoisEntry):
     """Whois parser for .pt domains
     """
     regex = {
-        'domain_name': 'Domain: *(.+)',
-        'creation_date': 'Creation Date: *(.+)',
-        'expiration_date': 'Expiration Date: *(.+)',
-        'registrant_name': 'Owner Name: *(.+)',
-        'registrant_street': 'Owner Address: *(.+)',
-        'registrant_city': 'Owner Locality: *(.+)',
-        'registrant_postal_code': 'Owner ZipCode: *(.+)',
-        'registrant_email': 'Owner Email: *(.+)',
-        'admin': 'Admin Name: *(.+)',
-        'admin_street': 'Admin Address: *(.+)',
-        'admin_city': 'Admin Locality: *(.+)',
+        'domain_name': r'Domain: *(.+)',
+        'creation_date': r'Creation Date: *(.+)',
+        'expiration_date': r'Expiration Date: *(.+)',
+        'registrant_name': r'Owner Name: *(.+)',
+        'registrant_street': r'Owner Address: *(.+)',
+        'registrant_city': r'Owner Locality: *(.+)',
+        'registrant_postal_code': r'Owner ZipCode: *(.+)',
+        'registrant_email': r'Owner Email: *(.+)',
+        'admin': r'Admin Name: *(.+)',
+        'admin_street': r'Admin Address: *(.+)',
+        'admin_city': r'Admin Locality: *(.+)',
         'admin_postal_code':'Admin ZipCode: *(.+)',
-        'admin_email': 'Admin Email: *(.+)',
-        'name_servers': 'Name Server: *(.+) \|',  # list of name servers
-        'status': 'Domain Status: *(.+)',  # list of statuses
+        'admin_email': r'Admin Email: *(.+)',
+        'name_servers': r'Name Server: *(.+) \|',  # list of name servers
+        'status': r'Domain Status: *(.+)',  # list of statuses
         'emails': EMAIL_REGEX,  # list of email addresses
     }
     dayfirst = True
@@ -1001,9 +1002,9 @@ class WhoisBg(WhoisEntry):
     """Whois parser for .bg domains
     """
     regex = {
-        'domain_name': 'DOMAIN NAME: *(.+)\n',
-        'status': 'registration status: s*(.+)',
-        'expiration_date': 'expires at: *(.+)',
+        'domain_name': r'DOMAIN NAME: *(.+)\n',
+        'status': r'registration status: s*(.+)',
+        'expiration_date': r'expires at: *(.+)',
     }
     dayfirst = True
 
@@ -1018,18 +1019,18 @@ class WhoisDe(WhoisEntry):
     """Whois parser for .de domains
     """
     regex = {
-        'domain_name':      'Domain: *(.+)',
-        'status':           'Status: *(.+)',
-        'updated_date':     'Changed: *(.+)',
-        'name':             'name: *(.+)',
-        'org':              'Organisation: *(.+)',
-        'address':          'Address: *(.+)',
-        'zipcode':          'PostalCode: *(.+)',
-        'city':             'City: *(.+)',
-        'country_code':     'CountryCode: *(.+)',
-        'phone':            'Phone: *(.+)',
-        'fax':              'Fax: *(.+)',
-        'name_servers':     'Nserver: *(.+)',  # list of name servers
+        'domain_name':      r'Domain: *(.+)',
+        'status':           r'Status: *(.+)',
+        'updated_date':     r'Changed: *(.+)',
+        'name':             r'name: *(.+)',
+        'org':              r'Organisation: *(.+)',
+        'address':          r'Address: *(.+)',
+        'zipcode':          r'PostalCode: *(.+)',
+        'city':             r'City: *(.+)',
+        'country_code':     r'CountryCode: *(.+)',
+        'phone':            r'Phone: *(.+)',
+        'fax':              r'Fax: *(.+)',
+        'name_servers':     r'Nserver: *(.+)',  # list of name servers
         'emails': EMAIL_REGEX  # list of email addresses
 
     }
@@ -1045,18 +1046,18 @@ class WhoisAt(WhoisEntry):
     """Whois parser for .at domains
     """
     regex = {
-        'domain_name': 'domain: *(.+)',
-        'registrar': 'registrar: *(.+)',
-        'name': 'personname: *(.+)',
-        'org': 'organization: *(.+)',
-        'address': 'street address: *(.+)',
-        'zipcode': 'postal code: *(.+)',
-        'city': 'city: *(.+)',
-        'country': 'country: *(.+)',
-        'phone': 'phone: *(.+)',
-        'fax': 'fax-no: *(.+)',
-        'updated_date': 'changed: *(.+)',
-        'email': 'e-mail: *(.+)',
+        'domain_name': r'domain: *(.+)',
+        'registrar': r'registrar: *(.+)',
+        'name': r'personname: *(.+)',
+        'org': r'organization: *(.+)',
+        'address': r'street address: *(.+)',
+        'zipcode': r'postal code: *(.+)',
+        'city': r'city: *(.+)',
+        'country': r'country: *(.+)',
+        'phone': r'phone: *(.+)',
+        'fax': r'fax-no: *(.+)',
+        'updated_date': r'changed: *(.+)',
+        'email': r'e-mail: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1070,11 +1071,11 @@ class WhoisBe(WhoisEntry):
     """Whois parser for .be domains
     """
     regex = {
-        'name': 'Name: *(.+)',
-        'org': 'Organisation: *(.+)',
-        'phone': 'Phone: *(.+)',
-        'fax': 'Fax: *(.+)',
-        'email': 'Email: *(.+)',
+        'name': r'Name: *(.+)',
+        'org': r'Organisation: *(.+)',
+        'phone': r'Phone: *(.+)',
+        'fax': r'Fax: *(.+)',
+        'email': r'Email: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1088,23 +1089,23 @@ class WhoisInfo(WhoisEntry):
     """Whois parser for .info domains
     """
     regex = {
-        'domain_name':      'Domain Name: *(.+)',
-        'registrar':        'Registrar: *(.+)',
-        'whois_server':     'Whois Server: *(.+)',  # empty usually
-        'referral_url':     'Referral URL: *(.+)',  # http url of whois_server: empty usually
-        'updated_date':     'Updated Date: *(.+)',
-        'creation_date':    'Creation Date: *(.+)',
-        'expiration_date':  'Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)',  # list of name servers
-        'status':           'Status: *(.+)',  # list of statuses
+        'domain_name':      r'Domain Name: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'whois_server':     r'Whois Server: *(.+)',  # empty usually
+        'referral_url':     r'Referral URL: *(.+)',  # http url of whois_server: empty usually
+        'updated_date':     r'Updated Date: *(.+)',
+        'creation_date':    r'Creation Date: *(.+)',
+        'expiration_date':  r'Registry Expiry Date: *(.+)',
+        'name_servers':     r'Name Server: *(.+)',  # list of name servers
+        'status':           r'Status: *(.+)',  # list of statuses
         'emails':           EMAIL_REGEX,  # list of email addresses
-        'name':             'Registrant Name: *(.+)',
-        'org':              'Registrant Organization: *(.+)',
-        'address':          'Registrant Street: *(.+)',
-        'city':             'Registrant City: *(.+)',
-        'state':            'Registrant State/Province: *(.+)',
-        'zipcode':          'Registrant Postal Code: *(.+)',
-        'country':          'Registrant Country: *(.+)',
+        'name':             r'Registrant Name: *(.+)',
+        'org':              r'Registrant Organization: *(.+)',
+        'address':          r'Registrant Street: *(.+)',
+        'city':             r'Registrant City: *(.+)',
+        'state':            r'Registrant State/Province: *(.+)',
+        'zipcode':          r'Registrant Postal Code: *(.+)',
+        'country':          r'Registrant Country: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1134,72 +1135,72 @@ class WhoisClub(WhoisEntry):
     """Whois parser for .us domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain__id':                     'Domain ID: *(.+)',
-        'registrar':                      'Sponsoring Registrar: *(.+)',
-        'registrar_id':                   'Sponsoring Registrar IANA ID: *(.+)',
-        'registrar_url':                  'Registrar URL \(registration services\): *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Domain ID: *(.+)',
+        'registrar':                      r'Sponsoring Registrar: *(.+)',
+        'registrar_id':                   r'Sponsoring Registrar IANA ID: *(.+)',
+        'registrar_url':                  r'Registrar URL \(registration services\): *(.+)',
         # list of statuses
-        'status':                         'Domain Status: *(.+)',
-        'registrant_id':                  'Registrant ID: *(.+)',
-        'registrant_name':                'Registrant Name: *(.+)',
-        'registrant_address1':            'Registrant Address1: *(.+)',
-        'registrant_address2':            'Registrant Address2: *(.+)',
-        'registrant_city':                'Registrant City: *(.+)',
-        'registrant_state_province':      'Registrant State/Province: *(.+)',
-        'registrant_postal_code':         'Registrant Postal Code: *(.+)',
-        'registrant_country':             'Registrant Country: *(.+)',
-        'registrant_country_code':        'Registrant Country Code: *(.+)',
-        'registrant_phone_number':        'Registrant Phone Number: *(.+)',
-        'registrant_email':               'Registrant Email: *(.+)',
-        'registrant_application_purpose': 'Registrant Application Purpose: *(.+)',
-        'registrant_nexus_category':      'Registrant Nexus Category: *(.+)',
-        'admin_id':                       'Administrative Contact ID: *(.+)',
-        'admin_name':                     'Administrative Contact Name: *(.+)',
-        'admin_address1':                 'Administrative Contact Address1: *(.+)',
-        'admin_address2':                 'Administrative Contact Address2: *(.+)',
-        'admin_city':                     'Administrative Contact City: *(.+)',
-        'admin_state_province':           'Administrative Contact State/Province: *(.+)',
-        'admin_postal_code':              'Administrative Contact Postal Code: *(.+)',
-        'admin_country':                  'Administrative Contact Country: *(.+)',
-        'admin_country_code':             'Administrative Contact Country Code: *(.+)',
-        'admin_phone_number':             'Administrative Contact Phone Number: *(.+)',
-        'admin_email':                    'Administrative Contact Email: *(.+)',
-        'admin_application_purpose':      'Administrative Application Purpose: *(.+)',
-        'admin_nexus_category':           'Administrative Nexus Category: *(.+)',
-        'billing_id':                     'Billing Contact ID: *(.+)',
-        'billing_name':                   'Billing Contact Name: *(.+)',
-        'billing_address1':               'Billing Contact Address1: *(.+)',
-        'billing_address2':               'Billing Contact Address2: *(.+)',
-        'billing_city':                   'Billing Contact City: *(.+)',
-        'billing_state_province':         'Billing Contact State/Province: *(.+)',
-        'billing_postal_code':            'Billing Contact Postal Code: *(.+)',
-        'billing_country':                'Billing Contact Country: *(.+)',
-        'billing_country_code':           'Billing Contact Country Code: *(.+)',
-        'billing_phone_number':           'Billing Contact Phone Number: *(.+)',
-        'billing_email':                  'Billing Contact Email: *(.+)',
-        'billing_application_purpose':    'Billing Application Purpose: *(.+)',
-        'billing_nexus_category':         'Billing Nexus Category: *(.+)',
-        'tech_id':                        'Technical Contact ID: *(.+)',
-        'tech_name':                      'Technical Contact Name: *(.+)',
-        'tech_address1':                  'Technical Contact Address1: *(.+)',
-        'tech_address2':                  'Technical Contact Address2: *(.+)',
-        'tech_city':                      'Technical Contact City: *(.+)',
-        'tech_state_province':            'Technical Contact State/Province: *(.+)',
-        'tech_postal_code':               'Technical Contact Postal Code: *(.+)',
-        'tech_country':                   'Technical Contact Country: *(.+)',
-        'tech_country_code':              'Technical Contact Country Code: *(.+)',
-        'tech_phone_number':              'Technical Contact Phone Number: *(.+)',
-        'tech_email':                     'Technical Contact Email: *(.+)',
-        'tech_application_purpose':       'Technical Application Purpose: *(.+)',
-        'tech_nexus_category':            'Technical Nexus Category: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registrant_id':                  r'Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_address1':            r'Registrant Address1: *(.+)',
+        'registrant_address2':            r'Registrant Address2: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state_province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_country_code':        r'Registrant Country Code: *(.+)',
+        'registrant_phone_number':        r'Registrant Phone Number: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'registrant_application_purpose': r'Registrant Application Purpose: *(.+)',
+        'registrant_nexus_category':      r'Registrant Nexus Category: *(.+)',
+        'admin_id':                       r'Administrative Contact ID: *(.+)',
+        'admin_name':                     r'Administrative Contact Name: *(.+)',
+        'admin_address1':                 r'Administrative Contact Address1: *(.+)',
+        'admin_address2':                 r'Administrative Contact Address2: *(.+)',
+        'admin_city':                     r'Administrative Contact City: *(.+)',
+        'admin_state_province':           r'Administrative Contact State/Province: *(.+)',
+        'admin_postal_code':              r'Administrative Contact Postal Code: *(.+)',
+        'admin_country':                  r'Administrative Contact Country: *(.+)',
+        'admin_country_code':             r'Administrative Contact Country Code: *(.+)',
+        'admin_phone_number':             r'Administrative Contact Phone Number: *(.+)',
+        'admin_email':                    r'Administrative Contact Email: *(.+)',
+        'admin_application_purpose':      r'Administrative Application Purpose: *(.+)',
+        'admin_nexus_category':           r'Administrative Nexus Category: *(.+)',
+        'billing_id':                     r'Billing Contact ID: *(.+)',
+        'billing_name':                   r'Billing Contact Name: *(.+)',
+        'billing_address1':               r'Billing Contact Address1: *(.+)',
+        'billing_address2':               r'Billing Contact Address2: *(.+)',
+        'billing_city':                   r'Billing Contact City: *(.+)',
+        'billing_state_province':         r'Billing Contact State/Province: *(.+)',
+        'billing_postal_code':            r'Billing Contact Postal Code: *(.+)',
+        'billing_country':                r'Billing Contact Country: *(.+)',
+        'billing_country_code':           r'Billing Contact Country Code: *(.+)',
+        'billing_phone_number':           r'Billing Contact Phone Number: *(.+)',
+        'billing_email':                  r'Billing Contact Email: *(.+)',
+        'billing_application_purpose':    r'Billing Application Purpose: *(.+)',
+        'billing_nexus_category':         r'Billing Nexus Category: *(.+)',
+        'tech_id':                        r'Technical Contact ID: *(.+)',
+        'tech_name':                      r'Technical Contact Name: *(.+)',
+        'tech_address1':                  r'Technical Contact Address1: *(.+)',
+        'tech_address2':                  r'Technical Contact Address2: *(.+)',
+        'tech_city':                      r'Technical Contact City: *(.+)',
+        'tech_state_province':            r'Technical Contact State/Province: *(.+)',
+        'tech_postal_code':               r'Technical Contact Postal Code: *(.+)',
+        'tech_country':                   r'Technical Contact Country: *(.+)',
+        'tech_country_code':              r'Technical Contact Country Code: *(.+)',
+        'tech_phone_number':              r'Technical Contact Phone Number: *(.+)',
+        'tech_email':                     r'Technical Contact Email: *(.+)',
+        'tech_application_purpose':       r'Technical Application Purpose: *(.+)',
+        'tech_nexus_category':            r'Technical Nexus Category: *(.+)',
         # list of name servers
-        'name_servers':                   'Name Server: *(.+)',
-        'created_by_registrar':           'Created by Registrar: *(.+)',
-        'last_updated_by_registrar':      'Last Updated by Registrar: *(.+)',
-        'creation_date':                  'Domain Registration Date: *(.+)',
-        'expiration_date':                'Domain Expiration Date: *(.+)',
-        'updated_date':                   'Domain Last Updated Date: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',
+        'created_by_registrar':           r'Created by Registrar: *(.+)',
+        'last_updated_by_registrar':      r'Last Updated by Registrar: *(.+)',
+        'creation_date':                  r'Domain Registration Date: *(.+)',
+        'expiration_date':                r'Domain Expiration Date: *(.+)',
+        'updated_date':                   r'Domain Last Updated Date: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1213,19 +1214,19 @@ class WhoisIo(WhoisEntry):
     """Whois parser for .io domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain__id':                     'Registry Domain ID: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_id':                   'Registrar IANA ID: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'registrant_name':                'Registrant Organization: *(.+)',
-        'registrant_state_province':      'Registrant State/Province: *(.+)',
-        'registrant_country':             'Registrant Country: *(.+)',
-        'name_servers':                   'Name Server: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Registry Domain ID: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_id':                   r'Registrar IANA ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registrant_name':                r'Registrant Organization: *(.+)',
+        'registrant_state_province':      r'Registrant State/Province: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1239,48 +1240,48 @@ class WhoisBiz(WhoisEntry):
     """Whois parser for .biz domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain__id':                     'Domain ID: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar_id':                   'Registrar IANA ID: *(.+)',
-        'registrar_email':                'Registrar Abuse Contact Email: *(.+)',
-        'registrar_phone':                'Registrar Abuse Contact Phone: *(.+)',
-        'status':                         'Domain Status: *(.+)',  # list of statuses
-        'registrant_id':                  'Registrant ID: *(.+)',
-        'registrant_name':                'Registrant Name: *(.+)',
-        'registrant_address':             'Registrant Street: *(.+)',
-        'registrant_city':                'Registrant City: *(.+)',
-        'registrant_state_province':      'Registrant State/Province: *(.+)',
-        'registrant_postal_code':         'Registrant Postal Code: *(.+)',
-        'registrant_country':             'Registrant Country: *(.+)',
-        'registrant_country_code':        'Registrant Country Code: *(.+)',
-        'registrant_phone_number':        'Registrant Phone: *(.+)',
-        'registrant_email':               'Registrant Email: *(.+)',
-        'admin_id':                       'Registry Admin ID: *(.+)',
-        'admin_name':                     'Admin Name: *(.+)',
-        'admin_organization':             'Admin Organization: *(.+)',
-        'admin_address':                  'Admin Street: *(.+)',
-        'admin_city':                     'Admin City: *(.+)',
-        'admin_state_province':           'Admin State/Province: *(.+)',
-        'admin_postal_code':              'Admin Postal Code: *(.+)',
-        'admin_country':                  'Admin Country: *(.+)',
-        'admin_phone_number':             'Admin Phone: *(.+)',
-        'admin_email':                    'Admin Email: *(.+)',
-        'tech_id':                        'Registry Tech ID: *(.+)',
-        'tech_name':                      'Tech Name: *(.+)',
-        'tech_organization':              'Tech Organization: *(.+)',
-        'tech_address':                   'Tech Street: *(.+)',
-        'tech_city':                      'Tech City: *(.+)',
-        'tech_state_province':            'Tech State/Province: *(.+)',
-        'tech_postal_code':               'Tech Postal Code: *(.+)',
-        'tech_country':                   'Tech Country: *(.+)',
-        'tech_phone_number':              'Tech Phone: *(.+)',
-        'tech_email':                     'Tech Email: *(.+)',
-        'name_servers':                   'Name Server: *(.+)',  # list of name servers
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registrar Registration Expiration Date: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Domain ID: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar_id':                   r'Registrar IANA ID: *(.+)',
+        'registrar_email':                r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':                r'Registrar Abuse Contact Phone: *(.+)',
+        'status':                         r'Domain Status: *(.+)',  # list of statuses
+        'registrant_id':                  r'Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_address':             r'Registrant Street: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state_province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_country_code':        r'Registrant Country Code: *(.+)',
+        'registrant_phone_number':        r'Registrant Phone: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'admin_id':                       r'Registry Admin ID: *(.+)',
+        'admin_name':                     r'Admin Name: *(.+)',
+        'admin_organization':             r'Admin Organization: *(.+)',
+        'admin_address':                  r'Admin Street: *(.+)',
+        'admin_city':                     r'Admin City: *(.+)',
+        'admin_state_province':           r'Admin State/Province: *(.+)',
+        'admin_postal_code':              r'Admin Postal Code: *(.+)',
+        'admin_country':                  r'Admin Country: *(.+)',
+        'admin_phone_number':             r'Admin Phone: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'tech_id':                        r'Registry Tech ID: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_organization':              r'Tech Organization: *(.+)',
+        'tech_address':                   r'Tech Street: *(.+)',
+        'tech_city':                      r'Tech City: *(.+)',
+        'tech_state_province':            r'Tech State/Province: *(.+)',
+        'tech_postal_code':               r'Tech Postal Code: *(.+)',
+        'tech_country':                   r'Tech Country: *(.+)',
+        'tech_phone_number':              r'Tech Phone: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',  # list of name servers
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registrar Registration Expiration Date: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1302,18 +1303,18 @@ class WhoisKg(WhoisEntry):
     """Whois parser for .kg domains
     """
     regex = {
-        'domain_name':                    'Domain\s*([\w]+\.[\w]{2,5})',
-        'registrar':                      'Domain support: \s*(.+)',
-        'registrant_name':                'Name: *(.+)',
-        'registrant_address':             'Address: *(.+)',
-        'registrant_phone_number':        'phone: *(.+)',
-        'registrant_email':               'Email: *(.+)',
+        'domain_name':                    r'Domain\s*([\w]+\.[\w]{2,5})',
+        'registrar':                      r'Domain support: \s*(.+)',
+        'registrant_name':                r'Name: *(.+)',
+        'registrant_address':             r'Address: *(.+)',
+        'registrant_phone_number':        r'phone: *(.+)',
+        'registrant_email':               r'Email: *(.+)',
         # # list of name servers
-        'name_servers':                   'Name servers in the listed order: *([\d\w\.\s]+)',
+        'name_servers':                   r'Name servers in the listed order: *([\d\w\.\s]+)',
         # 'name_servers':      r'([\w]+\.[\w]+\.[\w]{2,5}\s*\d{1,3}\.\d]{1,3}\.[\d]{1-3}\.[\d]{1-3})',
-        'creation_date':                  'Record created: *(.+)',
-        'expiration_date':                'Record expires on \s*(.+)',
-        'updated_date':                   'Record last updated on\s*(.+)',
+        'creation_date':                  r'Record created: *(.+)',
+        'expiration_date':                r'Record expires on \s*(.+)',
+        'updated_date':                   r'Record last updated on\s*(.+)',
 
     }
 
@@ -1328,14 +1329,14 @@ class WhoisChLi(WhoisEntry):
     """Whois Parser for .ch and .li domains
     """
     regex = {
-        'domain_name':                      '\nDomain name:\n*(.+)',
-        'registrant_name':                  'Holder of domain name:\s*(?:.*\n){1}\s*(.+)',
-        'registrant_address':               'Holder of domain name:\s*(?:.*\n){2}\s*(.+)',
-        'registrar':                        'Registrar:\n*(.+)',
-        'creation_date':                    'First registration date:\n*(.+)',
-        'dnssec':                           'DNSSEC:*([\S]+)',
-        'tech-c':                           'Technical contact:\n*([\n\s\S]+)\nRegistrar:',
-        'name_servers':                     'Name servers:\n *([\n\S\s]+)'
+        'domain_name':                      r'\nDomain name:\n*(.+)',
+        'registrant_name':                  r'Holder of domain name:\s*(?:.*\n){1}\s*(.+)',
+        'registrant_address':               r'Holder of domain name:\s*(?:.*\n){2}\s*(.+)',
+        'registrar':                        r'Registrar:\n*(.+)',
+        'creation_date':                    r'First registration date:\n*(.+)',
+        'dnssec':                           r'DNSSEC:*([\S]+)',
+        'tech-c':                           r'Technical contact:\n*([\n\s\S]+)\nRegistrar:',
+        'name_servers':                     r'Name servers:\n *([\n\S\s]+)'
     }
 
     def __init__(self, domain, text):
@@ -1349,36 +1350,36 @@ class WhoisID(WhoisEntry):
     """Whois parser for .id domains
     """
     regex = {
-        'domain_id':                   'Domain ID:(.+)',
-        'domain_name':                 'Domain Name:(.+)',
-        'creation_date':               'Created On:(.+)',
-        'expiration_date':             'Expiration Date:(.+)',
-        'updated_date':                'Last Updated On:(.+)',
-        'dnssec':                      'DNSSEC:(.+)',
+        'domain_id':                   r'Domain ID:(.+)',
+        'domain_name':                 r'Domain Name:(.+)',
+        'creation_date':               r'Created On:(.+)',
+        'expiration_date':             r'Expiration Date:(.+)',
+        'updated_date':                r'Last Updated On:(.+)',
+        'dnssec':                      r'DNSSEC:(.+)',
 
-        'registrar':                   'Sponsoring Registrar Organization:(.+)',
-        'registrar_city':              'Sponsoring Registrar City:(.+)',
-        'registrar_postal_code':       'Sponsoring Registrar Postal Code:(.+)',
-        'registrar_country':           'Sponsoring Registrar Country:(.+)',
-        'registrar_phone':             'Sponsoring Registrar Phone:(.+)',
-        'registrar_email':             'Sponsoring Registrar Contact Email:(.+)',
+        'registrar':                   r'Sponsoring Registrar Organization:(.+)',
+        'registrar_city':              r'Sponsoring Registrar City:(.+)',
+        'registrar_postal_code':       r'Sponsoring Registrar Postal Code:(.+)',
+        'registrar_country':           r'Sponsoring Registrar Country:(.+)',
+        'registrar_phone':             r'Sponsoring Registrar Phone:(.+)',
+        'registrar_email':             r'Sponsoring Registrar Contact Email:(.+)',
 
-        'status':                      'Status:(.+)',  # list of statuses
+        'status':                      r'Status:(.+)',  # list of statuses
 
-        'registrant_id':               'Registrant ID:(.+)',
-        'registrant_name':             'Registrant Name:(.+)',
-        'registrant_org':              'Registrant Organization:(.+)',
-        'registrant_address':          'Registrant Street1:(.+)',
-        'registrant_address2':         'Registrant Street2:(.+)',
-        'registrant_address3':         'Registrant Street3:(.+)',
-        'registrant_city':             'Registrant City:(.+)',
-        'registrant_country':          'Registrant Country:(.+)',
-        'registrant_postal_code':      'Registrant Postal Code:(.+)',
-        'registrant_phone':            'Registrant Phone:(.+)',
-        'registrant_fax':              'Registrant FAX:(.+)',
-        'registrant_email':            'Registrant Email:(.+)',
+        'registrant_id':               r'Registrant ID:(.+)',
+        'registrant_name':             r'Registrant Name:(.+)',
+        'registrant_org':              r'Registrant Organization:(.+)',
+        'registrant_address':          r'Registrant Street1:(.+)',
+        'registrant_address2':         r'Registrant Street2:(.+)',
+        'registrant_address3':         r'Registrant Street3:(.+)',
+        'registrant_city':             r'Registrant City:(.+)',
+        'registrant_country':          r'Registrant Country:(.+)',
+        'registrant_postal_code':      r'Registrant Postal Code:(.+)',
+        'registrant_phone':            r'Registrant Phone:(.+)',
+        'registrant_fax':              r'Registrant FAX:(.+)',
+        'registrant_email':            r'Registrant Email:(.+)',
 
-        'name_servers':                'Name Server:(.+)',  # list of name servers
+        'name_servers':                r'Name Server:(.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
@@ -1392,16 +1393,16 @@ class WhoisSe(WhoisEntry):
     """Whois parser for .se domains
     """
     regex = {
-        'domain_name':                    'domain\.*: *(.+)',
-        'registrant_name':                'holder\.*: *(.+)',
-        'creation_date':                  'created\.*: *(.+)',
-        'updated_date':                   'modified\.*: *(.+)',
-        'expiration_date':                'expires\.*: *(.+)',
-        'transfer_date':                  'transferred\.*: *(.+)',
-        'name_servers':                   'nserver\.*: *(.+)',  # list of name servers
-        'dnssec':                         'dnssec\.*: *(.+)',
-        'status':                         'status\.*: *(.+)',  # list of statuses
-        'registrar':                      'registrar: *(.+)',
+        'domain_name':                    r'domain\.*: *(.+)',
+        'registrant_name':                r'holder\.*: *(.+)',
+        'creation_date':                  r'created\.*: *(.+)',
+        'updated_date':                   r'modified\.*: *(.+)',
+        'expiration_date':                r'expires\.*: *(.+)',
+        'transfer_date':                  r'transferred\.*: *(.+)',
+        'name_servers':                   r'nserver\.*: *(.+)',  # list of name servers
+        'dnssec':                         r'dnssec\.*: *(.+)',
+        'status':                         r'status\.*: *(.+)',  # list of statuses
+        'registrar':                      r'registrar: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1415,69 +1416,69 @@ class WhoisJobs(WhoisEntry):
     """Whois parser for .jobs domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain_id':                      'Registry Domain ID: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain_id':                      r'Registry Domain ID: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
 
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar_name':                 'Registrar: *(.+)',
-        'registrar_email':                'Registrar Abuse Contact Email: *(.+)',
-        'registrar_phone':                'Registrar Abuse Contact Phone: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar_name':                 r'Registrar: *(.+)',
+        'registrar_email':                r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':                r'Registrar Abuse Contact Phone: *(.+)',
 
-        'registrant_name':                'Registrant Name: (.+)',
-        'registrant_id':                  'Registry Registrant ID: (.+)',
-        'registrant_organization':        'Registrant Organization: (.+)',
-        'registrant_city':                'Registrant City: (.*)',
-        'registrant_street':              'Registrant Street: (.*)',
-        'registrant_state_province':      'Registrant State/Province: (.*)',
-        'registrant_postal_code':         'Registrant Postal Code: (.*)',
-        'registrant_country':             'Registrant Country: (.+)',
-        'registrant_phone':               'Registrant Phone: (.+)',
-        'registrant_fax':                 'Registrant Fax: (.+)',
-        'registrant_email':               'Registrant Email: (.+)',
+        'registrant_name':                r'Registrant Name: (.+)',
+        'registrant_id':                  r'Registry Registrant ID: (.+)',
+        'registrant_organization':        r'Registrant Organization: (.+)',
+        'registrant_city':                r'Registrant City: (.*)',
+        'registrant_street':              r'Registrant Street: (.*)',
+        'registrant_state_province':      r'Registrant State/Province: (.*)',
+        'registrant_postal_code':         r'Registrant Postal Code: (.*)',
+        'registrant_country':             r'Registrant Country: (.+)',
+        'registrant_phone':               r'Registrant Phone: (.+)',
+        'registrant_fax':                 r'Registrant Fax: (.+)',
+        'registrant_email':               r'Registrant Email: (.+)',
 
 
-        'admin_name':                     'Admin Name: (.+)',
-        'admin_id':                       'Registry Admin ID: (.+)',
-        'admin_organization':             'Admin Organization: (.+)',
-        'admin_city':                     'Admin City: (.*)',
-        'admin_street':                   'Admin Street: (.*)',
-        'admin_state_province':           'Admin State/Province: (.*)',
-        'admin_postal_code':              'Admin Postal Code: (.*)',
-        'admin_country':                  'Admin Country: (.+)',
-        'admin_phone':                    'Admin Phone: (.+)',
-        'admin_fax':                      'Admin Fax: (.+)',
-        'admin_email':                    'Admin Email: (.+)',
+        'admin_name':                     r'Admin Name: (.+)',
+        'admin_id':                       r'Registry Admin ID: (.+)',
+        'admin_organization':             r'Admin Organization: (.+)',
+        'admin_city':                     r'Admin City: (.*)',
+        'admin_street':                   r'Admin Street: (.*)',
+        'admin_state_province':           r'Admin State/Province: (.*)',
+        'admin_postal_code':              r'Admin Postal Code: (.*)',
+        'admin_country':                  r'Admin Country: (.+)',
+        'admin_phone':                    r'Admin Phone: (.+)',
+        'admin_fax':                      r'Admin Fax: (.+)',
+        'admin_email':                    r'Admin Email: (.+)',
 
-        'billing_name':                   'Billing Name: (.+)',
-        'billing_id':                     'Registry Billing ID: (.+)',
-        'billing_organization':           'Billing Organization: (.+)',
-        'billing_city':                   'Billing City: (.*)',
-        'billing_street':                 'Billing Street: (.*)',
-        'billing_state_province':         'Billing State/Province: (.*)',
-        'billing_postal_code':            'Billing Postal Code: (.*)',
-        'billing_country':                'Billing Country: (.+)',
-        'billing_phone':                  'Billing Phone: (.+)',
-        'billing_fax':                    'Billing Fax: (.+)',
-        'billing_email':                  'Billing Email: (.+)',
+        'billing_name':                   r'Billing Name: (.+)',
+        'billing_id':                     r'Registry Billing ID: (.+)',
+        'billing_organization':           r'Billing Organization: (.+)',
+        'billing_city':                   r'Billing City: (.*)',
+        'billing_street':                 r'Billing Street: (.*)',
+        'billing_state_province':         r'Billing State/Province: (.*)',
+        'billing_postal_code':            r'Billing Postal Code: (.*)',
+        'billing_country':                r'Billing Country: (.+)',
+        'billing_phone':                  r'Billing Phone: (.+)',
+        'billing_fax':                    r'Billing Fax: (.+)',
+        'billing_email':                  r'Billing Email: (.+)',
 
-        'tech_name':                      'Tech Name: (.+)',
-        'tech_id':                        'Registry Tech ID: (.+)',
-        'tech_organization':              'Tech Organization: (.+)',
-        'tech_city':                      'Tech City: (.*)',
-        'tech_street':                    'Tech Street: (.*)',
-        'tech_state_province':            'Tech State/Province: (.*)',
-        'tech_postal_code':               'Tech Postal Code: (.*)',
-        'tech_country':                   'Tech Country: (.+)',
-        'tech_phone':                     'Tech Phone: (.+)',
-        'tech_fax':                       'Tech Fax: (.+)',
-        'tech_email':                     'Tech Email: (.+)',
+        'tech_name':                      r'Tech Name: (.+)',
+        'tech_id':                        r'Registry Tech ID: (.+)',
+        'tech_organization':              r'Tech Organization: (.+)',
+        'tech_city':                      r'Tech City: (.*)',
+        'tech_street':                    r'Tech Street: (.*)',
+        'tech_state_province':            r'Tech State/Province: (.*)',
+        'tech_postal_code':               r'Tech Postal Code: (.*)',
+        'tech_country':                   r'Tech Country: (.+)',
+        'tech_phone':                     r'Tech Phone: (.+)',
+        'tech_fax':                       r'Tech Fax: (.+)',
+        'tech_email':                     r'Tech Email: (.+)',
 
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'name_servers':                   'Name Server: *(.+)'
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)'
 
     }
 
@@ -1492,27 +1493,27 @@ class WhoisIt(WhoisEntry):
     """Whois parser for .it domains
     """
     regex = {
-        'domain_name':                    'Domain: *(.+)',
-        'creation_date':                  '(?<! )Created: *(.+)',
-        'updated_date':                   '(?<! )Last Update: *(.+)',
-        'expiration_date':                '(?<! )Expire Date: *(.+)',
-        'status':                         'Status: *(.+)',  # list of statuses
-        'name_servers':                   'Nameservers[\s]((?:.+\n)*)',  # servers in one string sep by \n
+        'domain_name':                    r'Domain: *(.+)',
+        'creation_date':                  r'(?<! )Created: *(.+)',
+        'updated_date':                   r'(?<! )Last Update: *(.+)',
+        'expiration_date':                r'(?<! )Expire Date: *(.+)',
+        'status':                         r'Status: *(.+)',  # list of statuses
+        'name_servers':                   r'Nameservers[\s]((?:.+\n)*)',  # servers in one string sep by \n
 
-        'registrant_organization':        '(?<=Registrant)[\s\S]*?Organization:(.*)',
-        'registrant_address':             '(?<=Registrant)[\s\S]*?Address:(.*)',
+        'registrant_organization':        r'(?<=Registrant)[\s\S]*?Organization:(.*)',
+        'registrant_address':             r'(?<=Registrant)[\s\S]*?Address:(.*)',
 
-        'admin_address':                  '(?<=Admin Contact)[\s\S]*?Address:(.*)',
-        'admin_organization':             '(?<=Admin Contact)[\s\S]*?Organization:(.*)',
-        'admin_name':                     '(?<=Admin Contact)[\s\S]*?Name:(.*)',
+        'admin_address':                  r'(?<=Admin Contact)[\s\S]*?Address:(.*)',
+        'admin_organization':             r'(?<=Admin Contact)[\s\S]*?Organization:(.*)',
+        'admin_name':                     r'(?<=Admin Contact)[\s\S]*?Name:(.*)',
 
-        'tech_address':                   '(?<=Technical Contacts)[\s\S]*?Address:(.*)',
-        'tech_organization':              '(?<=Technical Contacts)[\s\S]*?Organization:(.*)',
-        'tech_name':                      '(?<=Technical Contacts)[\s\S]*?Name:(.*)',
+        'tech_address':                   r'(?<=Technical Contacts)[\s\S]*?Address:(.*)',
+        'tech_organization':              r'(?<=Technical Contacts)[\s\S]*?Organization:(.*)',
+        'tech_name':                      r'(?<=Technical Contacts)[\s\S]*?Name:(.*)',
 
-        'registrar_address':              '(?<=Registrar)[\s\S]*?Address:(.*)',
-        'registrar':                      '(?<=Registrar)[\s\S]*?Organization:(.*)',
-        'registrar_name':                 '(?<=Registrar)[\s\S]*?Name:(.*)',
+        'registrar_address':              r'(?<=Registrar)[\s\S]*?Address:(.*)',
+        'registrar':                      r'(?<=Registrar)[\s\S]*?Organization:(.*)',
+        'registrar_name':                 r'(?<=Registrar)[\s\S]*?Name:(.*)',
     }
 
     def __init__(self, domain, text):
@@ -1526,19 +1527,19 @@ class WhoisSa(WhoisEntry):
     """Whois parser for .sa domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'creation_date':                  'Created on: *(.+)',
-        'updated_date':                   'Last Updated on: *(.+)',
-        'name_servers':                   'Name Servers:[\s]((?:.+\n)*)',  # servers in one string sep by \n
+        'domain_name':                    r'Domain Name: *(.+)',
+        'creation_date':                  r'Created on: *(.+)',
+        'updated_date':                   r'Last Updated on: *(.+)',
+        'name_servers':                   r'Name Servers:[\s]((?:.+\n)*)',  # servers in one string sep by \n
 
-        'registrant_name':                'Registrant:\s*(.+)',
-        'registrant_address':             '(?<=Registrant)[\s\S]*?Address:((?:.+\n)*)',
+        'registrant_name':                r'Registrant:\s*(.+)',
+        'registrant_address':             r'(?<=Registrant)[\s\S]*?Address:((?:.+\n)*)',
 
-        'admin_address':                  '(?<=Administrative Contact)[\s\S]*?Address:((?:.+\n)*)',
-        'admin':                          'Administrative Contact:\s*(.*)',
+        'admin_address':                  r'(?<=Administrative Contact)[\s\S]*?Address:((?:.+\n)*)',
+        'admin':                          r'Administrative Contact:\s*(.*)',
 
-        'tech_address':                   '(?<=Technical Contact)[\s\S]*?Address:((?:.+\n)*)',
-        'tech':                           'Technical Contact:\s*(.*)',
+        'tech_address':                   r'(?<=Technical Contact)[\s\S]*?Address:((?:.+\n)*)',
+        'tech':                           r'Technical Contact:\s*(.*)',
     }
 
     def __init__(self, domain, text):
@@ -1552,37 +1553,37 @@ class WhoisSK(WhoisEntry):
     """Whois parser for .sk domains
     """
     regex = {
-        'domain_name':                    'Domain: *(.+)',
-        'creation_date':                  '(?<=Domain:)[\s\w\W]*?Created: *(.+)',
-        'updated_date':                   '(?<=Domain:)[\s\w\W]*?Updated: *(.+)',
-        'expiration_date':                'Valid Until: *(.+)',
-        'name_servers':                   'Nameserver: *(.+)',
+        'domain_name':                    r'Domain: *(.+)',
+        'creation_date':                  r'(?<=Domain:)[\s\w\W]*?Created: *(.+)',
+        'updated_date':                   r'(?<=Domain:)[\s\w\W]*?Updated: *(.+)',
+        'expiration_date':                r'Valid Until: *(.+)',
+        'name_servers':                   r'Nameserver: *(.+)',
 
-        'registrant_name':                'Name:\s*(.+)',
-        'registrant_email':               'Email:\s*(.+)',
-        'registrant_phone':               'Phone:\s*(.+)',
-        'registrant_address':             'Street:\s*(.+)',
+        'registrant_name':                r'Name:\s*(.+)',
+        'registrant_email':               r'Email:\s*(.+)',
+        'registrant_phone':               r'Phone:\s*(.+)',
+        'registrant_address':             r'Street:\s*(.+)',
 
-        'registrar':                      '(?<=Registrar)[\s\S]*?Organization:(.*)',
-        'registrar_organization_id':      '(?<=Registrar)[\s\S]*?Organization ID:(.*)',
-        'registrar_name':                 '(?<=Registrant)[\s\S]*?Name:(.*)',
-        'registrar_phone':                '(?<=Registrant)[\s\S]*?Phone:(.*)',
-        'registrar_email':                '(?<=Registrant)[\s\S]*?Email:(.*)',
-        'registrar_street':               '(?<=Registrant)[\s\S]*?Street:(.*)',
-        'registrar_city':                 '(?<=Registrant)[\s\S]*?City:(.*)',
-        'registrar_postal_code':          '(?<=Registrant)[\s\S]*?Postal Code:(.*)',
-        'registrar_country_code':         '(?<=Registrant)[\s\S]*?Country Code:(.*)',
+        'registrar':                      r'(?<=Registrar)[\s\S]*?Organization:(.*)',
+        'registrar_organization_id':      r'(?<=Registrar)[\s\S]*?Organization ID:(.*)',
+        'registrar_name':                 r'(?<=Registrant)[\s\S]*?Name:(.*)',
+        'registrar_phone':                r'(?<=Registrant)[\s\S]*?Phone:(.*)',
+        'registrar_email':                r'(?<=Registrant)[\s\S]*?Email:(.*)',
+        'registrar_street':               r'(?<=Registrant)[\s\S]*?Street:(.*)',
+        'registrar_city':                 r'(?<=Registrant)[\s\S]*?City:(.*)',
+        'registrar_postal_code':          r'(?<=Registrant)[\s\S]*?Postal Code:(.*)',
+        'registrar_country_code':         r'(?<=Registrant)[\s\S]*?Country Code:(.*)',
 
-        'admin':                          'Admin Contact:\s*(.*)',
-        'admin_organization':             '(?<=^Contact)[\s\S]*?Organization:(.*)',
-        'admin_phone':                    '(?<=^Contact)[\s\S]*?Phone:(.*)',
-        'admin_email':                    '(?<=^Contact)[\s\S]*?Email:(.*)',
-        'admin_street':                   '(?<=^Contact)[\s\S]*?Street:(.*)',
-        'admin_city':                     '(?<=^Contact)[\s\S]*?City:(.*)',
-        'admin_postal_code':              '(?<=^Contact)[\s\S]*?Postal Code:(.*)',
-        'admin_country_code':             '(?<=^Contact)[\s\S]*?Country Code:(.*)',
+        'admin':                          r'Admin Contact:\s*(.*)',
+        'admin_organization':             r'(?<=^Contact)[\s\S]*?Organization:(.*)',
+        'admin_phone':                    r'(?<=^Contact)[\s\S]*?Phone:(.*)',
+        'admin_email':                    r'(?<=^Contact)[\s\S]*?Email:(.*)',
+        'admin_street':                   r'(?<=^Contact)[\s\S]*?Street:(.*)',
+        'admin_city':                     r'(?<=^Contact)[\s\S]*?City:(.*)',
+        'admin_postal_code':              r'(?<=^Contact)[\s\S]*?Postal Code:(.*)',
+        'admin_country_code':             r'(?<=^Contact)[\s\S]*?Country Code:(.*)',
 
-        'tech':                           'Tech Contact:\s*(.*)',
+        'tech':                           r'Tech Contact:\s*(.*)',
     }
 
     def __init__(self, domain, text):
@@ -1596,36 +1597,36 @@ class WhoisMx(WhoisEntry):
     """Whois parser for .mx domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'creation_date':                  'Created On: *(.+)',
-        'updated_date':                   'Last Updated On: *(.+)',
-        'expiration_date':                'Expiration Date: *(.+)',
-        'url':                            'URL: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'creation_date':                  r'Created On: *(.+)',
+        'updated_date':                   r'Last Updated On: *(.+)',
+        'expiration_date':                r'Expiration Date: *(.+)',
+        'url':                            r'URL: *(.+)',
 
-        'name_servers':                   'DNS: (.*)',  # servers in one string sep by \n
+        'name_servers':                   r'DNS: (.*)',  # servers in one string sep by \n
 
-        'registrar':                      'Registrar:\s*(.+)',
+        'registrar':                      r'Registrar:\s*(.+)',
 
-        'registrant_name':                '(?<=Registrant)[\s\S]*?Name:(.*)',
-        'registrant_city':                '(?<=Registrant)[\s\S]*?City:(.*)',
-        'registrant_state':               '(?<=Registrant)[\s\S]*?State:(.*)',
-        'registrant_country':             '(?<=Registrant)[\s\S]*?Country:(.*)',
+        'registrant_name':                r'(?<=Registrant)[\s\S]*?Name:(.*)',
+        'registrant_city':                r'(?<=Registrant)[\s\S]*?City:(.*)',
+        'registrant_state':               r'(?<=Registrant)[\s\S]*?State:(.*)',
+        'registrant_country':             r'(?<=Registrant)[\s\S]*?Country:(.*)',
 
-        'admin':                          '(?<=Administrative Contact)[\s\S]*?Name:(.*)',
-        'admin_city':                     '(?<=Administrative Contact)[\s\S]*?City:(.*)',
-        'admin_country':                  '(?<=Administrative Contact)[\s\S]*?Country:(.*)',
-        'admin_state':                    '(?<=Administrative Contact)[\s\S]*?State:(.*)',
+        'admin':                          r'(?<=Administrative Contact)[\s\S]*?Name:(.*)',
+        'admin_city':                     r'(?<=Administrative Contact)[\s\S]*?City:(.*)',
+        'admin_country':                  r'(?<=Administrative Contact)[\s\S]*?Country:(.*)',
+        'admin_state':                    r'(?<=Administrative Contact)[\s\S]*?State:(.*)',
 
-        'tech_name':                      '(?<=Technical Contact)[\s\S]*?Name:(.*)',
-        'tech_city':                      '(?<=Technical Contact)[\s\S]*?City:(.*)',
-        'tech_state':                     '(?<=Technical Contact)[\s\S]*?State:(.*)',
-        'tech_country':                   '(?<=Technical Contact)[\s\S]*?Country:(.*)',
+        'tech_name':                      r'(?<=Technical Contact)[\s\S]*?Name:(.*)',
+        'tech_city':                      r'(?<=Technical Contact)[\s\S]*?City:(.*)',
+        'tech_state':                     r'(?<=Technical Contact)[\s\S]*?State:(.*)',
+        'tech_country':                   r'(?<=Technical Contact)[\s\S]*?Country:(.*)',
 
 
-        'billing_name':                   '(?<=Billing Contact)[\s\S]*?Name:(.*)',
-        'billing_city':                   '(?<=Billing Contact)[\s\S]*?City:(.*)',
-        'billing_state':                  '(?<=Billing Contact)[\s\S]*?State:(.*)',
-        'billing_country':                '(?<=Billing Contact)[\s\S]*?Country:(.*)',
+        'billing_name':                   r'(?<=Billing Contact)[\s\S]*?Name:(.*)',
+        'billing_city':                   r'(?<=Billing Contact)[\s\S]*?City:(.*)',
+        'billing_state':                  r'(?<=Billing Contact)[\s\S]*?State:(.*)',
+        'billing_country':                r'(?<=Billing Contact)[\s\S]*?Country:(.*)',
     }
 
     def __init__(self, domain, text):
@@ -1639,34 +1640,34 @@ class WhoisTw(WhoisEntry):
     """Whois parser for .tw domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'creation_date':                  'Record created on (.+) ',
-        'expiration_date':                'Record expires on (.+) ',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'creation_date':                  r'Record created on (.+) ',
+        'expiration_date':                r'Record expires on (.+) ',
 
-        'name_servers':                   'Domain servers in listed order:((?:\s.+)*)',  # servers in one string sep by \n
+        'name_servers':                   r'Domain servers in listed order:((?:\s.+)*)',  # servers in one string sep by \n
 
-        'registrar':                      'Registration Service Provider: *(.+)',
-        'registrar_url':                  'Registration Service URL: *(.+)',
+        'registrar':                      r'Registration Service Provider: *(.+)',
+        'registrar_url':                  r'Registration Service URL: *(.+)',
 
-        'registrant_name':                '(?<=Registrant:)\s+(.*)',
-        'registrant_organization':        '(?<=Registrant:)\s*(.*)',
-        'registrant_city':                '(?<=Registrant:)\s*(?:.*\n){5}\s+(.*),',
-        'registrant_street':              '(?<=Registrant:)\s*(?:.*\n){4}\s+(.*)',
-        'registrant_state_province':      '(?<=Registrant:)\s*(?:.*\n){5}.*, (.*)',
-        'registrant_country':             '(?<=Registrant:)\s*(?:.*\n){6}\s+(.*)',
-        'registrant_phone':               '(?<=Registrant:)\s*(?:.*\n){2}\s+(\+*\d.*)',
-        'registrant_fax':                 '(?<=Registrant:)\s*(?:.*\n){3}\s+(\+*\d.*)',
-        'registrant_email':               '(?<=Registrant:)\s*(?:.*\n){1}.*  (.*)',
+        'registrant_name':                r'(?<=Registrant:)\s+(.*)',
+        'registrant_organization':        r'(?<=Registrant:)\s*(.*)',
+        'registrant_city':                r'(?<=Registrant:)\s*(?:.*\n){5}\s+(.*),',
+        'registrant_street':              r'(?<=Registrant:)\s*(?:.*\n){4}\s+(.*)',
+        'registrant_state_province':      r'(?<=Registrant:)\s*(?:.*\n){5}.*, (.*)',
+        'registrant_country':             r'(?<=Registrant:)\s*(?:.*\n){6}\s+(.*)',
+        'registrant_phone':               r'(?<=Registrant:)\s*(?:.*\n){2}\s+(\+*\d.*)',
+        'registrant_fax':                 r'(?<=Registrant:)\s*(?:.*\n){3}\s+(\+*\d.*)',
+        'registrant_email':               r'(?<=Registrant:)\s*(?:.*\n){1}.*  (.*)',
 
-        'admin':                          '(?<=Administrative Contact:\n)\s+(.*)  ',
-        'admin_email':                    '(?<=Administrative Contact:)\s*.*  (.*)',
-        'admin_phone':                    '(?<=Administrative Contact:\n)\s*(?:.*\n){1}\s+(\+*\d.*)',
-        'admin_fax':                      '(?<=Administrative Contact:\n)\s*(?:.*\n){2}\s+(\+*\d.*)',
+        'admin':                          r'(?<=Administrative Contact:\n)\s+(.*)  ',
+        'admin_email':                    r'(?<=Administrative Contact:)\s*.*  (.*)',
+        'admin_phone':                    r'(?<=Administrative Contact:\n)\s*(?:.*\n){1}\s+(\+*\d.*)',
+        'admin_fax':                      r'(?<=Administrative Contact:\n)\s*(?:.*\n){2}\s+(\+*\d.*)',
 
-        'tech':                           '(?<=Technical Contact:\n)\s+(.*)  ',
-        'tech_email':                     '(?<=Technical Contact:)\s*.*  (.*)',
-        'tech_phone':                     '(?<=Technical Contact:\n)\s*(?:.*\n){1}\s+(\+*\d.*)',
-        'tech_fax':                       '(?<=Technical Contact:\n)\s*(?:.*\n){2}\s+(\+*\d.*)',
+        'tech':                           r'(?<=Technical Contact:\n)\s+(.*)  ',
+        'tech_email':                     r'(?<=Technical Contact:)\s*.*  (.*)',
+        'tech_phone':                     r'(?<=Technical Contact:\n)\s*(?:.*\n){1}\s+(\+*\d.*)',
+        'tech_fax':                       r'(?<=Technical Contact:\n)\s*(?:.*\n){2}\s+(\+*\d.*)',
     }
 
     def __init__(self, domain, text):
@@ -1680,32 +1681,32 @@ class WhoisTr(WhoisEntry):
     """Whois parser for .tr domains
     """
     regex = {
-        'domain_name':                    '[**] Domain Name: *(.+)',
+        'domain_name':                    r'[**] Domain Name: *(.+)',
 
-        'creation_date':                  'Created on.*: *(.+)',
-        'expiration_date':                'Expires on.*: *(.+)',
+        'creation_date':                  r'Created on.*: *(.+)',
+        'expiration_date':                r'Expires on.*: *(.+)',
 
-        'name_servers':                   '[**] Domain servers:((?:\s.+)*)',  # servers in one string sep by \n
+        'name_servers':                   r'[**] Domain servers:((?:\s.+)*)',  # servers in one string sep by \n
 
-        'registrant_name':                '(?<=[**] Registrant:)[\s\S]((?:\s.+)*)',
+        'registrant_name':                r'(?<=[**] Registrant:)[\s\S]((?:\s.+)*)',
 
-        'admin':                          '(?<=[**] Administrative Contact:)[\s\S]*?NIC Handle\s+: (.*)',
-        'admin_organization':             '(?<=[**] Administrative Contact:)[\s\S]*?Organization Name\s+: (.*)',
-        'admin_address':                  '(?<=[**] Administrative Contact)[\s\S]*?Address\s+: (.*)',
-        'admin_phone':                    '(?<=[**] Administrative Contact)[\s\S]*?Phone\s+: (.*)',
-        'admin_fax':                      '(?<=[**] Administrative Contact)[\s\S]*?Fax\s+: (.*)',
+        'admin':                          r'(?<=[**] Administrative Contact:)[\s\S]*?NIC Handle\s+: (.*)',
+        'admin_organization':             r'(?<=[**] Administrative Contact:)[\s\S]*?Organization Name\s+: (.*)',
+        'admin_address':                  r'(?<=[**] Administrative Contact)[\s\S]*?Address\s+: (.*)',
+        'admin_phone':                    r'(?<=[**] Administrative Contact)[\s\S]*?Phone\s+: (.*)',
+        'admin_fax':                      r'(?<=[**] Administrative Contact)[\s\S]*?Fax\s+: (.*)',
 
-        'tech':                           '(?<=[**] Technical Contact:)[\s\S]*?NIC Handle\s+: (.*)',
-        'tech_organization':              '(?<=[**] Technical Contact:)[\s\S]*?Organization Name\s+: (.*)',
-        'tech_address':                   '(?<=[**] Technical Contact)[\s\S]*?Address\s+: (.*)',
-        'tech_phone':                     '(?<=[**] Technical Contact)[\s\S]*?Phone\s+: (.*)',
-        'tech_fax':                       '(?<=[**] Technical Contact)[\s\S]*?Fax\s+: (.*)',
+        'tech':                           r'(?<=[**] Technical Contact:)[\s\S]*?NIC Handle\s+: (.*)',
+        'tech_organization':              r'(?<=[**] Technical Contact:)[\s\S]*?Organization Name\s+: (.*)',
+        'tech_address':                   r'(?<=[**] Technical Contact)[\s\S]*?Address\s+: (.*)',
+        'tech_phone':                     r'(?<=[**] Technical Contact)[\s\S]*?Phone\s+: (.*)',
+        'tech_fax':                       r'(?<=[**] Technical Contact)[\s\S]*?Fax\s+: (.*)',
 
-        'billing':                        '(?<=[**] Billing Contact:)[\s\S]*?NIC Handle\s+: (.*)',
-        'billing_organization':           '(?<=[**] Billing Contact:)[\s\S]*?Organization Name\s+: (.*)',
-        'billing_address':                '(?<=[**] Billing Contact)[\s\S]*?Address\s+: (.*)',
-        'billing_phone':                  '(?<=[**] Billing Contact)[\s\S]*?Phone\s+: (.*)',
-        'billing_fax':                    '(?<=[**] Billing Contact)[\s\S]*?Fax\s+: (.*)',
+        'billing':                        r'(?<=[**] Billing Contact:)[\s\S]*?NIC Handle\s+: (.*)',
+        'billing_organization':           r'(?<=[**] Billing Contact:)[\s\S]*?Organization Name\s+: (.*)',
+        'billing_address':                r'(?<=[**] Billing Contact)[\s\S]*?Address\s+: (.*)',
+        'billing_phone':                  r'(?<=[**] Billing Contact)[\s\S]*?Phone\s+: (.*)',
+        'billing_fax':                    r'(?<=[**] Billing Contact)[\s\S]*?Fax\s+: (.*)',
     }
 
     def __init__(self, domain, text):
@@ -1719,15 +1720,15 @@ class WhoisIs(WhoisEntry):
     """Whois parser for .se domains
     """
     regex = {
-        'domain_name':      'domain\.*: *(.+)',
-        'registrant_name':  'registrant: *(.+)',
-        'name':             'person\.*: *(.+)',
-        'address':          'address\.*: *(.+)',
-        'creation_date':    'created\.*: *(.+)',
-        'expiration_date':  'expires\.*: *(.+)',
-        'email':            'e-mail: *(.+)',
-        'name_servers':     'nserver\.*: *(.+)',  # list of name servers
-        'dnssec':           'dnssec\.*: *(.+)',
+        'domain_name':      r'domain\.*: *(.+)',
+        'registrant_name':  r'registrant: *(.+)',
+        'name':             r'person\.*: *(.+)',
+        'address':          r'address\.*: *(.+)',
+        'creation_date':    r'created\.*: *(.+)',
+        'expiration_date':  r'expires\.*: *(.+)',
+        'email':            r'e-mail: *(.+)',
+        'name_servers':     r'nserver\.*: *(.+)',  # list of name servers
+        'dnssec':           r'dnssec\.*: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1741,18 +1742,18 @@ class WhoisDk(WhoisEntry):
     """Whois parser for .dk domains
     """
     regex = {
-        'domain_name':         'Domain: *(.+)',
-        'creation_date':       'Registered: *(.+)',
-        'expiration_date':     'Expires: *(.+)',
-        'dnssec':              'Dnssec: *(.+)',
-        'status':              'Status: *(.+)',
-        'registrant_handle':   'Registrant\s*(?:.*\n){1}\s*Handle: *(.+)',
-        'registrant_name':     'Registrant\s*(?:.*\n){2}\s*Name: *(.+)',
-        'registrant_address':  'Registrant\s*(?:.*\n){3}\s*Address: *(.+)',
-        'registrant_zip_code': 'Registrant\s*(?:.*\n){4}\s*Postalcode: *(.+)',
-        'registrant_city':     'Registrant\s*(?:.*\n){5}\s*City: *(.+)',
-        'registrant_country':  'Registrant\s*(?:.*\n){6}\s*Country: *(.+)',
-        'name_servers':        'Nameservers\n *([\n\S\s]+)'
+        'domain_name':         r'Domain: *(.+)',
+        'creation_date':       r'Registered: *(.+)',
+        'expiration_date':     r'Expires: *(.+)',
+        'dnssec':              r'Dnssec: *(.+)',
+        'status':              r'Status: *(.+)',
+        'registrant_handle':   r'Registrant\s*(?:.*\n){1}\s*Handle: *(.+)',
+        'registrant_name':     r'Registrant\s*(?:.*\n){2}\s*Name: *(.+)',
+        'registrant_address':  r'Registrant\s*(?:.*\n){3}\s*Address: *(.+)',
+        'registrant_zip_code': r'Registrant\s*(?:.*\n){4}\s*Postalcode: *(.+)',
+        'registrant_city':     r'Registrant\s*(?:.*\n){5}\s*City: *(.+)',
+        'registrant_country':  r'Registrant\s*(?:.*\n){6}\s*Country: *(.+)',
+        'name_servers':        r'Nameservers\n *([\n\S\s]+)'
     }
 
     def __init__(self, domain, text):
@@ -1775,15 +1776,15 @@ class WhoisAi(WhoisEntry):
     """Whois parser for .ai domains
     """
     regex = {
-        'domain_name':      'Complete Domain Name\.*: *(.+)',
-        'name':             'Name \(Last, First\)\.*: *(.+)',
-        'org':              'Organization Name\.*: *(.+)',
-        'address':          'Street Address\.*: *(.+)',
-        'city':             'City\.*: *(.+)',
-        'state':            'State\.*: *(.+)',
-        'zipcode':          'Postal Code\.*: *(\d+)',
-        'country':          'Country\.*: *(.+)',
-        'name_servers':     'Server Hostname\.*: *(.+)',
+        'domain_name':      r'Complete Domain Name\.*: *(.+)',
+        'name':             r'Name \(Last, First\)\.*: *(.+)',
+        'org':              r'Organization Name\.*: *(.+)',
+        'address':          r'Street Address\.*: *(.+)',
+        'city':             r'City\.*: *(.+)',
+        'state':            r'State\.*: *(.+)',
+        'zipcode':          r'Postal Code\.*: *(\d+)',
+        'country':          r'Country\.*: *(.+)',
+        'name_servers':     r'Server Hostname\.*: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1797,17 +1798,17 @@ class WhoisIl(WhoisEntry):
     """Whois parser for .il domains
     """
     regex = {
-        'domain_name':        'domain: *(.+)',
-        'expiration_date':    'validity: *(.+)',
-        'registrant_name':    'person: *(.+)',
-        'registrant_address': 'address *(.+)',
-        'dnssec':             'DNSSEC: *(.+)',
-        'status':             'status: *(.+)',
-        'name_servers':       'nserver: *(.+)',
-        'emails':             'e-mail: *(.+)',
-        'phone':              'phone: *(.+)',
-        'registrar':          'registrar name: *(.+)',
-        'referral_url':       'registrar info: *(.+)',
+        'domain_name':        r'domain: *(.+)',
+        'expiration_date':    r'validity: *(.+)',
+        'registrant_name':    r'person: *(.+)',
+        'registrant_address': r'address *(.+)',
+        'dnssec':             r'DNSSEC: *(.+)',
+        'status':             r'status: *(.+)',
+        'name_servers':       r'nserver: *(.+)',
+        'emails':             r'e-mail: *(.+)',
+        'phone':              r'phone: *(.+)',
+        'registrar':          r'registrar name: *(.+)',
+        'referral_url':       r'registrar info: *(.+)',
     }
     dayfirst = True
 
@@ -1827,20 +1828,20 @@ class WhoisIn(WhoisEntry):
     """Whois parser for .in domains
     """
     regex = {
-        'domain_name':      'Domain Name: *(.+)',
-        'registrar':        'Registrar: *(.+)',
-        'registrar_url':    'Registrar URL: *(.+)',
-        'registrar_iana':   'Registrar IANA ID: *(\d+)',
-        'updated_date':     'Updated Date: *(.+)|Last Updated On: *(.+)',
-        'creation_date':    'Creation Date: *(.+)|Created On: *(.+)',
-        'expiration_date':  'Expiration Date: *(.+)|Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)',
-        'organization':     'Registrant Organization: *(.+)',
-        'state':            'Registrant State/Province: *(.+)',
-        'status':           'Status: *(.+)',
+        'domain_name':      r'Domain Name: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'registrar_url':    r'Registrar URL: *(.+)',
+        'registrar_iana':   r'Registrar IANA ID: *(\d+)',
+        'updated_date':     r'Updated Date: *(.+)|Last Updated On: *(.+)',
+        'creation_date':    r'Creation Date: *(.+)|Created On: *(.+)',
+        'expiration_date':  r'Expiration Date: *(.+)|Registry Expiry Date: *(.+)',
+        'name_servers':     r'Name Server: *(.+)',
+        'organization':     r'Registrant Organization: *(.+)',
+        'state':            r'Registrant State/Province: *(.+)',
+        'status':           r'Status: *(.+)',
         'emails':           EMAIL_REGEX,
-        'country':          'Registrant Country: *(.+)',
-        'dnssec':           'DNSSEC: *([\S]+)',
+        'country':          r'Registrant Country: *(.+)',
+        'dnssec':           r'DNSSEC: *([\S]+)',
     }
 
     def __init__(self, domain, text):
@@ -1854,13 +1855,13 @@ class WhoisCat(WhoisEntry):
     """Whois parser for .cat domains
     """
     regex = {
-        'domain_name':      'Domain Name: *(.+)',
-        'registrar':        'Registrar: *(.+)',
-        'updated_date':     'Updated Date: *(.+)',
-        'creation_date':    'Creation Date: *(.+)',
-        'expiration_date':  'Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)',
-        'status':           'Domain status: *(.+)',
+        'domain_name':      r'Domain Name: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'updated_date':     r'Updated Date: *(.+)',
+        'creation_date':    r'Creation Date: *(.+)',
+        'expiration_date':  r'Registry Expiry Date: *(.+)',
+        'name_servers':     r'Name Server: *(.+)',
+        'status':           r'Domain status: *(.+)',
         'emails':           EMAIL_REGEX,
     }
 
@@ -1878,17 +1879,17 @@ class WhoisIe(WhoisEntry):
     """Whois parser for .ie domains
     """
     regex = {
-        'domain_name':      'Domain: *(.+)',
-        'registrant_name':  'Domain Holder: *(.+)',
-        'description':      'descr: *(.+)',
-        'source':           'Source: *(.+)',
-        'creation_date':    'Registration Date: *(.+)',
-        'expiration_date':  'Renewal Date: *(.+)',
-        'name_servers':     'Nserver: *(.+)',
-        'status':           'Renewal status: *(.+)',
-        'admin_id':         'Admin-c: *(.+)',
-        'tech_id':          'Tech-c: *(.+)',
-        'registrar':        'Account Name: *(.+)',
+        'domain_name':      r'Domain: *(.+)',
+        'registrant_name':  r'Domain Holder: *(.+)',
+        'description':      r'descr: *(.+)',
+        'source':           r'Source: *(.+)',
+        'creation_date':    r'Registration Date: *(.+)',
+        'expiration_date':  r'Renewal Date: *(.+)',
+        'name_servers':     r'Nserver: *(.+)',
+        'status':           r'Renewal status: *(.+)',
+        'admin_id':         r'Admin-c: *(.+)',
+        'tech_id':          r'Tech-c: *(.+)',
+        'registrar':        r'Account Name: *(.+)',
         'registrar_contact':'Registrar Abuse Contact: *(.+)'
     }
 
@@ -1903,19 +1904,19 @@ class WhoisNz(WhoisEntry):
     """Whois parser for .nz domains
     """
     regex = {
-        'domain_name':          'domain_name:\s*([^\n\r]+)',
-        'registrar':            'registrar_name:\s*([^\n\r]+)',
-        'updated_date':         'domain_datelastmodified:\s*([^\n\r]+)',
-        'creation_date':        'domain_dateregistered:\s*([^\n\r]+)',
-        'expiration_date':      'domain_datebilleduntil:\s*([^\n\r]+)',
-        'name_servers':         'ns_name_\d*:\s*([^\n\r]+)',  # list of name servers
-        'status':               'status:\s*([^\n\r]+)',  # list of statuses
+        'domain_name':          r'domain_name:\s*([^\n\r]+)',
+        'registrar':            r'registrar_name:\s*([^\n\r]+)',
+        'updated_date':         r'domain_datelastmodified:\s*([^\n\r]+)',
+        'creation_date':        r'domain_dateregistered:\s*([^\n\r]+)',
+        'expiration_date':      r'domain_datebilleduntil:\s*([^\n\r]+)',
+        'name_servers':         r'ns_name_\d*:\s*([^\n\r]+)',  # list of name servers
+        'status':               r'status:\s*([^\n\r]+)',  # list of statuses
         'emails':               EMAIL_REGEX,  # list of email s
-        'name':                 'registrant_contact_name:\s*([^\n\r]+)',
-        'address':              'registrant_contact_address\d*:\s*([^\n\r]+)',
-        'city':                 'registrant_contact_city:\s*([^\n\r]+)',
-        'zipcode':              'registrant_contact_postalcode:\s*([^\n\r]+)',
-        'country':              'registrant_contact_country:\s*([^\n\r]+)',
+        'name':                 r'registrant_contact_name:\s*([^\n\r]+)',
+        'address':              r'registrant_contact_address\d*:\s*([^\n\r]+)',
+        'city':                 r'registrant_contact_city:\s*([^\n\r]+)',
+        'zipcode':              r'registrant_contact_postalcode:\s*([^\n\r]+)',
+        'country':              r'registrant_contact_country:\s*([^\n\r]+)',
     }
 
     def __init__(self, domain, text):
@@ -1929,28 +1930,28 @@ class WhoisLu(WhoisEntry):
     """Whois parser for .lu domains
     """
     regex = {
-        'domain_name':              'domainname: *(.+)',
-        'creation_date':            'registered: *(.+)',
-        'name_servers':             'nserver: *(.+)',
-        'status':                   'domaintype: *(.+)',
-        'registrar':                'registrar-name: *(.+)',
-        'registrant_name':          'org-name: *(.+)',
-        'registrant_address':       'org-address: *(.+)',
-        'registrant_postal_code':   'org-zipcode:*(.+)',
-        'registrant_city':          'org-city: *(.+)',
-        'registrant_country':       'org-country: *(.+)',
-        'admin_name':               'adm-name: *(.+)',
-        'admin_address':            'adm-address: *(.+)',
-        'admin_postal_code':        'adm-zipcode: *(.+)',
-        'admin_city':               'adm-city: *(.+)',
-        'admin_country':            'adm-country: *(.+)',
-        'admin_email':              'adm-email: *(.+)',
-        'tech_name':                'tec-name: *(.+)',
-        'tech_address':             'tec-address: *(.+)',
-        'tech_postal_code':         'tec-zipcode: *(.+)',
-        'tech_city':                'tec-city: *(.+)',
-        'tech_country':             'tec-country: *(.+)',
-        'tech_email':               'tec-email: *(.+)',
+        'domain_name':              r'domainname: *(.+)',
+        'creation_date':            r'registered: *(.+)',
+        'name_servers':             r'nserver: *(.+)',
+        'status':                   r'domaintype: *(.+)',
+        'registrar':                r'registrar-name: *(.+)',
+        'registrant_name':          r'org-name: *(.+)',
+        'registrant_address':       r'org-address: *(.+)',
+        'registrant_postal_code':   r'org-zipcode:*(.+)',
+        'registrant_city':          r'org-city: *(.+)',
+        'registrant_country':       r'org-country: *(.+)',
+        'admin_name':               r'adm-name: *(.+)',
+        'admin_address':            r'adm-address: *(.+)',
+        'admin_postal_code':        r'adm-zipcode: *(.+)',
+        'admin_city':               r'adm-city: *(.+)',
+        'admin_country':            r'adm-country: *(.+)',
+        'admin_email':              r'adm-email: *(.+)',
+        'tech_name':                r'tec-name: *(.+)',
+        'tech_address':             r'tec-address: *(.+)',
+        'tech_postal_code':         r'tec-zipcode: *(.+)',
+        'tech_city':                r'tec-city: *(.+)',
+        'tech_country':             r'tec-country: *(.+)',
+        'tech_email':               r'tec-email: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1964,13 +1965,13 @@ class WhoisCz(WhoisEntry):
     """Whois parser for .cz domains
     """
     regex = {
-        'domain_name':              'domain: *(.+)',
-        'registrant_name':          'registrant: *(.+)',
-        'registrar':                'registrar: *(.+)',
-        'creation_date':            'registered: *(.+)',
-        'updated_date':             'changed: *(.+)',
-        'expiration_date':          'expire: *(.+)',
-        'name_servers':             'nserver: *(.+)',
+        'domain_name':              r'domain: *(.+)',
+        'registrant_name':          r'registrant: *(.+)',
+        'registrar':                r'registrar: *(.+)',
+        'creation_date':            r'registered: *(.+)',
+        'updated_date':             r'changed: *(.+)',
+        'expiration_date':          r'expire: *(.+)',
+        'name_servers':             r'nserver: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1984,22 +1985,22 @@ class WhoisOnline(WhoisEntry):
     """Whois parser for .online domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain__id':                     'Domain ID: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_id':                   'Registrar IANA ID: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'registrant_email':               'Registrant Email: *(.+)',
-        'admin_email':                    'Admin Email: *(.+)',
-        'billing_email':                  'Billing Email: *(.+)',
-        'tech_email':                     'Tech Email: *(.+)',
-        'name_servers':                   'Name Server: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
-        'dnssec':                         'DNSSEC: *([\S]+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Domain ID: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_id':                   r'Registrar IANA ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'billing_email':                  r'Billing Email: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'dnssec':                         r'DNSSEC: *([\S]+)',
     }
 
     def __init__(self, domain, text):
@@ -2013,15 +2014,15 @@ class WhoisHr(WhoisEntry):
     """Whois parser for .hr domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registrar Registration Expiration Date: *(.+)',
-        'name_servers':                   'Name Server: *(.+)',
-        'registrant_name':                'Registrant Name:\s(.+)',
-        'registrant_address':             'Reigstrant Street:\s*(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registrar Registration Expiration Date: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',
+        'registrant_name':                r'Registrant Name:\s(.+)',
+        'registrant_address':             r'Reigstrant Street:\s*(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2035,44 +2036,44 @@ class WhoisHk(WhoisEntry):
     """Whois parser for .hk domains
     """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'dnssec':                         'DNSSEC: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
 
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar':                      'Registrar Name: *(.+)',
-        'registrar_email':                'Registrar Contact Information: Email: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar':                      r'Registrar Name: *(.+)',
+        'registrar_email':                r'Registrar Contact Information: Email: *(.+)',
 
-        'registrant_company_name':        'Registrant Contact Information:\s*Company English Name.*:(.+)',
-        'registrant_address':             '(?<=Registrant Contact Information:)[\s\S]*?Address: (.*)',
-        'registrant_country':             '[Registrant Contact Information\w\W]+Country: ([\S\ ]+)',
-        'registrant_email':               '[Registrant Contact Information\w\W]+Email: ([\S\ ]+)',
+        'registrant_company_name':        r'Registrant Contact Information:\s*Company English Name.*:(.+)',
+        'registrant_address':             r'(?<=Registrant Contact Information:)[\s\S]*?Address: (.*)',
+        'registrant_country':             r'[Registrant Contact Information\w\W]+Country: ([\S\ ]+)',
+        'registrant_email':               r'[Registrant Contact Information\w\W]+Email: ([\S\ ]+)',
 
-        'admin_name':                     '[Administrative Contact Information\w\W]+Given name: ([\S\ ]+)',
-        'admin_family_name':              '[Administrative Contact Information\w\W]+Family name: ([\S\ ]+)',
-        'admin_company_name':             '[Administrative Contact Information\w\W]+Company name: ([\S\ ]+)',
-        'admin_address':                  '(?<=Administrative Contact Information:)[\s\S]*?Address: (.*)',
-        'admin_country':                  '[Administrative Contact Information\w\W]+Country: ([\S\ ]+)',
-        'admin_phone':                    '[Administrative Contact Information\w\W]+Phone: ([\S\ ]+)',
-        'admin_fax':                      '[Administrative Contact Information\w\W]+Fax: ([\S\ ]+)',
-        'admin_email':                    '[Administrative Contact Information\w\W]+Email: ([\S\ ]+)',
-        'admin_account_name':             '[Administrative Contact Information\w\W]+Account Name: ([\S\ ]+)',
+        'admin_name':                     r'[Administrative Contact Information\w\W]+Given name: ([\S\ ]+)',
+        'admin_family_name':              r'[Administrative Contact Information\w\W]+Family name: ([\S\ ]+)',
+        'admin_company_name':             r'[Administrative Contact Information\w\W]+Company name: ([\S\ ]+)',
+        'admin_address':                  r'(?<=Administrative Contact Information:)[\s\S]*?Address: (.*)',
+        'admin_country':                  r'[Administrative Contact Information\w\W]+Country: ([\S\ ]+)',
+        'admin_phone':                    r'[Administrative Contact Information\w\W]+Phone: ([\S\ ]+)',
+        'admin_fax':                      r'[Administrative Contact Information\w\W]+Fax: ([\S\ ]+)',
+        'admin_email':                    r'[Administrative Contact Information\w\W]+Email: ([\S\ ]+)',
+        'admin_account_name':             r'[Administrative Contact Information\w\W]+Account Name: ([\S\ ]+)',
 
-        'tech_name':                      '[Technical Contact Information\w\W]+Given name: (.+)',
-        'tech_family_name':               '[Technical Contact Information\w\W]+Family name: (.+)',
-        'tech_company_name':              '[Technical Contact Information\w\W]+Company name: (.+)',
-        'tech_address':                   '(?<=Technical Contact Information:)[\s\S]*?Address: (.*)',
-        'tech_country':                   '[Technical Contact Information\w\W]+Country: (.+)',
-        'tech_phone':                     '[Technical Contact Information\w\W]+Phone: (.+)',
-        'tech_fax':                       '[Technical Contact Information\w\W]+Fax: (.+)',
-        'tech_email':                     '[Technical Contact Information\w\W]+Email: (.+)',
-        'tech_account_name':              '[Technical Contact Information\w\W]+Account Name: (.+)',
+        'tech_name':                      r'[Technical Contact Information\w\W]+Given name: (.+)',
+        'tech_family_name':               r'[Technical Contact Information\w\W]+Family name: (.+)',
+        'tech_company_name':              r'[Technical Contact Information\w\W]+Company name: (.+)',
+        'tech_address':                   r'(?<=Technical Contact Information:)[\s\S]*?Address: (.*)',
+        'tech_country':                   r'[Technical Contact Information\w\W]+Country: (.+)',
+        'tech_phone':                     r'[Technical Contact Information\w\W]+Phone: (.+)',
+        'tech_fax':                       r'[Technical Contact Information\w\W]+Fax: (.+)',
+        'tech_email':                     r'[Technical Contact Information\w\W]+Email: (.+)',
+        'tech_account_name':              r'[Technical Contact Information\w\W]+Account Name: (.+)',
 
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  '[Registrant Contact Information\w\W]+Domain Name Commencement Date: (.+)',
-        'expiration_date':                '[Registrant Contact Information\w\W]+Expiry Date: (.+)',
-        'name_servers':                   'Name Servers Information:\s+((?:.+\n)*)'
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'[Registrant Contact Information\w\W]+Domain Name Commencement Date: (.+)',
+        'expiration_date':                r'[Registrant Contact Information\w\W]+Expiry Date: (.+)',
+        'name_servers':                   r'Name Servers Information:\s+((?:.+\n)*)'
     }
 
     def __init__(self, domain, text):
@@ -2086,41 +2087,41 @@ class WhoisUA(WhoisEntry):
     """Whois parser for .ua domains
     """
     regex = {
-        'domain_name':                    'domain: *(.+)',
-        'status':                         'status: *(.+)',
+        'domain_name':                    r'domain: *(.+)',
+        'status':                         r'status: *(.+)',
 
-        'registrar':                     '(?<=Registrar:)[\s\W\w]*?organization-loc:(.*)',
-        'registrar_name':                '(?<=Registrar:)[\s\W\w]*?registrar:(.*)',
-        'registrar_url':                 '(?<=Registrar:)[\s\W\w]*?url:(.*)',
-        'registrar_country':             '(?<=Registrar:)[\s\W\w]*?country:(.*)',
-        'registrar_city':                '(?<=Registrar:)[\s\W\w]*?city:\s+(.*)\n',
-        'registrar_address':             '(?<=Registrar:)[\s\W\w]*?abuse-postal:\s+(.*)\n',
-        'registrar_email':               '(?<=Registrar:)[\s\W\w]*?abuse-email:(.*)',
+        'registrar':                     r'(?<=Registrar:)[\s\W\w]*?organization-loc:(.*)',
+        'registrar_name':                r'(?<=Registrar:)[\s\W\w]*?registrar:(.*)',
+        'registrar_url':                 r'(?<=Registrar:)[\s\W\w]*?url:(.*)',
+        'registrar_country':             r'(?<=Registrar:)[\s\W\w]*?country:(.*)',
+        'registrar_city':                r'(?<=Registrar:)[\s\W\w]*?city:\s+(.*)\n',
+        'registrar_address':             r'(?<=Registrar:)[\s\W\w]*?abuse-postal:\s+(.*)\n',
+        'registrar_email':               r'(?<=Registrar:)[\s\W\w]*?abuse-email:(.*)',
 
-        'registrant_name':               '(?<=Registrant:)[\s\W\w]*?organization-loc:(.*)',
-        'registrant_country':            '(?<=Registrant:)[\s\W\w]*?country-loc:(.*)',
-        'registrant_city':               '(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
-        'registrant_state':              '(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
-        'registrant_address':            '(?<=Registrant:)[\s\W\w]*?address-loc:\s+(.*)\n',
-        'registrant_email':              '(?<=Registrant:)[\s\W\w]*?e-mail:(.*)',
-        'registrant_postal_code':        '(?<=Registrant:)[\s\W\w]*?postal-code-loc:(.*)',
-        'registrant_phone':              '(?<=Registrant:)[\s\W\w]*?phone:(.*)',
-        'registrant_fax':                '(?<=Registrant:)[\s\W\w]*?fax:(.*)',
+        'registrant_name':               r'(?<=Registrant:)[\s\W\w]*?organization-loc:(.*)',
+        'registrant_country':            r'(?<=Registrant:)[\s\W\w]*?country-loc:(.*)',
+        'registrant_city':               r'(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
+        'registrant_state':              r'(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
+        'registrant_address':            r'(?<=Registrant:)[\s\W\w]*?address-loc:\s+(.*)\n',
+        'registrant_email':              r'(?<=Registrant:)[\s\W\w]*?e-mail:(.*)',
+        'registrant_postal_code':        r'(?<=Registrant:)[\s\W\w]*?postal-code-loc:(.*)',
+        'registrant_phone':              r'(?<=Registrant:)[\s\W\w]*?phone:(.*)',
+        'registrant_fax':                r'(?<=Registrant:)[\s\W\w]*?fax:(.*)',
 
-        'admin':                         '(?<=Administrative Contacts:)[\s\W\w]*?organization-loc:(.*)',
-        'admin_country':                 '(?<=Administrative Contacts:)[\s\W\w]*?country-loc:(.*)',
-        'admin_city':                    '(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
-        'admin_state':                   '(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
-        'admin_address':                 '(?<=Administrative Contacts:)[\s\W\w]*?address-loc:\s+(.*)\n',
-        'admin_email':                   '(?<=Administrative Contacts:)[\s\W\w]*?e-mail:(.*)',
-        'admin_postal_code':             '(?<=Administrative Contacts:)[\s\W\w]*?postal-code-loc:(.*)',
-        'admin_phone':                   '(?<=Administrative Contacts:)[\s\W\w]*?phone:(.*)',
-        'admin_fax':                     '(?<=Administrative Contacts:)[\s\W\w]*?fax:(.*)',
+        'admin':                         r'(?<=Administrative Contacts:)[\s\W\w]*?organization-loc:(.*)',
+        'admin_country':                 r'(?<=Administrative Contacts:)[\s\W\w]*?country-loc:(.*)',
+        'admin_city':                    r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
+        'admin_state':                   r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
+        'admin_address':                 r'(?<=Administrative Contacts:)[\s\W\w]*?address-loc:\s+(.*)\n',
+        'admin_email':                   r'(?<=Administrative Contacts:)[\s\W\w]*?e-mail:(.*)',
+        'admin_postal_code':             r'(?<=Administrative Contacts:)[\s\W\w]*?postal-code-loc:(.*)',
+        'admin_phone':                   r'(?<=Administrative Contacts:)[\s\W\w]*?phone:(.*)',
+        'admin_fax':                     r'(?<=Administrative Contacts:)[\s\W\w]*?fax:(.*)',
 
-        'updated_date':                   'modified: *(.+)',
-        'creation_date':                  'created: (.+)',
-        'expiration_date':                'expires: (.+)',
-        'name_servers':                   'nserver: *(.+)'
+        'updated_date':                   r'modified: *(.+)',
+        'creation_date':                  r'created: (.+)',
+        'expiration_date':                r'expires: (.+)',
+        'name_servers':                   r'nserver: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2134,67 +2135,67 @@ class WhoisHn(WhoisEntry):
     """Whois parser for .hn domains
         """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain_id':                      'Domain ID: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'whois_server':                   'WHOIS Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain_id':                      r'Domain ID: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'whois_server':                   r'WHOIS Server: *(.+)',
 
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
 
-        'registrant_name':                'Registrant Name: (.+)',
-        'registrant_id':                  'Registrant ID: (.+)',
-        'registrant_organization':        'Registrant Organization: (.+)',
-        'registrant_city':                'Registrant City: (.*)',
-        'registrant_street':              'Registrant Street: (.*)',
-        'registrant_state_province':      'Registrant State/Province: (.*)',
-        'registrant_postal_code':         'Registrant Postal Code: (.*)',
-        'registrant_country':             'Registrant Country: (.+)',
-        'registrant_phone':               'Registrant Phone: (.+)',
-        'registrant_fax':                 'Registrant Fax: (.+)',
-        'registrant_email':               'Registrant Email: (.+)',
+        'registrant_name':                r'Registrant Name: (.+)',
+        'registrant_id':                  r'Registrant ID: (.+)',
+        'registrant_organization':        r'Registrant Organization: (.+)',
+        'registrant_city':                r'Registrant City: (.*)',
+        'registrant_street':              r'Registrant Street: (.*)',
+        'registrant_state_province':      r'Registrant State/Province: (.*)',
+        'registrant_postal_code':         r'Registrant Postal Code: (.*)',
+        'registrant_country':             r'Registrant Country: (.+)',
+        'registrant_phone':               r'Registrant Phone: (.+)',
+        'registrant_fax':                 r'Registrant Fax: (.+)',
+        'registrant_email':               r'Registrant Email: (.+)',
 
 
-        'admin_name':                     'Admin Name: (.+)',
-        'admin_id':                       'Admin ID: (.+)',
-        'admin_organization':             'Admin Organization: (.+)',
-        'admin_city':                     'Admin City: (.*)',
-        'admin_street':                   'Admin Street: (.*)',
-        'admin_state_province':           'Admin State/Province: (.*)',
-        'admin_postal_code':              'Admin Postal Code: (.*)',
-        'admin_country':                  'Admin Country: (.+)',
-        'admin_phone':                    'Admin Phone: (.+)',
-        'admin_fax':                      'Admin Fax: (.+)',
-        'admin_email':                    'Admin Email: (.+)',
+        'admin_name':                     r'Admin Name: (.+)',
+        'admin_id':                       r'Admin ID: (.+)',
+        'admin_organization':             r'Admin Organization: (.+)',
+        'admin_city':                     r'Admin City: (.*)',
+        'admin_street':                   r'Admin Street: (.*)',
+        'admin_state_province':           r'Admin State/Province: (.*)',
+        'admin_postal_code':              r'Admin Postal Code: (.*)',
+        'admin_country':                  r'Admin Country: (.+)',
+        'admin_phone':                    r'Admin Phone: (.+)',
+        'admin_fax':                      r'Admin Fax: (.+)',
+        'admin_email':                    r'Admin Email: (.+)',
 
-        'billing_name':                   'Billing Name: (.+)',
-        'billing_id':                     'Billing ID: (.+)',
-        'billing_organization':           'Billing Organization: (.+)',
-        'billing_city':                   'Billing City: (.*)',
-        'billing_street':                 'Billing Street: (.*)',
-        'billing_state_province':         'Billing State/Province: (.*)',
-        'billing_postal_code':            'Billing Postal Code: (.*)',
-        'billing_country':                'Billing Country: (.+)',
-        'billing_phone':                  'Billing Phone: (.+)',
-        'billing_fax':                    'Billing Fax: (.+)',
-        'billing_email':                  'Billing Email: (.+)',
+        'billing_name':                   r'Billing Name: (.+)',
+        'billing_id':                     r'Billing ID: (.+)',
+        'billing_organization':           r'Billing Organization: (.+)',
+        'billing_city':                   r'Billing City: (.*)',
+        'billing_street':                 r'Billing Street: (.*)',
+        'billing_state_province':         r'Billing State/Province: (.*)',
+        'billing_postal_code':            r'Billing Postal Code: (.*)',
+        'billing_country':                r'Billing Country: (.+)',
+        'billing_phone':                  r'Billing Phone: (.+)',
+        'billing_fax':                    r'Billing Fax: (.+)',
+        'billing_email':                  r'Billing Email: (.+)',
 
-        'tech_name':                      'Tech Name: (.+)',
-        'tech_id':                        'Tech ID: (.+)',
-        'tech_organization':              'Tech Organization: (.+)',
-        'tech_city':                      'Tech City: (.*)',
-        'tech_street':                    'Tech Street: (.*)',
-        'tech_state_province':            'Tech State/Province: (.*)',
-        'tech_postal_code':               'Tech Postal Code: (.*)',
-        'tech_country':                   'Tech Country: (.+)',
-        'tech_phone':                     'Tech Phone: (.+)',
-        'tech_fax':                       'Tech Fax: (.+)',
-        'tech_email':                     'Tech Email: (.+)',
+        'tech_name':                      r'Tech Name: (.+)',
+        'tech_id':                        r'Tech ID: (.+)',
+        'tech_organization':              r'Tech Organization: (.+)',
+        'tech_city':                      r'Tech City: (.*)',
+        'tech_street':                    r'Tech Street: (.*)',
+        'tech_state_province':            r'Tech State/Province: (.*)',
+        'tech_postal_code':               r'Tech Postal Code: (.*)',
+        'tech_country':                   r'Tech Country: (.+)',
+        'tech_phone':                     r'Tech Phone: (.+)',
+        'tech_fax':                       r'Tech Fax: (.+)',
+        'tech_email':                     r'Tech Email: (.+)',
 
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'name_servers':                   'Name Server: *(.+)'
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2208,57 +2209,57 @@ class WhoisLat(WhoisEntry):
     """Whois parser for .lat domains
         """
     regex = {
-        'domain_name':                    'Domain Name: *(.+)',
-        'domain_id':                      'Registry Domain ID: *(.+)',
-        'status':                         'Domain Status: *(.+)',
-        'whois_server':                   'Registrar WHOIS Server: *(.+)',
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain_id':                      r'Registry Domain ID: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
 
-        'registrar_url':                  'Registrar URL: *(.+)',
-        'registrar':                      'Registrar: *(.+)',
-        'registrar_email':                'Registrar Abuse Contact Email: *(.+)',
-        'registrar_phone':                'Registrar Abuse Contact Phone: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_email':                r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':                r'Registrar Abuse Contact Phone: *(.+)',
 
-        'registrant_name':                'Registrant Name: (.+)',
-        'registrant_id':                  'Registry Registrant ID: (.+)',
-        'registrant_organization':        'Registrant Organization: (.+)',
-        'registrant_city':                'Registrant City: (.*)',
-        'registrant_street':              'Registrant Street: (.*)',
-        'registrant_state_province':      'Registrant State/Province: (.*)',
-        'registrant_postal_code':         'Registrant Postal Code: (.*)',
-        'registrant_country':             'Registrant Country: (.+)',
-        'registrant_phone':               'Registrant Phone: (.+)',
-        'registrant_fax':                 'Registrant Fax: (.+)',
-        'registrant_email':               'Registrant Email: (.+)',
+        'registrant_name':                r'Registrant Name: (.+)',
+        'registrant_id':                  r'Registry Registrant ID: (.+)',
+        'registrant_organization':        r'Registrant Organization: (.+)',
+        'registrant_city':                r'Registrant City: (.*)',
+        'registrant_street':              r'Registrant Street: (.*)',
+        'registrant_state_province':      r'Registrant State/Province: (.*)',
+        'registrant_postal_code':         r'Registrant Postal Code: (.*)',
+        'registrant_country':             r'Registrant Country: (.+)',
+        'registrant_phone':               r'Registrant Phone: (.+)',
+        'registrant_fax':                 r'Registrant Fax: (.+)',
+        'registrant_email':               r'Registrant Email: (.+)',
 
 
-        'admin_name':                     'Admin Name: (.+)',
-        'admin_id':                       'Registry Admin ID: (.+)',
-        'admin_organization':             'Admin Organization: (.+)',
-        'admin_city':                     'Admin City: (.*)',
-        'admin_street':                   'Admin Street: (.*)',
-        'admin_state_province':           'Admin State/Province: (.*)',
-        'admin_postal_code':              'Admin Postal Code: (.*)',
-        'admin_country':                  'Admin Country: (.+)',
-        'admin_phone':                    'Admin Phone: (.+)',
-        'admin_fax':                      'Admin Fax: (.+)',
-        'admin_email':                    'Admin Email: (.+)',
+        'admin_name':                     r'Admin Name: (.+)',
+        'admin_id':                       r'Registry Admin ID: (.+)',
+        'admin_organization':             r'Admin Organization: (.+)',
+        'admin_city':                     r'Admin City: (.*)',
+        'admin_street':                   r'Admin Street: (.*)',
+        'admin_state_province':           r'Admin State/Province: (.*)',
+        'admin_postal_code':              r'Admin Postal Code: (.*)',
+        'admin_country':                  r'Admin Country: (.+)',
+        'admin_phone':                    r'Admin Phone: (.+)',
+        'admin_fax':                      r'Admin Fax: (.+)',
+        'admin_email':                    r'Admin Email: (.+)',
 
-        'tech_name':                      'Tech Name: (.+)',
-        'tech_id':                        'Registry Tech ID: (.+)',
-        'tech_organization':              'Tech Organization: (.+)',
-        'tech_city':                      'Tech City: (.*)',
-        'tech_street':                    'Tech Street: (.*)',
-        'tech_state_province':            'Tech State/Province: (.*)',
-        'tech_postal_code':               'Tech Postal Code: (.*)',
-        'tech_country':                   'Tech Country: (.+)',
-        'tech_phone':                     'Tech Phone: (.+)',
-        'tech_fax':                       'Tech Fax: (.+)',
-        'tech_email':                     'Tech Email: (.+)',
+        'tech_name':                      r'Tech Name: (.+)',
+        'tech_id':                        r'Registry Tech ID: (.+)',
+        'tech_organization':              r'Tech Organization: (.+)',
+        'tech_city':                      r'Tech City: (.*)',
+        'tech_street':                    r'Tech Street: (.*)',
+        'tech_state_province':            r'Tech State/Province: (.*)',
+        'tech_postal_code':               r'Tech Postal Code: (.*)',
+        'tech_country':                   r'Tech Country: (.+)',
+        'tech_phone':                     r'Tech Phone: (.+)',
+        'tech_fax':                       r'Tech Fax: (.+)',
+        'tech_email':                     r'Tech Email: (.+)',
 
-        'updated_date':                   'Updated Date: *(.+)',
-        'creation_date':                  'Creation Date: *(.+)',
-        'expiration_date':                'Registry Expiry Date: *(.+)',
-        'name_servers':                   'Name Server: *(.+)'
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2272,15 +2273,15 @@ class WhoisCn(WhoisEntry):
     """Whois parser for .cn domains
     """
     regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'creation_date':        'Registration Time: *(.+)',
-        'expiration_date':      'Expiration Time: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'status':               'Status: *(.+)',  # list of statuses
+        'domain_name':          r'Domain Name: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'creation_date':        r'Registration Time: *(.+)',
+        'expiration_date':      r'Expiration Time: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'status':               r'Status: *(.+)',  # list of statuses
         'emails':               EMAIL_REGEX,  # list of email s
-        'dnssec':               'dnssec: *([\S]+)',
-        'name':                 'Registrant: *(.+)',
+        'dnssec':               r'dnssec: *([\S]+)',
+        'name':                 r'Registrant: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2294,25 +2295,25 @@ class WhoisApp(WhoisEntry):
     """Whois parser for .app domains
     """
     regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'whois_server':         'Whois Server: *(.+)',
-        'updated_date':         'Updated Date: *(.+)',
-        'creation_date':        'Creation Date: *(.+)',
-        'expiration_date':      'Expir\w+ Date: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'status':               'Status: *(.+)',  # list of statuses
+        'domain_name':          r'Domain Name: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'whois_server':         r'Whois Server: *(.+)',
+        'updated_date':         r'Updated Date: *(.+)',
+        'creation_date':        r'Creation Date: *(.+)',
+        'expiration_date':      r'Expir\w+ Date: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'status':               r'Status: *(.+)',  # list of statuses
         'emails':               EMAIL_REGEX,  # list of email s
-        'registrant_email':     'Registrant Email: *(.+)',  # registrant email
-        'registrant_phone':     'Registrant Phone: *(.+)',  # registrant phone
-        'dnssec':               'dnssec: *([\S]+)',
-        'name':                 'Registrant Name: *(.+)',
-        'org':                  'Registrant\s*Organization: *(.+)',
-        'address':              'Registrant Street: *(.+)',
-        'city':                 'Registrant City: *(.+)',
-        'state':                'Registrant State/Province: *(.+)',
-        'zipcode':              'Registrant Postal Code: *(.+)',
-        'country':              'Registrant Country: *(.+)',
+        'registrant_email':     r'Registrant Email: *(.+)',  # registrant email
+        'registrant_phone':     r'Registrant Phone: *(.+)',  # registrant phone
+        'dnssec':               r'dnssec: *([\S]+)',
+        'name':                 r'Registrant Name: *(.+)',
+        'org':                  r'Registrant\s*Organization: *(.+)',
+        'address':              r'Registrant Street: *(.+)',
+        'city':                 r'Registrant City: *(.+)',
+        'state':                r'Registrant State/Province: *(.+)',
+        'zipcode':              r'Registrant Postal Code: *(.+)',
+        'country':              r'Registrant Country: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2326,25 +2327,25 @@ class WhoisMoney(WhoisEntry):
     """Whois parser for .money domains
     """
     regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'whois_server':         'Registrar WHOIS Server: *(.+)',
-        'updated_date':         'Updated Date: *(.+)',
-        'creation_date':        'Creation Date: *(.+)',
-        'expiration_date':      'Registry Expiry Date: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'status':               'Domain Status: *(.+)',
+        'domain_name':          r'Domain Name: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'whois_server':         r'Registrar WHOIS Server: *(.+)',
+        'updated_date':         r'Updated Date: *(.+)',
+        'creation_date':        r'Creation Date: *(.+)',
+        'expiration_date':      r'Registry Expiry Date: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'status':               r'Domain Status: *(.+)',
         'emails':               EMAIL_REGEX,  # list of emails
-        'registrant_email':     'Registrant Email: *(.+)',
-        'registrant_phone':     'Registrant Phone: *(.+)',
-        'dnssec':               'DNSSEC: *(.+)',
-        'name':                 'Registrant Name: *(.+)',
-        'org':                  'Registrant Organization: *(.+)',
-        'address':              'Registrant Street: *(.+)',
-        'city':                 'Registrant City: *(.+)',
-        'state':                'Registrant State/Province: *(.+)',
-        'zipcode':              'Registrant Postal Code: *(.+)',
-        'country':              'Registrant Country: *(.+)',
+        'registrant_email':     r'Registrant Email: *(.+)',
+        'registrant_phone':     r'Registrant Phone: *(.+)',
+        'dnssec':               r'DNSSEC: *(.+)',
+        'name':                 r'Registrant Name: *(.+)',
+        'org':                  r'Registrant Organization: *(.+)',
+        'address':              r'Registrant Street: *(.+)',
+        'city':                 r'Registrant City: *(.+)',
+        'state':                r'Registrant State/Province: *(.+)',
+        'zipcode':              r'Registrant Postal Code: *(.+)',
+        'country':              r'Registrant Country: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2358,16 +2359,16 @@ class WhoisAr(WhoisEntry):
     """Whois parser for .ar domains
     """
     regex = {
-        'domain_name':          'domain: *(.+)',
-        'registrar':            'registrar: *(.+)',
-        'whois_server':         'whois: *(.+)',
-        'updated_date':         'changed: *(.+)',
-        'creation_date':        'created: *(.+)',
-        'expiration_date':      'expire: *(.+)',
-        'name_servers':         'nserver: *(.+) \(.*\)',  # list of name servers
-        'status':               'Domain Status: *(.+)',
+        'domain_name':          r'domain: *(.+)',
+        'registrar':            r'registrar: *(.+)',
+        'whois_server':         r'whois: *(.+)',
+        'updated_date':         r'changed: *(.+)',
+        'creation_date':        r'created: *(.+)',
+        'expiration_date':      r'expire: *(.+)',
+        'name_servers':         r'nserver: *(.+) \(.*\)',  # list of name servers
+        'status':               r'Domain Status: *(.+)',
         'emails':               EMAIL_REGEX,  # list of emails
-        'name':                 'name: *(.+)',
+        'name':                 r'name: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2381,18 +2382,18 @@ class WhoisBy(WhoisEntry):
     """Whois parser for .by domains
     """
     regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'updated_date':         'Updated Date: *(.+)',
-        'creation_date':        'Creation Date: *(.+)',
-        'expiration_date':      'Expiration Date: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'status':               'Domain Status: *(.+)',
-        'name':                 'Person: *(.+)',
-        'org':                  'Org: *(.+)',
-        'registrant_country':   'Country: *(.+)',
-        'registrant_address':   'Address: *(.+)',
-        'registrant_phone':     'Phone: *(.+)',
+        'domain_name':          r'Domain Name: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'updated_date':         r'Updated Date: *(.+)',
+        'creation_date':        r'Creation Date: *(.+)',
+        'expiration_date':      r'Expiration Date: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'status':               r'Domain Status: *(.+)',
+        'name':                 r'Person: *(.+)',
+        'org':                  r'Org: *(.+)',
+        'registrant_country':   r'Country: *(.+)',
+        'registrant_address':   r'Address: *(.+)',
+        'registrant_phone':     r'Phone: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2406,19 +2407,19 @@ class WhoisCr(WhoisEntry):
     """Whois parser for .cr domains
     """
     regex = {
-        'domain_name':          'domain: *(.+)',
-        'registrant_name':      'registrant: *(.+)',
-        'registrar':            'registrar: *(.+)',
-        'updated_date':         'changed: *(.+)',
-        'creation_date':        'registered: *(.+)',
-        'expiration_date':      'expire: *(.+)',
-        'name_servers':         'nserver: *(.+)',  # list of name servers
-        'status':               'status: *(.+)',
-        'contact':              'contact: *(.+)',
-        'name':                 'name: *(.+)',
-        'org':                  'org: *(.+)',
-        'address':              'address: *(.+)',
-        'phone':                'phone: *(.+)',
+        'domain_name':          r'domain: *(.+)',
+        'registrant_name':      r'registrant: *(.+)',
+        'registrar':            r'registrar: *(.+)',
+        'updated_date':         r'changed: *(.+)',
+        'creation_date':        r'registered: *(.+)',
+        'expiration_date':      r'expire: *(.+)',
+        'name_servers':         r'nserver: *(.+)',  # list of name servers
+        'status':               r'status: *(.+)',
+        'contact':              r'contact: *(.+)',
+        'name':                 r'name: *(.+)',
+        'org':                  r'org: *(.+)',
+        'address':              r'address: *(.+)',
+        'phone':                r'phone: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2432,52 +2433,52 @@ class WhoisVe(WhoisEntry):
     """Whois parser for .ve domains
     """
     regex = {
-        'domain_name':           'Nombre de Dominio: *(.+)',
-        'status':                'Estatus del dominio: *(.+)',
+        'domain_name':           r'Nombre de Dominio: *(.+)',
+        'status':                r'Estatus del dominio: *(.+)',
 
-        'registrar':             'registrar: *(.+)',
+        'registrar':             r'registrar: *(.+)',
 
-        'updated_date':          'Ultima Actualización: *(.+)',
-        'creation_date':         'Fecha de Creación: *(.+)',
-        'expiration_date':       'Fecha de Vencimiento: *(.+)',
+        'updated_date':          r'Ultima Actualización: *(.+)',
+        'creation_date':         r'Fecha de Creación: *(.+)',
+        'expiration_date':       r'Fecha de Vencimiento: *(.+)',
 
-        'name_servers':          'Nombres de Dominio:((?:\s+- .*)*)',
+        'name_servers':          r'Nombres de Dominio:((?:\s+- .*)*)',
 
-        'registrant_name':       'Titular:\s*(?:.*\n){1}\s+(.*)',
-        'registrant_city':       'Titular:\s*(?:.*\n){3}\s+([\s\w]*)',
-        'registrant_street':     'Titular:\s*(?:.*\n){2}\s+(.*)',
-        'registrant_state_province': 'Titular:\s*(?:.*\n){3}\s+.*?,(.*),',
-        'registrant_country':    'Titular:\s*(?:.*\n){3}\s+.*, .+  (.*)',
-        'registrant_phone':      'Titular:\s*(?:.*\n){4}\s+(\+*\d.+)',
-        'registrant_email':      'Titular:\s*.*\t(.*)',
+        'registrant_name':       r'Titular:\s*(?:.*\n){1}\s+(.*)',
+        'registrant_city':       r'Titular:\s*(?:.*\n){3}\s+([\s\w]*)',
+        'registrant_street':     r'Titular:\s*(?:.*\n){2}\s+(.*)',
+        'registrant_state_province': r'Titular:\s*(?:.*\n){3}\s+.*?,(.*),',
+        'registrant_country':    r'Titular:\s*(?:.*\n){3}\s+.*, .+  (.*)',
+        'registrant_phone':      r'Titular:\s*(?:.*\n){4}\s+(\+*\d.+)',
+        'registrant_email':      r'Titular:\s*.*\t(.*)',
 
-        'tech':                  'Contacto Técnico:\s*(?:.*\n){1}\s+(.*)',
-        'tech_city':             'Contacto Técnico:\s*(?:.*\n){3}\s+([\s\w]*)',
-        'tech_street':           'Contacto Técnico:\s*(?:.*\n){2}\s+(.*)',
-        'tech_state_province':   'Contacto Técnico:\s*(?:.*\n){3}\s+.*?,(.*),',
-        'tech_country':          'Contacto Técnico:\s*(?:.*\n){3}\s+.*, .+  (.*)',
-        'tech_phone':            'Contacto Técnico:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
-        'tech_fax':              'Contacto Técnico:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
-        'tech_email':            'Contacto Técnico:\s*.*\t(.*)',
+        'tech':                  r'Contacto Técnico:\s*(?:.*\n){1}\s+(.*)',
+        'tech_city':             r'Contacto Técnico:\s*(?:.*\n){3}\s+([\s\w]*)',
+        'tech_street':           r'Contacto Técnico:\s*(?:.*\n){2}\s+(.*)',
+        'tech_state_province':   r'Contacto Técnico:\s*(?:.*\n){3}\s+.*?,(.*),',
+        'tech_country':          r'Contacto Técnico:\s*(?:.*\n){3}\s+.*, .+  (.*)',
+        'tech_phone':            r'Contacto Técnico:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
+        'tech_fax':              r'Contacto Técnico:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
+        'tech_email':            r'Contacto Técnico:\s*.*\t(.*)',
 
-        'admin':                  'Contacto Administrativo:\s*(?:.*\n){1}\s+(.*)',
-        'admin_city':             'Contacto Administrativo:\s*(?:.*\n){3}\s+([\s\w]*)',
-        'admin_street':           'Contacto Administrativo:\s*(?:.*\n){2}\s+(.*)',
-        'admin_state_province':   'Contacto Administrativo:\s*(?:.*\n){3}\s+.*?,(.*),',
-        'admin_country':          'Contacto Administrativo:\s*(?:.*\n){3}\s+.*, .+  (.*)',
-        'admin_phone':            'Contacto Administrativo:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
-        'admin_fax':              'Contacto Administrativo:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
-        'admin_email':            'Contacto Administrativo:\s*.*\t(.*)',
+        'admin':                  r'Contacto Administrativo:\s*(?:.*\n){1}\s+(.*)',
+        'admin_city':             r'Contacto Administrativo:\s*(?:.*\n){3}\s+([\s\w]*)',
+        'admin_street':           r'Contacto Administrativo:\s*(?:.*\n){2}\s+(.*)',
+        'admin_state_province':   r'Contacto Administrativo:\s*(?:.*\n){3}\s+.*?,(.*),',
+        'admin_country':          r'Contacto Administrativo:\s*(?:.*\n){3}\s+.*, .+  (.*)',
+        'admin_phone':            r'Contacto Administrativo:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
+        'admin_fax':              r'Contacto Administrativo:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
+        'admin_email':            r'Contacto Administrativo:\s*.*\t(.*)',
 
 
-        'billing':                'Contacto de Cobranza:\s*(?:.*\n){1}\s+(.*)',
-        'billing_city':           'Contacto de Cobranza:\s*(?:.*\n){3}\s+([\s\w]*)',
-        'billing_street':         'Contacto de Cobranza:\s*(?:.*\n){2}\s+(.*)',
-        'billing_state_province': 'Contacto de Cobranza:\s*(?:.*\n){3}\s+.*?,(.*),',
-        'billing_country':        'Contacto de Cobranza:\s*(?:.*\n){3}\s+.*, .+  (.*)',
-        'billing_phone':          'Contacto de Cobranza:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
-        'billing_fax':            'Contacto de Cobranza:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
-        'billing_email':          'Contacto de Cobranza:\s*.*\t(.*)',
+        'billing':                r'Contacto de Cobranza:\s*(?:.*\n){1}\s+(.*)',
+        'billing_city':           r'Contacto de Cobranza:\s*(?:.*\n){3}\s+([\s\w]*)',
+        'billing_street':         r'Contacto de Cobranza:\s*(?:.*\n){2}\s+(.*)',
+        'billing_state_province': r'Contacto de Cobranza:\s*(?:.*\n){3}\s+.*?,(.*),',
+        'billing_country':        r'Contacto de Cobranza:\s*(?:.*\n){3}\s+.*, .+  (.*)',
+        'billing_phone':          r'Contacto de Cobranza:\s*(?:.*\n){4}\s+(\+*\d.*)\(',
+        'billing_fax':            r'Contacto de Cobranza:\s*(?:.*\n){4}\s+.*\(FAX\) (.*)',
+        'billing_email':          r'Contacto de Cobranza:\s*.*\t(.*)',
 
 
     }
@@ -2493,58 +2494,58 @@ class WhoisDo(WhoisEntry):
     """Whois parser for .do domains
     """
     regex = {
-        'domain_name':          'Domain Name: *(.+)',
-        'whois_server':         'WHOIS Server: *(.+)',
-        'registrar':            'Registrar: *(.+)',
-        'registrar_email':      'Registrar Customer Service Email: *(.+)',
-        'registrar_phone':      'Registrar Phone: *(.+)',
-        'registrar_address':    'Registrar Address: *(.+)',
-        'registrar_country':    'Registrar Country: *(.+)',
-        'status':               'Domain Status: *(.+)',  # list of statuses
-        'registrant_id':        'Registrant ID: *(.+)',
-        'registrant_name':      'Registrant Name: *(.+)',
-        'registrant_organization': 'Registrant Organization: *(.+)',
-        'registrant_address':   'Registrant Street: *(.+)',
-        'registrant_city':      'Registrant City: *(.+)',
-        'registrant_state_province': 'Registrant State/Province: *(.+)',
-        'registrant_postal_code': 'Registrant Postal Code: *(.+)',
-        'registrant_country': 'Registrant Country: *(.+)',
-        'registrant_phone_number': 'Registrant Phone: *(.+)',
-        'registrant_email':     'Registrant Email: *(.+)',
-        'admin_id':             'Admin ID: *(.+)',
-        'admin_name':           'Admin Name: *(.+)',
-        'admin_organization':   'Admin Organization: *(.+)',
-        'admin_address':        'Admin Street: *(.+)',
-        'admin_city':           'Admin City: *(.+)',
-        'admin_state_province': 'Admin State/Province: *(.+)',
-        'admin_postal_code':    'Admin Postal Code: *(.+)',
-        'admin_country':        'Admin Country: *(.+)',
-        'admin_phone_number':   'Admin Phone: *(.+)',
-        'admin_email':          'Admin Email: *(.+)',
-        'billing_id':           'Billing ID: *(.+)',
-        'billing_name':         'Billing Name: *(.+)',
-        'billing_address':      'Billing Street: *(.+)',
-        'billing_city':         'Billing City: *(.+)',
-        'billing_state_province': 'Billing State/Province: *(.+)',
-        'billing_postal_code':  'Billing Postal Code: *(.+)',
-        'billing_country':      'Billing Country: *(.+)',
-        'billing_phone_number': 'Billing Phone: *(.+)',
-        'billing_email':        'Billing Email: *(.+)',
-        'tech_id':              'Tech ID: *(.+)',
-        'tech_name':            'Tech Name: *(.+)',
-        'tech_organization':    'Tech Organization: *(.+)',
-        'tech_address':         'Tech Street: *(.+)',
-        'tech_city':            'Tech City: *(.+)',
-        'tech_state_province':  'Tech State/Province: *(.+)',
-        'tech_postal_code':     'Tech Postal Code: *(.+)',
-        'tech_country':         'Tech Country: *(.+)',
-        'tech_phone_number':    'Tech Phone: *(.+)',
-        'tech_email':           'Tech Email: *(.+)',
-        'name_servers':         'Name Server: *(.+)',  # list of name servers
-        'creation_date':        'Creation Date: *(.+)',
-        'expiration_date':      'Registry Expiry Date: *(.+)',
-        'updated_date':         'Updated Date: *(.+)',
-        'dnssec':               'DNSSEC: *(.+)'
+        'domain_name':          r'Domain Name: *(.+)',
+        'whois_server':         r'WHOIS Server: *(.+)',
+        'registrar':            r'Registrar: *(.+)',
+        'registrar_email':      r'Registrar Customer Service Email: *(.+)',
+        'registrar_phone':      r'Registrar Phone: *(.+)',
+        'registrar_address':    r'Registrar Address: *(.+)',
+        'registrar_country':    r'Registrar Country: *(.+)',
+        'status':               r'Domain Status: *(.+)',  # list of statuses
+        'registrant_id':        r'Registrant ID: *(.+)',
+        'registrant_name':      r'Registrant Name: *(.+)',
+        'registrant_organization': r'Registrant Organization: *(.+)',
+        'registrant_address':   r'Registrant Street: *(.+)',
+        'registrant_city':      r'Registrant City: *(.+)',
+        'registrant_state_province': r'Registrant State/Province: *(.+)',
+        'registrant_postal_code': r'Registrant Postal Code: *(.+)',
+        'registrant_country': r'Registrant Country: *(.+)',
+        'registrant_phone_number': r'Registrant Phone: *(.+)',
+        'registrant_email':     r'Registrant Email: *(.+)',
+        'admin_id':             r'Admin ID: *(.+)',
+        'admin_name':           r'Admin Name: *(.+)',
+        'admin_organization':   r'Admin Organization: *(.+)',
+        'admin_address':        r'Admin Street: *(.+)',
+        'admin_city':           r'Admin City: *(.+)',
+        'admin_state_province': r'Admin State/Province: *(.+)',
+        'admin_postal_code':    r'Admin Postal Code: *(.+)',
+        'admin_country':        r'Admin Country: *(.+)',
+        'admin_phone_number':   r'Admin Phone: *(.+)',
+        'admin_email':          r'Admin Email: *(.+)',
+        'billing_id':           r'Billing ID: *(.+)',
+        'billing_name':         r'Billing Name: *(.+)',
+        'billing_address':      r'Billing Street: *(.+)',
+        'billing_city':         r'Billing City: *(.+)',
+        'billing_state_province': r'Billing State/Province: *(.+)',
+        'billing_postal_code':  r'Billing Postal Code: *(.+)',
+        'billing_country':      r'Billing Country: *(.+)',
+        'billing_phone_number': r'Billing Phone: *(.+)',
+        'billing_email':        r'Billing Email: *(.+)',
+        'tech_id':              r'Tech ID: *(.+)',
+        'tech_name':            r'Tech Name: *(.+)',
+        'tech_organization':    r'Tech Organization: *(.+)',
+        'tech_address':         r'Tech Street: *(.+)',
+        'tech_city':            r'Tech City: *(.+)',
+        'tech_state_province':  r'Tech State/Province: *(.+)',
+        'tech_postal_code':     r'Tech Postal Code: *(.+)',
+        'tech_country':         r'Tech Country: *(.+)',
+        'tech_phone_number':    r'Tech Phone: *(.+)',
+        'tech_email':           r'Tech Email: *(.+)',
+        'name_servers':         r'Name Server: *(.+)',  # list of name servers
+        'creation_date':        r'Creation Date: *(.+)',
+        'expiration_date':      r'Registry Expiry Date: *(.+)',
+        'updated_date':         r'Updated Date: *(.+)',
+        'dnssec':               r'DNSSEC: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2558,10 +2559,10 @@ class WhoisAe(WhoisEntry):
     """Whois parser for .ae domains
     """
     regex = {
-        'domain_name':     'Domain Name: *(.+)',
-        'status':          'Status: *(.+)',
-        'registrant_name': 'Registrant Contact Name: *(.+)',
-        'tech_name':       'Tech Contact Name: *(.+)',
+        'domain_name':     r'Domain Name: *(.+)',
+        'status':          r'Status: *(.+)',
+        'registrant_name': r'Registrant Contact Name: *(.+)',
+        'tech_name':       r'Tech Contact Name: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2575,12 +2576,12 @@ class WhoisSi(WhoisEntry):
     """Whois parser for .si domains
     """
     regex = {
-        'domain_name':     'domain: *(.+)',
-        'registrar':       'registrar: *(.+)',
-        'name_servers':    'nameserver: *(.+)',
-        'registrant_name': 'registrant: *(.+)',
-        'creation_date':   'created: *(.+)',
-        'expiration_date': 'expire: *(.+)',
+        'domain_name':     r'domain: *(.+)',
+        'registrar':       r'registrar: *(.+)',
+        'name_servers':    r'nameserver: *(.+)',
+        'registrant_name': r'registrant: *(.+)',
+        'creation_date':   r'created: *(.+)',
+        'expiration_date': r'expire: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2594,9 +2595,9 @@ class WhoisNo(WhoisEntry):
     """Whois parser for .no domains
     """
     regex = {
-        'domain_name':     'Domain Name.*:\s*(.+)',
-        'creation_date':   'Additional information:\nCreated:\s*(.+)',
-        'updated_date':    'Additional information:\n(?:.*\n)Last updated:\s*(.+)',
+        'domain_name':     r'Domain Name.*:\s*(.+)',
+        'creation_date':   r'Additional information:\nCreated:\s*(.+)',
+        'updated_date':    r'Additional information:\n(?:.*\n)Last updated:\s*(.+)',
     }
 
     def __init__(self, domain, text):
@@ -2610,19 +2611,39 @@ class WhoisKZ(WhoisEntry):
     """Whois parser for .kz domains
     """
     regex = {
-        'domain_name':      'Domain Name............: *(.+)',
-        'registar_created': 'Registar Created: *(.+)',
-        'curent_registrar': 'Current Registar: *(.+)',
-        'creation_date':    'Domain created: *(.+)',
-        'lats_modified':    'Last modified : *(.+)',
-        'name_servers':     'server.*: *(.+)',  # list of name servers
-        'status':           ' (.+?) -',  # list of statuses
+        'domain_name':      r'Domain Name............: *(.+)',
+        'registar_created': r'Registar Created: *(.+)',
+        'curent_registrar': r'Current Registar: *(.+)',
+        'creation_date':    r'Domain created: *(.+)',
+        'lats_modified':    r'Last modified : *(.+)',
+        'name_servers':     r'server.*: *(.+)',  # list of name servers
+        'status':           r' (.+?) -',  # list of statuses
         'emails':           EMAIL_REGEX,  # list of email addresses
-        'org':              'Organization Name.*: *(.+)'
+        'org':              r'Organization Name.*: *(.+)'
     }
 
     def __init__(self, domain, text):
         if text.strip() == 'No entries found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+            
+            
+class WhoisIR(WhoisEntry):
+    """Whois parser for .ir domains."""
+
+    regex = {
+        'domain_name': 'domain: *(.+)',
+        'registrant_name': 'person: *(.+)',
+        'registrant_organization': 'org: *(.+)',
+        'updated_date': 'last-updated: *(.+)',
+        'expiration_date': 'expire-date: *(.+)',
+        'name_servers': 'nserver: *(.+)',  # list of name servers
+        'emails': EMAIL_REGEX,
+    }
+
+    def __init__(self, domain, text):
+        if 'No match for "' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
