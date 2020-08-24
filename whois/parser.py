@@ -818,11 +818,12 @@ class WhoisJp(WhoisEntry):
     """
     regex = {
         'domain_name': r'a\. \[Domain Name\]\s*(.+)',
-        'registrant_org': r'g\. \[Organization\](.+)',
+        'registrant_org': r'g\. \[(?:Organization|Registrant)\](.+)',
         'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
+        'expiration_date': r'\[Expires on\]\s*(.+)',
         'name_servers': r'p\. \[Name Server\]\s*(.+)',  # list of name servers
-        'updated_date':  r'\[Last Update\]\s?(.+)',
-        'status': r'\[State\]\s*(.+)',  # list of statuses
+        'updated_date':  r'\[Last Updated?\]\s?(.+)',
+        'status': r'\[(?:State|Status)\]\s*(.+)',  # list of statuses
     }
 
     def __init__(self, domain, text):
