@@ -819,7 +819,7 @@ class WhoisJp(WhoisEntry):
     regex = {
         'domain_name': r'a\. \[Domain Name\]\s*(.+)',
         'registrant_org': r'g\. \[Organization\](.+)',
-        'creation_date': r'\[Registered Date\]\s*(.+)',
+        'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
         'name_servers': r'p\. \[Name Server\]\s*(.+)',  # list of name servers
         'updated_date':  r'\[Last Update\]\s?(.+)',
         'status': r'\[State\]\s*(.+)',  # list of statuses
