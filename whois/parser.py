@@ -790,21 +790,23 @@ class WhoisFi(WhoisEntry):
     """
     regex = {
         'domain_name':                    r'domain\.*: *([\S]+)',
-        'name':                           r'Holder\s*name\.*:([\S\ ]+)',
-        'address':                        r'[Holder\w\W]address\.*: ([\S\ ]+)',
-        'phone':                          r'Holder[\s\w\W]+phone\.*: ([\S]+)',
-        'email':                          r'holder email\.*: *([\S\ ]+)',
-        'status':                         r'status\.*: *([\S]+)',  # list of statuses
+        'name':                           r'Holder\s*name\.*: (.+)',
+        'address':                        r'[Holder\w\W]address\.*: (.+)',
+        'phone':                          r'Holder[\s\w\W]+phone\.*: (.+)',
+        'email':                          r'holder email\.*: *([\S]+)',
+        'status':                         r'status\.*: (.+)',  # list of statuses
         'creation_date':                  r'created\.*: *([\S]+)',
         'updated_date':                   r'modified\.*: *([\S]+)',
         'expiration_date':                r'expires\.*: *([\S]+)',
         'name_servers':                   r'nserver\.*: *([\S]+) \[\S+\]',  # list of name servers
         'name_server_statuses':           r'nserver\.*: *([\S]+ \[\S+\])',  # list of name servers and statuses
         'dnssec':                         r'dnssec\.*: *([\S]+)',
-        'registrar':                      r'Registrar\s*registrar\.*: *([\S]+)',
-        'registrar_site':                 r'Registrar[\s\w\W]+www\.*: *([\S]+)'
+        'registrar':                      r'Registrar\s*registrar\.*: (.+)',
+        'registrar_site':                 r'Registrar[\s\w\W]+www\.*: (.+)'
 
     }
+
+    dayfirst = True
 
     def __init__(self, domain, text):
         if 'Domain not ' in text:
