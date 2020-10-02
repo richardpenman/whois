@@ -1559,11 +1559,6 @@ class WhoisSK(WhoisEntry):
         'expiration_date':                r'Valid Until: *(.+)',
         'name_servers':                   r'Nameserver: *(.+)',
 
-        # 'registrant_name':                r'Name:\s*(.+)',
-        # 'registrant_email':               r'(?<=Registrant)[\s\S]*?Email:(.*)',
-        # 'registrant_phone':               r'Phone:\s*(.+)',
-        # 'registrant_address':             r'Street:\s*(.+)',
-
         'registrar':                      r'(?<=Registrar)[\s\S]*?Organization:(.*)',
         'registrar_organization_id':      r'(?<=Registrar)[\s\S]*?Organization ID:(.*)',
         'registrar_name':                 r'(?<=Registrar)[\s\S]*?Name:(.*)',
@@ -1575,7 +1570,6 @@ class WhoisSK(WhoisEntry):
         'registrar_country_code':         r'(?<=Registrar)[\s\S]*?Country Code:(.*)',
         'registrar_created':              r'(?<=Registrant)[\s\S]*?Created:(.*)',
         'registrar_updated':              r'(?<=Registrant)[\s\S]*?Updated:(.*)',
-
 
         'admin':                          r'Contact:\s*(.*)',
         'admin_organization':             r'(?<=Contact)[\s\S]*Organization:(.*)',
