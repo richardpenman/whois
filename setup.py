@@ -1,13 +1,15 @@
 import sys, os
 import setuptools
 
-version = '0.7.2'
+
+def read(filename):
+    return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
 setuptools.setup(
     name='python-whois',
-    version=version,
+    version='0.7.3',
     description="Whois querying and parsing of domain registration information.",
-    long_description='',
+    long_description=read('README.rst'),
     install_requires=[
         'future',
     ],
@@ -24,7 +26,7 @@ setuptools.setup(
     keywords='whois, python',
     author='Richard Penman',
     author_email='richard.penman@gmail.com',
-    url='https://github.com/richardpenman/pywhois',
+    url='https://github.com/richardpenman/whois',
     license='MIT',
     packages=['whois'],
     package_dir={'whois':'whois'},

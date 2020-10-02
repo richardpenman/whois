@@ -102,7 +102,7 @@ class NICClient(object):
         whois server for getting contact details.
         """
         nhost = None
-        match = re.compile('Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
+        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
