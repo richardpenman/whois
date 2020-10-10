@@ -336,6 +336,8 @@ class WhoisEntry(dict):
             return WhoisKZ(domain, text)
         elif domain.endswith('.ir'):
             return WhoisIR(domain, text)
+        elif domain.endswith('.中国'):
+            return WhoisZhongGuo(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2639,6 +2641,26 @@ class WhoisIR(WhoisEntry):
         'updated_date': 'last-updated: *(.+)',
         'expiration_date': 'expire-date: *(.+)',
         'name_servers': 'nserver: *(.+)',  # list of name servers
+        'emails': EMAIL_REGEX,
+    }
+
+    def __init__(self, domain, text):
+        if 'No match for "' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisZhongGuo(WhoisEntry):
+    """Whois parser for .中国 domains."""
+
+    regex = {
+        'domain_name': 'Domain Name: *(.+)',
+        'creation_date': r'Registration Time: *(.+)',
+        'registrant_name': 'Registrant: *(.+)',
+        'registrar': r'Sponsoring Registrar: *(.+)',
+        'expiration_date': 'Expiration Time: *(.+)',
+        'name_servers': 'Name Server: *(.+)',  # list of name servers
         'emails': EMAIL_REGEX,
     }
 
