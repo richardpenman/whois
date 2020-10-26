@@ -339,6 +339,7 @@ class WhoisEntry(dict):
         else:
             return WhoisEntry(domain, text)
 
+
 class WhoisCl(WhoisEntry):
     """Whois parser for .cl domains."""
 
@@ -490,9 +491,9 @@ class WhoisNl(WhoisEntry):
     regex = {
         'domain_name':         r'Domain Name: *(.+)',
         'expiration_date':     None,
-        'updated_date':        'Updated\sDate:\s*(.+)',
-        'creation_date':       'Creation\sDate:\s*(.+)',
-        'status':              'Status: *(.+)',  # list of statuses
+        'updated_date':        r'Updated\sDate:\s*(.+)',
+        'creation_date':       r'Creation\sDate:\s*(.+)',
+        'status':              r'Status: *(.+)',  # list of statuses
         'name':                None,
         'registrar':           r'Registrar:\s*(.*\n)',
         'registrar_address':   r'Registrar:\s*(?:.*\n){1}\s*(.*)',
@@ -515,7 +516,6 @@ class WhoisNl(WhoisEntry):
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
             self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
-
 
 
 class WhoisName(WhoisEntry):
@@ -986,7 +986,7 @@ class WhoisPt(WhoisEntry):
         'admin': r'Admin Name: *(.+)',
         'admin_street': r'Admin Address: *(.+)',
         'admin_city': r'Admin Locality: *(.+)',
-        'admin_postal_code':'Admin ZipCode: *(.+)',
+        'admin_postal_code': r'Admin ZipCode: *(.+)',
         'admin_email': r'Admin Email: *(.+)',
         'name_servers': r'Name Server: *(.+) \|',  # list of name servers
         'status': r'Domain Status: *(.+)',  # list of statuses
@@ -1562,31 +1562,26 @@ class WhoisSK(WhoisEntry):
         'expiration_date':                r'Valid Until: *(.+)',
         'name_servers':                   r'Nameserver: *(.+)',
 
-        'registrant_name':                r'Name:\s*(.+)',
-        'registrant_email':               r'Email:\s*(.+)',
-        'registrant_phone':               r'Phone:\s*(.+)',
-        'registrant_address':             r'Street:\s*(.+)',
-
         'registrar':                      r'(?<=Registrar)[\s\S]*?Organization:(.*)',
         'registrar_organization_id':      r'(?<=Registrar)[\s\S]*?Organization ID:(.*)',
-        'registrar_name':                 r'(?<=Registrant)[\s\S]*?Name:(.*)',
-        'registrar_phone':                r'(?<=Registrant)[\s\S]*?Phone:(.*)',
-        'registrar_email':                r'(?<=Registrant)[\s\S]*?Email:(.*)',
-        'registrar_street':               r'(?<=Registrant)[\s\S]*?Street:(.*)',
-        'registrar_city':                 r'(?<=Registrant)[\s\S]*?City:(.*)',
-        'registrar_postal_code':          r'(?<=Registrant)[\s\S]*?Postal Code:(.*)',
-        'registrar_country_code':         r'(?<=Registrant)[\s\S]*?Country Code:(.*)',
+        'registrar_name':                 r'(?<=Registrar)[\s\S]*?Name:(.*)',
+        'registrar_phone':                r'(?<=Registrar)[\s\S]*?Phone:(.*)',
+        'registrar_email':                r'(?<=Registrar)[\s\S]*?Email:(.*)',
+        'registrar_street':               r'(?<=Registrar)[\s\S]*?Street:(.*)',
+        'registrar_city':                 r'(?<=Registrar)[\s\S]*?City:(.*)',
+        'registrar_postal_code':          r'(?<=Registrar)[\s\S]*?Postal Code:(.*)',
+        'registrar_country_code':         r'(?<=Registrar)[\s\S]*?Country Code:(.*)',
+        'registrar_created':              r'(?<=Registrant)[\s\S]*?Created:(.*)',
+        'registrar_updated':              r'(?<=Registrant)[\s\S]*?Updated:(.*)',
 
-        'admin':                          r'Admin Contact:\s*(.*)',
-        'admin_organization':             r'(?<=^Contact)[\s\S]*?Organization:(.*)',
-        'admin_phone':                    r'(?<=^Contact)[\s\S]*?Phone:(.*)',
-        'admin_email':                    r'(?<=^Contact)[\s\S]*?Email:(.*)',
-        'admin_street':                   r'(?<=^Contact)[\s\S]*?Street:(.*)',
-        'admin_city':                     r'(?<=^Contact)[\s\S]*?City:(.*)',
-        'admin_postal_code':              r'(?<=^Contact)[\s\S]*?Postal Code:(.*)',
-        'admin_country_code':             r'(?<=^Contact)[\s\S]*?Country Code:(.*)',
+        'admin':                          r'Contact:\s*(.*)',
+        'admin_organization':             r'(?<=Contact)[\s\S]*Organization:(.*)',
+        'admin_email':                    r'(?<=Contact)[\s\S]*Email:(.*)',
+        'admin_street':                   r'(?<=Contact)[\s\S]*Street:(.*)',
+        'admin_city':                     r'(?<=Contact)[\s\S]*City:(.*)',
+        'admin_postal_code':              r'(?<=Contact)[\s\S]*Postal Code:(.*)',
+        'admin_country_code':             r'(?<=Contact)[\s\S]*Country Code:(.*)',
 
-        'tech':                           r'Tech Contact:\s*(.*)',
     }
 
     def __init__(self, domain, text):

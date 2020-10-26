@@ -170,7 +170,7 @@ class TestParser(unittest.TestCase):
         }
         self._parse_and_compare('testcompany.ca', data, expected_results,
                                 whois_entry=WhoisCa)
-    
+
     def test_cn_parse(self):
         data = """
             Domain Name: cnnic.com.cn
@@ -421,7 +421,7 @@ Hostname:             p.nic.dk
                 'p.nic.dk'
             ],
             "status": "Active",
-            'registrant': 'DK HOSTMASTER A/S',
+            'registrant_name': 'DK HOSTMASTER A/S',
             'registrant_address': 'Ørestads Boulevard 108, 11.',
             'registrant_zip_code': '2300',
             'registrant_city': 'København S',
@@ -447,6 +447,75 @@ Hostname:             p.nic.dk
         if fail:
             self.fail("%d/%d sample whois attributes were not parsed properly!"
                       % (fail, total))
+
+    def test_sk_parse(self):
+        data = """
+        # whois.sk-nic.sk
+        
+        Domain:                       pipoline.sk
+        Registrant:                   H410977
+        Admin Contact:                H410977
+        Tech Contact:                 H410977
+        Registrar:                    PIPO-0002
+        Created:                      2012-07-23
+        Updated:                      2020-07-02
+        Valid Until:                  2021-07-13
+        Nameserver:                   ns1.cloudlikeaboss.com
+        Nameserver:                   ns2.cloudlikeaboss.com
+        EPP Status:                   ok
+        
+        Registrar:                    PIPO-0002
+        Name:                         Pipoline s.r.o.
+        Organization:                 Pipoline s.r.o.
+        Organization ID:              48273317
+        Phone:                        +421.949347169
+        Email:                        peter.gonda@pipoline.com
+        Street:                       Ladožská 8
+        City:                         Košice
+        Postal Code:                  040 12
+        Country Code:                 SK
+        Created:                      2017-09-01
+        Updated:                      2020-07-02
+        
+        Contact:                      H410977
+        Name:                         Ing. Peter Gonda
+        Organization:                 Pipoline s.r.o
+        Organization ID:              48273317
+        Email:                        info@pipoline.com
+        Street:                       Ladozska 8
+        City:                         Kosice
+        Postal Code:                  04012
+        Country Code:                 SK
+        Registrar:                    PIPO-0002
+        Created:                      2017-11-22
+        Updated:                      2017-11-22"""
+
+        expected_results = {
+            'admin': 'H410977',
+            'admin_city': 'Kosice',
+            'admin_country_code': 'SK',
+            'admin_email': 'info@pipoline.com',
+            'admin_organization': 'Pipoline s.r.o',
+            'admin_postal_code': '04012',
+            'admin_street': 'Ladozska 8',
+            'creation_date': '2012-07-23 00:00:00',
+            'domain_name': 'pipoline.sk',
+            'expiration_date': '2021-07-13 00:00:00',
+            'name_servers': ['ns1.cloudlikeaboss.com', 'ns2.cloudlikeaboss.com'],
+            'registrar': 'Pipoline s.r.o.',
+            'registrar_city': 'Košice',
+            'registrar_country_code': 'SK',
+            'registrar_created': '2012-07-23',
+            'registrar_email': 'peter.gonda@pipoline.com',
+            'registrar_name': 'Pipoline s.r.o.',
+            'registrar_organization_id': '48273317',
+            'registrar_phone': '+421.949347169',
+            'registrar_postal_code': '040 12',
+            'registrar_street': 'Ladožská 8',
+            'registrar_updated': '2020-07-02',
+            'updated_date': '2020-07-02 00:00:00'}
+
+        self._parse_and_compare('pipoline.sk', data, expected_results)
 
 
 if __name__ == '__main__':
