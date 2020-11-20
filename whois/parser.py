@@ -338,6 +338,8 @@ class WhoisEntry(dict):
             return WhoisIR(domain, text)
         elif domain.endswith('.中国'):
             return WhoisZhongGuo(domain, text)
+        elif domain.endswith('.website'):
+            return WhoisWebsite(domain, text)
         elif domain.endswith('.sg'):
             return WhoisSG(domain, text)
         else:
@@ -2698,3 +2700,12 @@ class WhoisZhongGuo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+class WhoisWebsite(WhoisEntry):
+    """Whois parser for .website domains
+    """
+
+    def __init__(self, domain, text):
+        if 'No match for "' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text)
