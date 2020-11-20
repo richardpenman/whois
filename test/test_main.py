@@ -43,3 +43,9 @@ class TestExtractDomain(unittest.TestCase):
         domain = '1e100.net'
         # double extract_domain() so we avoid possibly changing hostnames like lga34s18-in-f14.1e100.net
         self.assertEqual(domain, extract_domain(extract_domain(url)))
+
+    def test_second_level_domain(self):
+        """Verify that TLDs which only have second-level domains parse correctly"""
+        url = 'google.co.za'
+        domain = url
+        self.assertEqual(domain, extract_domain(url))

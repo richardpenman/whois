@@ -88,12 +88,21 @@ def extract_domain(url):
 
     # find the longest suffix match
     domain = b''
-    for section in reversed(url.split('.')):
+    split_url = url.split('.')
+    for section in reversed(split_url):
         if domain:
             domain = b'.' + domain
         domain = section.encode('utf-8') + domain
         if domain not in suffixes:
-            break
+            if not b'.' in domain and len(split_url) >= 2:
+                # If this is the first section and there wasn't a match, try to
+                # match the first two sections - if that works, keep going
+                # See https://github.com/richardpenman/whois/issues/50
+                second_order_tld = '.'.join([split_url[-2], split_url[-1]])
+                if not second_order_tld.encode('utf-8') in suffixes:
+                    break
+            else:
+                break
     return domain.decode('utf-8')
 
 

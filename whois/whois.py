@@ -59,7 +59,7 @@ class NICClient(object):
     NORIDHOST = "whois.norid.no"
     IANAHOST = "whois.iana.org"
     PANDIHOST = "whois.pandi.or.id"
-    DENICHOST = "de.whois-servers.net"
+    DENICHOST = "whois.denic.de"
     AI_HOST = "whois.nic.ai"
     AR_HOST = "whois.nic.ar"
     BY_HOST = "whois.cctld.by"
@@ -86,6 +86,9 @@ class NICClient(object):
     PE_HOST = "kero.yachay.pe"
     ONLINE_HOST = "whois.nic.online"
     IST_HOST = "whois.afilias-srs.net"
+    CHAT_HOST = "whois.nic.chat"
+    WEBSITE_HOST = "whois.nic.website"
+    
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -100,7 +103,7 @@ class NICClient(object):
         whois server for getting contact details.
         """
         nhost = None
-        match = re.compile('Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
+        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
@@ -249,6 +252,10 @@ class NICClient(object):
             return NICClient.IST_HOST
         elif tld == 'kz':
             return NICClient.KZ_HOST
+        elif tld == 'chat':
+            return NICClient.CHAT_HOST
+        elif tld == 'website':
+            return NICClient.WEBSITE_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
 
