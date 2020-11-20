@@ -61,7 +61,7 @@ class NICClient(object):
     NORIDHOST = "whois.norid.no"
     IANAHOST = "whois.iana.org"
     PANDIHOST = "whois.pandi.or.id"
-    DENICHOST = "de.whois-servers.net"
+    DENICHOST = "whois.denic.de"
     AI_HOST = "whois.nic.ai"
     AR_HOST = "whois.nic.ar"
     BY_HOST = "whois.cctld.by"

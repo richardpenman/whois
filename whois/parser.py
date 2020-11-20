@@ -338,6 +338,8 @@ class WhoisEntry(dict):
             return WhoisIR(domain, text)
         elif domain.endswith('.中国'):
             return WhoisZhongGuo(domain, text)
+        elif domain.endswith('.sg'):
+            return WhoisSG(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -361,6 +363,35 @@ class WhoisCl(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisSG(WhoisEntry):
+    """Whois parser for .sg domains."""
+
+    regex = {
+        'domain_name':      r'Domain name: *(.+)',
+        'registrant_name':  r'Registrant:\n\s+Name:(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'creation_date':    r'Creation date: *(.+)',
+        'expiration_date':  r'Expiration date: *(.+)',
+        'dnssec':           r'DNSSEC:\n(.*)',
+    }
+
+    def __init__(self, domain, text):
+
+        if 'Domain Not Found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile('Name Servers:(.*?)DNSSEC:', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].strip().splitlines()]
+
+        techmatch = re.compile('Technical Contact:(.*?)Name Servers:', re.DOTALL).search(text)
+        if techmatch:
+            for line in techmatch.groups()[0].strip().splitlines():
+                self['technical_conatact_'+ line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
 
 
 class WhoisPe(WhoisEntry):
