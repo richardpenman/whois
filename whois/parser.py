@@ -342,6 +342,8 @@ class WhoisEntry(dict):
             return WhoisWebsite(domain, text)
         elif domain.endswith('.sg'):
             return WhoisSG(domain, text)
+        elif domain.endswith('.edu'):
+            return WhoisEDU(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -394,6 +396,42 @@ class WhoisSG(WhoisEntry):
         if techmatch:
             for line in techmatch.groups()[0].strip().splitlines():
                 self['technical_conatact_'+ line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+
+
+class WhoisEDU(WhoisEntry):
+    """Whois parser for .edu domains."""
+
+    regex = {
+        'domain_name':       r'Domain Name: *(.+)',
+        'creation_date':     r'Domain record activated: *(.+)',
+        'last_update_date':  r'Domain record last updated: *(.+)',
+        'expiration_date':   r'Domain expires: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+
+        if 'NO MATCH:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile('Name Servers:(.*?)Domain record activated:', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].strip().splitlines()]
+
+        techmatch = re.compile('Technical Contact:(.*?)Name Servers:', re.DOTALL).search(text)
+        contact_keys = ('name', 'organization', 'street', 'city', 'country', 'phone', 'email')
+        if techmatch:
+            for key, value in zip(contact_keys, techmatch.groups()[0].strip().splitlines()):
+                self[f'technical_conatact_{key}'] = value.strip('\t')
+        adminmatch = re.compile('Administrative Contact:(.*?)Technical Contact:', re.DOTALL).search(text)
+        if adminmatch:
+            for key, value in zip(contact_keys, adminmatch.groups()[0].strip().splitlines()):
+                self[f'admin_conatact_{key}'] = value.strip('\t')
+        registrantmatch = re.compile('Registrant:(.*?)Administrative Contact:', re.DOTALL).search(text)
+        if registrantmatch:
+            for key, value in zip(contact_keys[1:5], registrantmatch.groups()[0].strip().splitlines()):
+                self[f'registrant_{key}'] = value.strip('\t')
 
 
 class WhoisPe(WhoisEntry):
