@@ -373,6 +373,19 @@ class TestParser(unittest.TestCase):
         }
         self._parse_and_compare('utwente.nl', data, expected_results)
 
+    def test_nl_expiration(self):
+        data = """
+        domain_name: randomtest.nl
+        Status:      in quarantine
+        Creation Date: 2008-09-24
+        Updated Date: 2020-10-27
+        Date out of quarantine: 2020-12-06T20:31:25
+        """
+
+        w = WhoisEntry.load('randomtest.nl', data)
+        expires = w.expiration_date.strftime('%Y-%m-%d')
+        self.assertEqual(expires, '2020-12-06')
+
     def test_dk_parse(self):
         data = """
 #
