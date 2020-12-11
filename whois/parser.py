@@ -278,8 +278,6 @@ class WhoisEntry(dict):
             return WhoisIt(domain, text)
         elif domain.endswith('.mx'):
             return WhoisMx(domain, text)
-        elif domain.endswith('.ai'):
-            return WhoisAi(domain, text)
         elif domain.endswith('.il'):
             return WhoisIl(domain, text)
         elif domain.endswith('.in'):
@@ -929,24 +927,46 @@ class WhoisAU(WhoisEntry):
 
 
 class WhoisEu(WhoisEntry):
-    """Whois parser for .eu domains
-    """
+    """Whois parser for .eu domains"""
     regex = {
-        'domain_name': r'Domain: *([^\n\r]+)',
-        'tech_name': r'Technical: *Name: *([^\n\r]+)',
-        'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
-        'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
-        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
-        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
-        'registrar': r'Registrar: *Name: *([^\n\r]+)',
-        'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
+        'domain_name': r'Domain: *(.+)',
     }
 
     def __init__(self, domain, text):
-        if text.strip() == 'Status: AVAILABLE':
+        if re.search(r'Status:( NOT)? AVAILABLE', text.strip()):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        registrantmatch = re.compile('Registrant:(.*?)(Technical|On-site)', re.DOTALL|re.IGNORECASE).search(text)
+        if registrantmatch:
+            if 'NOT DISCLOSED!' in registrantmatch.groups()[0]:
+                self['registrant_info'] = 'hidden'
+            else:
+                self['registrarnt_info'] = 'Not implemented yet'
+
+        techmatch = re.compile('Technical:(.*?)Registrar:', re.DOTALL).search(text)
+        if techmatch:
+            for line in techmatch.groups()[0].strip().splitlines():
+                print(line.split(':')[0].strip().lower(), line.split(':')[1].strip().lower())
+                self[f'technical_conatact_'+line.split(':')[0].strip().lower()] = line.split(':')[1].strip().lower()
+
+        registrarmatch = re.compile('Registrar:(.*?)Name servers:', re.DOTALL|re.IGNORECASE).search(text)
+        if registrarmatch:
+            for line in registrarmatch.groups()[0].strip().splitlines():
+                self[f'registrar_'+line.split(': ')[0].strip().lower()] = line.split(': ')[1].strip().lower()
+
+        nsmatch = re.compile('Name servers:(.*?)(Please visit|Keys)', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].strip().splitlines()]
+
+        dnssecmatch = re.compile('Keys:(.*?)Please visit', re.DOTALL).search(text)
+        if dnssecmatch:
+            self['dnssec'] = {}
+            dnssecdata = {}
+            for line in dnssecmatch.groups()[0].strip().split():
+                dnssecdata[line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+            self['dnssec'] = dnssecdata
 
 
 class WhoisEe(WhoisEntry):
