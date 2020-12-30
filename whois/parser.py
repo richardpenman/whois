@@ -692,7 +692,8 @@ class WhoisCa(WhoisEntry):
         'expiration_date':                r'Expiry Date: *(.+)',
         'phone':                          r'Phone: *(.+)',
         'fax':                            r'Fax: *(.+)',
-        'dnssec':                         r'dnssec: *([\S]+)'
+        'dnssec':                         r'dnssec: *([\S]+)',
+        'name_servers':                   r'Name Server: *(.+)',
     }
 
     def __init__(self, domain, text):
