@@ -1329,7 +1329,7 @@ class WhoisBiz(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 
-class WhoisMobi(WhoisMe):
+class WhoisMobi(WhoisEntry):
     """Whois parser for .mobi domains
     """
     regex = {
