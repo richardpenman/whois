@@ -1332,9 +1332,67 @@ class WhoisBiz(WhoisEntry):
 class WhoisMobi(WhoisMe):
     """Whois parser for .mobi domains
     """
+    regex = {
+        'domain_id':                   r'Registry Domain ID:(.+)',
+        'domain_name':                 r'Domain Name:(.+)',
+        'creation_date':               r'Creation Date:(.+)',
+        'updated_date':                r'Updated Date:(.+)',
+        'expiration_date':             r'Registry Expiry Date: (.+)',
+        'registrar':                   r'Registrar:(.+)',
+        'status':                      r'Domain Status:(.+)',  # list of statuses
+        'registrant_id':               r'Registrant ID:(.+)',
+        'registrant_name':             r'Registrant Name:(.+)',
+        'registrant_org':              r'Registrant Organization:(.+)',
+        'registrant_address':          r'Registrant Address:(.+)',
+        'registrant_address2':         r'Registrant Address2:(.+)',
+        'registrant_address3':         r'Registrant Address3:(.+)',
+        'registrant_city':             r'Registrant City:(.+)',
+        'registrant_state_province':   r'Registrant State/Province:(.+)',
+        'registrant_country':          r'Registrant Country/Economy:(.+)',
+        'registrant_postal_code':      r'Registrant Postal Code:(.+)',
+        'registrant_phone':            r'Registrant Phone:(.+)',
+        'registrant_phone_ext':        r'Registrant Phone Ext\.:(.+)',
+        'registrant_fax':              r'Registrant FAX:(.+)',
+        'registrant_fax_ext':          r'Registrant FAX Ext\.:(.+)',
+        'registrant_email':            r'Registrant E-mail:(.+)',
+        'admin_id':                    r'Admin ID:(.+)',
+        'admin_name':                  r'Admin Name:(.+)',
+        'admin_org':                   r'Admin Organization:(.+)',
+        'admin_address':               r'Admin Address:(.+)',
+        'admin_address2':              r'Admin Address2:(.+)',
+        'admin_address3':              r'Admin Address3:(.+)',
+        'admin_city':                  r'Admin City:(.+)',
+        'admin_state_province':        r'Admin State/Province:(.+)',
+        'admin_country':               r'Admin Country/Economy:(.+)',
+        'admin_postal_code':           r'Admin Postal Code:(.+)',
+        'admin_phone':                 r'Admin Phone:(.+)',
+        'admin_phone_ext':             r'Admin Phone Ext\.:(.+)',
+        'admin_fax':                   r'Admin FAX:(.+)',
+        'admin_fax_ext':               r'Admin FAX Ext\.:(.+)',
+        'admin_email':                 r'Admin E-mail:(.+)',
+        'tech_id':                     r'Tech ID:(.+)',
+        'tech_name':                   r'Tech Name:(.+)',
+        'tech_org':                    r'Tech Organization:(.+)',
+        'tech_address':                r'Tech Address:(.+)',
+        'tech_address2':               r'Tech Address2:(.+)',
+        'tech_address3':               r'Tech Address3:(.+)',
+        'tech_city':                   r'Tech City:(.+)',
+        'tech_state_province':         r'Tech State/Province:(.+)',
+        'tech_country':                r'Tech Country/Economy:(.+)',
+        'tech_postal_code':            r'Tech Postal Code:(.+)',
+        'tech_phone':                  r'Tech Phone:(.+)',
+        'tech_phone_ext':              r'Tech Phone Ext\.:(.+)',
+        'tech_fax':                    r'Tech FAX:(.+)',
+        'tech_fax_ext':                r'Tech FAX Ext\.:(.+)',
+        'tech_email':                  r'Tech E-mail:(.+)',
+        'name_servers':                r'Name Server: *(.+)',  # list of name servers
+    }
 
     def __init__(self, domain, text):
-        WhoisMe.__init__(self, domain, text)
+        if 'NOT FOUND' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 
 class WhoisKg(WhoisEntry):
