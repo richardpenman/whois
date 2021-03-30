@@ -119,11 +119,13 @@ class NICClient(object):
                     break
         return nhost
 
-    def whois(self, query, hostname, flags, many_results=False):
+    def whois(self, query, hostname, flags, many_results=False, quiet=False):
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
         for the region-specifc whois server and do a lookup
-        there for contact details
+        there for contact details.  If `quiet` is `True`, will
+        not print a message to STDOUT when a socket error
+        is encountered.
         """
         response = b''
         if "SOCKS" in os.environ:
@@ -180,11 +182,12 @@ class NICClient(object):
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None:
-                response += self.whois(query, nhost, 0)
+                response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
-            print("Error trying to connect to socket: closing socket") 
+            if not quiet:
+                print("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
-            response = "Socket not responding"   
+            response = "Socket not responding: {}".format(exc)
         return response
 
     def choose_server(self, domain):
