@@ -2644,15 +2644,15 @@ class WhoisKZ(WhoisEntry):
     """Whois parser for .kz domains
     """
     regex = {
-        'domain_name':      r'Domain Name............: *(.+)',
-        'registar_created': r'Registar Created: *(.+)',
-        'curent_registrar': r'Current Registar: *(.+)',
-        'creation_date':    r'Domain created: *(.+)',
-        'lats_modified':    r'Last modified : *(.+)',
-        'name_servers':     r'server.*: *(.+)',  # list of name servers
-        'status':           r' (.+?) -',  # list of statuses
-        'emails':           EMAIL_REGEX,  # list of email addresses
-        'org':              r'Organization Name.*: *(.+)'
+        'domain_name':       r'Domain Name............: *(.+)',
+        'registrar_created': r'Registrar Created: *(.+)',
+        'current_registrar': r'Current Regisrtar: *(.+)',
+        'creation_date':     r'Domain created: *(.+)',
+        'last_modified':     r'Last modified : *(.+)',
+        'name_servers':      r'server.*: *(.+)',  # list of name servers
+        'status':            r' (.+?) -',  # list of statuses
+        'emails':            EMAIL_REGEX,  # list of email addresses
+        'org':               r'Organization Name.*: *(.+)'
     }
 
     def __init__(self, domain, text):
