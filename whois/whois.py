@@ -184,7 +184,7 @@ class NICClient(object):
             if nhost is not None:
                 response += self.whois(query, nhost, 0)
         except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
-            logger.error("Error trying to connect to socket: closing socket")
+            logger.warning("Error trying to connect to socket: closing socket")
             s.close()
             response = "Socket not responding"   
         return response
