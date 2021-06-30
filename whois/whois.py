@@ -40,8 +40,10 @@ import sys
 import re
 from builtins import object
 from builtins import *
+import logging
 standard_library.install_aliases()
 
+logger = logging.getLogger(__name__)
 
 class NICClient(object):
 
@@ -130,7 +132,7 @@ class NICClient(object):
             try:
                 import socks
             except ImportError as e:
-                print("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
+                logger.error("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
                 raise e
             socks_user, socks_password = None, None
             if "@" in os.environ["SOCKS"]:
@@ -182,7 +184,7 @@ class NICClient(object):
             if nhost is not None:
                 response += self.whois(query, nhost, 0)
         except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
-            print("Error trying to connect to socket: closing socket") 
+            logger.error("Error trying to connect to socket: closing socket")
             s.close()
             response = "Socket not responding"   
         return response
@@ -366,4 +368,4 @@ if __name__ == "__main__":
     options, args = parse_command_line(sys.argv)
     if options.b_quicklookup:
         flags = flags | NICClient.WHOIS_QUICK
-    print(nic_client.whois_lookup(options.__dict__, args[1], flags))
+    logger.debug(nic_client.whois_lookup(options.__dict__, args[1], flags))
