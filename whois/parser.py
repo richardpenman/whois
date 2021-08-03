@@ -44,6 +44,7 @@ KNOWN_FORMATS = [
     '%Y.%m.%d %H:%M:%S',        # 2014.03.08 10:28:24
     '%d-%b-%Y %H:%M:%S %Z',     # 24-Jul-2009 13:20:03 UTC
     '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
+    '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
     '%Y-%m-%dT%H:%M:%SZ',       # 2007-01-26T19:10:31Z
     '%Y-%m-%dT%H:%M:%S.%fZ',    # 2018-12-01T16:17:30.568Z
     '%Y-%m-%dT%H:%M:%S%z',      # 2013-12-06T08:17:22-0800
@@ -525,7 +526,7 @@ class WhoisNl(WhoisEntry):
         """
     regex = {
         'domain_name':         r'Domain Name: *(.+)',
-        'expiration_date':     None,
+        'expiration_date':     r'Date\sout\sof\squarantine:\s*(.+)',
         'updated_date':        r'Updated\sDate:\s*(.+)',
         'creation_date':       r'Creation\sDate:\s*(.+)',
         'status':              r'Status: *(.+)',  # list of statuses
