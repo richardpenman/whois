@@ -2110,6 +2110,7 @@ class WhoisHk(WhoisEntry):
         'expiration_date':                r'[Registrant Contact Information\w\W]+Expiry Date: (.+)',
         'name_servers':                   r'Name Servers Information:\s+((?:.+\n)*)'
     }
+    dayfirst = True
 
     def __init__(self, domain, text):
         if 'ERROR: No entries found' in text or 'The domain has not been registered' in text:
