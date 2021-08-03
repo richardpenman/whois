@@ -85,7 +85,7 @@ class TestParser(unittest.TestCase):
                 continue
 
             # Load expected result
-            with open(os.path.join(expect_path, domain)) as infil:
+            with open(os.path.join(expect_path, domain)) as infil:    
                 expected_results = json.load(infil)
 
             # Compare each key
@@ -162,7 +162,7 @@ class TestParser(unittest.TestCase):
                 "+1.1235434123x123",
                 "+1.09876545123"
             ],
-            "domain_status": "registered",
+            "status": "registered",
             "emails": [
                 "testperson1@testcompany.ca",
                 "testpersion2@testcompany.ca"
@@ -275,38 +275,83 @@ class TestParser(unittest.TestCase):
 
     def test_ie_parse(self):
         data = """
-        domain:       rte.ie
-        descr:        RTE Commercial Enterprises Limited
-        descr:        Body Corporate (Ltd,PLC,Company)
-        descr:        Corporate Name
-        admin-c:      AWB910-IEDR
-        admin-c:      JM474-IEDR
-        tech-c:       JM474-IEDR
-        registration date: 11-February-2000
-        renewal date:      31-March-2024
-        holder-type:  Billable
-        locked:       NO
-        Renewal status:   Active
-        in-zone:      1
-        nserver:      ns1.rte.ie 162.159.0.73 2400:cb00:2049:1::a29f:49
-        nserver:      ns2.rte.ie 162.159.1.73 2400:cb00:2049:1::a29f:149
-        nserver:      ns3.rte.ie 162.159.2.27 2400:cb00:2049:1::a29f:21b
-        nserver:      ns4.rte.ie 162.159.3.18 2400:cb00:2049:1::a29f:312
-        source:       IEDR
+        refer:        whois.weare.ie
 
-        person:       Michael Kennedy
-        nic-hdl:      AWB910-IEDR
-        source:       IEDR
+domain:       IE
 
-        person:       John Moylan
-        nic-hdl:      JM474-IEDR
-        source:       IEDR
+organisation: University College Dublin
+organisation: Computing Services
+organisation: Computer Centre
+address:      Belfield
+address:      Dublin City,  Dublin 4
+address:      Ireland
 
-        person:       John Moylan
-        nic-hdl:      JM474-IEDR
-        source:       IEDR"""
+contact:      administrative
+name:         Chief Executive
+organisation: IE Domain Registry Limited
+address:      2 Harbour Square
+address:      Dún Laoghaire
+address:      Co. Dublin
+address:      Ireland
+phone:        +353 1 236 5412
+fax-no:       +353 1 230 1273
+e-mail:       tld-admin@weare.ie
 
-        expected_results = {
+contact:      technical
+name:         Technical Services Manager
+organisation: IE Domain Registry Limited
+address:      2 Harbour Square
+address:      Dún Laoghaire
+address:      Co. Dublin
+address:      Ireland
+phone:        +353 1 236 5421
+fax-no:       +353 1 230 1273
+e-mail:       tld-tech@weare.ie
+
+nserver:      B.NS.IE 2a01:4b0:0:0:0:0:0:2 77.72.72.34
+nserver:      C.NS.IE 194.146.106.98 2001:67c:1010:25:0:0:0:53
+nserver:      D.NS.IE 2a01:3f0:0:309:0:0:0:53 77.72.229.245
+nserver:      G.NS.IE 192.111.39.100 2001:7c8:2:a:0:0:0:64
+nserver:      H.NS.IE 192.93.0.4 2001:660:3005:1:0:0:1:2
+nserver:      I.NS.IE 194.0.25.35 2001:678:20:0:0:0:0:35
+ds-rdata:     64134 13 2 77B9519D16B62D0A70A7301945CBB3092A7978BFDE75A3BCFB3D4719396E436A
+
+whois:        whois.weare.ie
+
+status:       ACTIVE
+remarks:      Registration information: http://www.weare.ie
+
+created:      1988-01-27
+changed:      2021-03-11
+source:       IANA
+
+# whois.weare.ie
+
+Domain Name: rte.ie
+Registry Domain ID: 672279-IEDR
+Registrar WHOIS Server: whois.weare.ie
+Registrar URL: https://www.blacknight.com
+Updated Date: 2020-11-15T17:55:24Z
+Creation Date: 2000-02-11T00:00:00Z
+Registry Expiry Date: 2025-03-31T13:20:07Z
+Registrar: Blacknight Solutions
+Registrar IANA ID: not applicable
+Registrar Abuse Contact Email: abuse@blacknight.com
+Registrar Abuse Contact Phone: +353.599183072
+Domain Status: ok https://icann.org/epp#ok
+Registry Registrant ID: 354955-IEDR
+Registrant Name: RTE Commercial Enterprises Limited
+Registry Admin ID: 202753-IEDR
+Registry Tech ID: 3159-IEDR
+Registry Billing ID: REDACTED FOR PRIVACY
+Name Server: ns1.rte.ie
+Name Server: ns2.rte.ie
+Name Server: ns3.rte.ie
+Name Server: ns4.rte.ie
+DNSSEC: signedDelegation
+        """
+
+        aexpected_results = {
             "domain_name": "rte.ie",
             "description": [
                 "RTE Commercial Enterprises Limited",
@@ -328,6 +373,22 @@ class TestParser(unittest.TestCase):
                 "JM474-IEDR"
             ],
             "tech_id": "JM474-IEDR"
+        }
+        expected_results = {
+          "status": "ok https://icann.org/epp#ok",
+          "expiration_date": "2025-03-31 13:20:07",
+          "creation_date": "2000-02-11 00:00:00",
+          "domain_name": "rte.ie",
+          "tech_id": "3159-IEDR",
+          "registrar": "Blacknight Solutions",
+          "name_servers": [
+            "ns1.rte.ie",
+            "ns2.rte.ie",
+            "ns3.rte.ie",
+            "ns4.rte.ie"
+          ],
+          "admin_id": "202753-IEDR",
+          "registrar_contact": "abuse@blacknight.com"
         }
         self._parse_and_compare('rte.ie', data, expected_results)
 
@@ -372,6 +433,19 @@ class TestParser(unittest.TestCase):
             'dnssec': 'yes'
         }
         self._parse_and_compare('utwente.nl', data, expected_results)
+
+    def test_nl_expiration(self):
+        data = """
+        domain_name: randomtest.nl
+        Status:      in quarantine
+        Creation Date: 2008-09-24
+        Updated Date: 2020-10-27
+        Date out of quarantine: 2020-12-06T20:31:25
+        """
+
+        w = WhoisEntry.load('randomtest.nl', data)
+        expires = w.expiration_date.strftime('%Y-%m-%d')
+        self.assertEqual(expires, '2020-12-06')
 
     def test_dk_parse(self):
         data = """

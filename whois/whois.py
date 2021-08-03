@@ -40,8 +40,10 @@ import sys
 import re
 from builtins import object
 from builtins import *
+import logging
 standard_library.install_aliases()
 
+logger = logging.getLogger(__name__)
 
 class NICClient(object):
 
@@ -90,7 +92,8 @@ class NICClient(object):
     IST_HOST = "whois.afilias-srs.net"
     CHAT_HOST = "whois.nic.chat"
     WEBSITE_HOST = "whois.nic.website"
-    
+    OOO_HOST = "whois.nic.ooo"
+    MARKET_HOST = "whois.nic.market"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -119,18 +122,20 @@ class NICClient(object):
                     break
         return nhost
 
-    def whois(self, query, hostname, flags, many_results=False):
+    def whois(self, query, hostname, flags, many_results=False, quiet=False):
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
         for the region-specifc whois server and do a lookup
-        there for contact details
+        there for contact details.  If `quiet` is `True`, will
+        not print a message to STDOUT when a socket error
+        is encountered.
         """
         response = b''
         if "SOCKS" in os.environ:
             try:
                 import socks
             except ImportError as e:
-                print("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
+                logger.error("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
                 raise e
             socks_user, socks_password = None, None
             if "@" in os.environ["SOCKS"]:
@@ -180,11 +185,12 @@ class NICClient(object):
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None:
-                response += self.whois(query, nhost, 0)
+                response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
-            print("Error trying to connect to socket: closing socket") 
+            if not quiet:
+                print("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
-            response = "Socket not responding"   
+            response = "Socket not responding: {}".format(exc)
         return response
 
     def choose_server(self, domain):
@@ -258,6 +264,10 @@ class NICClient(object):
             return NICClient.CHAT_HOST
         elif tld == 'website':
             return NICClient.WEBSITE_HOST
+        elif tld == 'ooo':
+            return NICClient.OOO_HOST
+        elif tld == 'market':
+            return NICClient.MARKET_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
 
@@ -366,4 +376,4 @@ if __name__ == "__main__":
     options, args = parse_command_line(sys.argv)
     if options.b_quicklookup:
         flags = flags | NICClient.WHOIS_QUICK
-    print(nic_client.whois_lookup(options.__dict__, args[1], flags))
+    logger.debug(nic_client.whois_lookup(options.__dict__, args[1], flags))
