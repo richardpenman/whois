@@ -343,6 +343,10 @@ class WhoisEntry(dict):
             return WhoisWebsite(domain, text)
         elif domain.endswith('.sg'):
             return WhoisSG(domain, text)
+        elif domain.endswith('.ooo'):
+            return WhoisOOO(domain, text)
+        elif domain.endswith('.market'):
+            return WhoisMarket(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2712,3 +2716,21 @@ class WhoisWebsite(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
+class WhoisOoo(WhoisEntry):
+    """Whois parser for .ooo domains
+    """
+
+    def __init__(self, domain, text):
+        if 'No entries found for the selected source(s).' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+class WhoisMarket(WhoisEntry):
+    """Whois parser for .market domains
+    """
+
+    def __init__(self, domain, text):
+        if 'No entries found for the selected source(s).' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
