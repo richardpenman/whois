@@ -94,7 +94,8 @@ class NICClient(object):
     WEBSITE_HOST = "whois.nic.website"
     OOO_HOST = "whois.nic.ooo"
     MARKET_HOST = "whois.nic.market"
-
+    NL_HOST = 'whois.domain-registry.nl'
+    
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
@@ -268,8 +269,11 @@ class NICClient(object):
             return NICClient.OOO_HOST
         elif tld == 'market':
             return NICClient.MARKET_HOST
+        elif tld == 'nl':
+            return NICClient.NL_HOST    
         else:
             return tld + NICClient.QNICHOST_TAIL
+        
 
     def whois_lookup(self, options, query_arg, flags):
         """Main entry point: Perform initial lookup on TLD whois server,
