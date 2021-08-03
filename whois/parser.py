@@ -1976,18 +1976,15 @@ class WhoisIe(WhoisEntry):
     """Whois parser for .ie domains
     """
     regex = {
-        'domain_name':      r'Domain: *(.+)',
-        'registrant_name':  r'Domain Holder: *(.+)',
-        'description':      r'descr: *(.+)',
-        'source':           r'Source: *(.+)',
-        'creation_date':    r'Registration Date: *(.+)',
-        'expiration_date':  r'Renewal Date: *(.+)',
-        'name_servers':     r'Nserver: *(.+)',
-        'status':           r'Renewal status: *(.+)',
-        'admin_id':         r'Admin-c: *(.+)',
-        'tech_id':          r'Tech-c: *(.+)',
-        'registrar':        r'Account Name: *(.+)',
-        'registrar_contact':'Registrar Abuse Contact: *(.+)'
+        'domain_name':      r'Domain Name: *(.+)',
+        'creation_date':    r'Creation Date: *(.+)',
+        'expiration_date':  r'Registry Expiry Date: *(.+)',
+        'name_servers':     r'Name Server: *(.+)',
+        'status':           r'Domain status: *(.+)',
+        'admin_id':         r'Registry Admin ID: *(.+)',
+        'tech_id':          r'Registry Tech ID: *(.+)',
+        'registrar':        r'Registrar: *(.+)',
+        'registrar_contact':r'Registrar Abuse Contact Email: *(.+)'
     }
 
     def __init__(self, domain, text):
