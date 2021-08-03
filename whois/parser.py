@@ -136,6 +136,7 @@ class WhoisEntry(dict):
             if regex:
                 values = []
                 for data in re.findall(regex, self.text, re.IGNORECASE | re.M):
+
                     matches = data if isinstance(data, tuple) else [data]
                     for value in matches:
                         value = self._preprocess(attr, value)
@@ -343,6 +344,8 @@ class WhoisEntry(dict):
             return WhoisWebsite(domain, text)
         elif domain.endswith('.sg'):
             return WhoisSG(domain, text)
+        elif domain.endswith('.ml'):
+            return WhoisML(domain, text)
         elif domain.endswith('.ooo'):
             return WhoisOOO(domain, text)
         elif domain.endswith('.market'):
@@ -2762,6 +2765,8 @@ class WhoisZhongGuo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+            
+            
 class WhoisWebsite(WhoisEntry):
     """Whois parser for .website domains
     """
@@ -2771,6 +2776,35 @@ class WhoisWebsite(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
+
+
+class WhoisML(WhoisEntry):
+    """Whois parser for .ml domains."""
+    regex = {
+        'domain_name': r'Domain name:\s*([^(i|\n)]+)', 
+        'registrar': r'Organization: *(.+)',
+        'creation_date': r'Domain registered: *(.+)',
+        'expiration_date': r'Record will expire on: *(.+)',
+        'name_servers': r'Domain Nameservers:\s+((?:.+\n)*)',
+        'emails': EMAIL_REGEX
+    }
+
+    def __init__(self, domain, text):
+        if 'Invalid query or domain name not known in the Point ML Domain Registry' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+    
+    def _preprocess(self, attr, value):
+        if attr == 'name_servers':
+            return [
+                line.strip()
+                for line in value.split("\n")
+                if line != ""
+            ]
+        return super(WhoisML, self)._preprocess(attr, value)
+
+      
 class WhoisOoo(WhoisEntry):
     """Whois parser for .ooo domains
     """
@@ -2780,6 +2814,8 @@ class WhoisOoo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+            
+            
 class WhoisMarket(WhoisEntry):
     """Whois parser for .market domains
     """
