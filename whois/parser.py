@@ -365,6 +365,8 @@ class WhoisEntry(dict):
             return WhoisOOO(domain, text)
         elif domain.endswith('.market'):
             return WhoisMarket(domain, text)
+        elif domain.endswith('.za'):
+            return WhoisZa(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2840,3 +2842,7 @@ class WhoisMarket(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisZa(WhoisEntry):
+    """Whois parser for .za domains"""
