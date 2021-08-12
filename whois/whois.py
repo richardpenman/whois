@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Whois client for python
+Whois client for python.
 
 transliteration of:
 http://www.opensource.apple.com/source/adv_cmds/adv_cmds-138.1/whois/whois.c
@@ -39,13 +39,15 @@ import socket
 import sys
 import re
 from builtins import object
-from builtins import *
+from builtins import *  # noqa
 import logging
 standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
 
+
 class NICClient(object):
+    """Basic whois client."""
 
     ABUSEHOST = "whois.abuse.net"
     NICHOST = "whois.crsnic.net"
@@ -95,21 +97,27 @@ class NICClient(object):
     OOO_HOST = "whois.nic.ooo"
     MARKET_HOST = "whois.nic.market"
     NL_HOST = 'whois.domain-registry.nl'
-    
+
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
     ip_whois = [LNICHOST, RNICHOST, PNICHOST, BNICHOST, PANDIHOST]
 
     def __init__(self):
+        """Initialize default basic settings."""
         self.use_qnichost = False
 
     def findwhois_server(self, buf, hostname, query):
-        """Search the initial TLD lookup results for the regional-specifc
-        whois server for getting contact details.
+        """Search for regional-specific whois server.
+
+        The initial TLD lookup results might contain a link to an alternative
+        server.
         """
         nhost = None
-        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
+        match = re.compile(
+            r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query),
+            flags=re.IGNORECASE | re.DOTALL
+            ).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
@@ -124,19 +132,24 @@ class NICClient(object):
         return nhost
 
     def whois(self, query, hostname, flags, many_results=False, quiet=False):
-        """Perform initial lookup with TLD whois server
-        then, if the quick flag is false, search that result
-        for the region-specifc whois server and do a lookup
-        there for contact details.  If `quiet` is `True`, will
-        not print a message to STDOUT when a socket error
-        is encountered.
+        """Perform whois lookups.
+
+        First, perform initial lookup with TLD whois server. Then, if the
+        `quick` flag is `False`, search that result for the region-specifc
+        whois server and do a lookup there for contact details.
+
+        If `quiet` is `True`, will not print a message to STDOUT when a socket
+        error is encountered.
         """
         response = b''
         if "SOCKS" in os.environ:
             try:
                 import socks
             except ImportError as e:
-                logger.error("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
+                logger.error(
+                    "You need to install the Python socks module. Install PIP"
+                    " (https://bootstrap.pypa.io/get-pip.py) and then "
+                    "'pip install PySocks'")
                 raise e
             socks_user, socks_password = None, None
             if "@" in os.environ["SOCKS"]:
@@ -147,13 +160,17 @@ class NICClient(object):
             socksproxy, port = proxy.split(":")
             socks_proto = socket.AF_INET
             if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
-                socks_proto=socket.AF_INET6
+                socks_proto = socket.AF_INET6
             s = socks.socksocket(socks_proto)
             s.set_proxy(socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
-        try: # socket.connect in a try, in order to allow things like looping whois on different domains without stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
+
+        # socket.connect in a try, in order to allow things like looping whois
+        # on different domains without stopping on timeouts:
+        # https://stackoverflow.com/questions/25447803/python-socket-connection-exception
+        try:
             s.connect((hostname, 43))
             try:
                 query = query.decode('utf-8')
@@ -187,15 +204,17 @@ class NICClient(object):
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None:
                 response += self.whois(query, nhost, 0, quiet=True)
-        except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
+        except socket.error as exc:
             if not quiet:
                 print("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
+            # 'response' is assigned a value (also a str) even on socket
+            # timeout
             response = "Socket not responding: {}".format(exc)
         return response
 
     def choose_server(self, domain):
-        """Choose initial lookup NIC host"""
+        """Choose initial lookup NIC host."""
         try:
             domain = domain.encode('idna').decode('utf-8')
         except TypeError:
@@ -270,16 +289,19 @@ class NICClient(object):
         elif tld == 'market':
             return NICClient.MARKET_HOST
         elif tld == 'nl':
-            return NICClient.NL_HOST    
+            return NICClient.NL_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
-        
 
     def whois_lookup(self, options, query_arg, flags):
-        """Main entry point: Perform initial lookup on TLD whois server,
-        or other server to get region-specific whois server, then if quick
-        flag is false, perform a second lookup on the region-specific
-        server for contact records"""
+        """Perform whois lookups.
+
+        This is the main entry point.
+
+        Perform initial lookup on TLD whois server, or other server to get
+        region-specific whois server, then if quick flag is false, perform a
+        second lookup on the region-specific server for contact records.
+        """
         nichost = None
         # whoud happen when this function is called by other than main
         if options is None:
@@ -310,11 +332,11 @@ class NICClient(object):
 
 
 def parse_command_line(argv):
-    """Options handling mostly follows the UNIX whois(1) man page, except
+    """Parse CLI arguments.
+
+    Options handling mostly follows the UNIX whois(1) man page, except
     long-form options can also be used.
     """
-    flags = 0
-
     usage = "usage: %prog [options] name"
 
     parser = optparse.OptionParser(add_help_option=False, usage=usage)
