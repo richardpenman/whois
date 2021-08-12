@@ -1,32 +1,35 @@
 # -*- coding: utf-8 -*-
+"""Unit tests for the whois server response parser."""
+
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
-from builtins import *
-import unittest
+from builtins import *  # noqa
+import unittest  # noqa: E402
 
-import os
-import sys
+import os  # noqa: E402
+import sys  # noqa: E402
 sys.path.append('../')
 
-import datetime
+import datetime  # noqa: E402
 
 try:
     import json
-except:
+except ImportError:
     import simplejson as json
-from glob import glob
+from glob import glob  # noqa: E402
 
-from whois.parser import WhoisEntry, cast_date, WhoisCl, WhoisAr, WhoisBy, \
-    WhoisCa, WhoisBiz, WhoisCr, WhoisDe, WhoisNl
+from whois.parser import WhoisEntry, cast_date, WhoisCa  # noqa: E402
 
 
 class TestParser(unittest.TestCase):
+    """Unit tests for the parser."""
 
     def test_com_expiration(self):
+        """Expiration date for .com should parse correctly."""
         data = """
         Status: ok
         Updated Date: 2017-03-31T07:36:34Z
@@ -40,13 +43,15 @@ class TestParser(unittest.TestCase):
         self.assertEqual(expires, '2018-02-21')
 
     def test_cast_date(self):
+        """Dates of different formats should be cast correctly to datetime."""
         dates = ['14-apr-2008', '2008-04-14']
         for d in dates:
             r = cast_date(d).strftime('%Y-%m-%d')
             self.assertEqual(r, '2008-04-14')
 
     def test_com_allsamples(self):
-        """
+        """Parse all sample files and test that their return fits expectations.
+
         Iterate over all of the sample/whois/*.com files, read the data,
         parse it, and compare to the expected values in sample/expected/.
         Only keys defined in keys_to_test will be tested.
@@ -57,8 +62,13 @@ class TestParser(unittest.TestCase):
                         'creation_date', 'status']
         fail = 0
         total = 0
-        whois_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'samples','whois','*')
-        expect_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'samples','expected')
+        whois_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'samples', 'whois', '*')
+        expect_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'samples', 'expected')
+
         for path in glob(whois_path):
             # Parse whois data
             domain = os.path.basename(path)
@@ -68,24 +78,24 @@ class TestParser(unittest.TestCase):
             w = WhoisEntry.load(domain, data)
             results = {key: w.get(key) for key in keys_to_test}
 
-            # NOTE: Toggle condition below to write expected results from the
+            # NOTE: Uncomment code below to write expected results from the
             # parse results This will overwrite the existing expected results.
             # Only do this if you've manually confirmed that the parser is
             # generating correct values at its current state.
-            if False:
-                def date2str4json(obj):
-                    if isinstance(obj, datetime.datetime):
-                        return str(obj)
-                    raise TypeError(
-                            '{} is not JSON serializable'.format(repr(obj)))
-                outfile_name = os.path.join(expect_path, domain)
-                with open(outfile_name, 'w') as outfil:
-                    expected_results = json.dump(results, outfil,
-                                                       default=date2str4json)
-                continue
+            #
+            # def date2str4json(obj):
+            #     if isinstance(obj, datetime.datetime):
+            #         return str(obj)
+            #     raise TypeError(
+            #             '{} is not JSON serializable'.format(repr(obj)))
+            # outfile_name = os.path.join(expect_path, domain)
+            # with open(outfile_name, 'w') as outfil:
+            #     expected_results = json.dump(results, outfil,
+            #                                     default=date2str4json)
+            # continue
 
             # Load expected result
-            with open(os.path.join(expect_path, domain)) as infil:    
+            with open(os.path.join(expect_path, domain)) as infil:
                 expected_results = json.load(infil)
 
             # Compare each key
@@ -114,6 +124,7 @@ class TestParser(unittest.TestCase):
                       % (fail, total))
 
     def test_ca_parse(self):
+        """Parse a .ca domain's whois response, result should fit expectations."""
         data = """
         Domain name:           testdomain.ca
         Domain status:         registered
@@ -172,6 +183,7 @@ class TestParser(unittest.TestCase):
                                 whois_entry=WhoisCa)
 
     def test_cn_parse(self):
+        """Parse a .cn domain's whois response, result should fit expectations."""
         data = """
             Domain Name: cnnic.com.cn
             ROID: 20021209s10011s00047242-cn
@@ -205,6 +217,7 @@ class TestParser(unittest.TestCase):
         self._parse_and_compare('cnnic.com.cn', data, expected_results)
 
     def test_il_parse(self):
+        """Parse a .il domain's whois response, result should fit expectations."""
         data = """
             query:        python.org.il
 
@@ -274,6 +287,7 @@ class TestParser(unittest.TestCase):
         self._parse_and_compare('python.org.il', data, expected_results)
 
     def test_ie_parse(self):
+        """Parse a .ie domain's whois response, result should fit expectations."""
         data = """
         refer:        whois.weare.ie
 
@@ -351,29 +365,6 @@ Name Server: ns4.rte.ie
 DNSSEC: signedDelegation
         """
 
-        aexpected_results = {
-            "domain_name": "rte.ie",
-            "description": [
-                "RTE Commercial Enterprises Limited",
-                "Body Corporate (Ltd,PLC,Company)",
-                "Corporate Name"
-            ],
-            "source": "IEDR",
-            "creation_date": "2000-02-11 00:00:00",
-            "expiration_date": "2024-03-31 00:00:00",
-            "name_servers": [
-                "ns1.rte.ie 162.159.0.73 2400:cb00:2049:1::a29f:49",
-                "ns2.rte.ie 162.159.1.73 2400:cb00:2049:1::a29f:149",
-                "ns3.rte.ie 162.159.2.27 2400:cb00:2049:1::a29f:21b",
-                "ns4.rte.ie 162.159.3.18 2400:cb00:2049:1::a29f:312"
-            ],
-            "status": "Active",
-            "admin_id": [
-                "AWB910-IEDR",
-                "JM474-IEDR"
-            ],
-            "tech_id": "JM474-IEDR"
-        }
         expected_results = {
           "status": "ok https://icann.org/epp#ok",
           "expiration_date": "2025-03-31 13:20:07",
@@ -393,6 +384,7 @@ DNSSEC: signedDelegation
         self._parse_and_compare('rte.ie', data, expected_results)
 
     def test_nl_parse(self):
+        """Parse a .nl domain's whois response, result should fit expectations."""
         data = """
         Domain name: utwente.nl
         Status:      active
@@ -435,6 +427,7 @@ DNSSEC: signedDelegation
         self._parse_and_compare('utwente.nl', data, expected_results)
 
     def test_nl_expiration(self):
+        """A .nl domain's parsed expiration date should match expectation."""
         data = """
         domain_name: randomtest.nl
         Status:      in quarantine
@@ -448,6 +441,7 @@ DNSSEC: signedDelegation
         self.assertEqual(expires, '2020-12-06')
 
     def test_dk_parse(self):
+        """Parse a .dk domain's whois response, result should fit expectations."""
         data = """
 #
 # Copyright (c) 2002 - 2019 by DK Hostmaster A/S
@@ -523,9 +517,10 @@ Hostname:             p.nic.dk
                       % (fail, total))
 
     def test_sk_parse(self):
+        """Parse a .sk domain's whois response, result should fit expectations."""
         data = """
         # whois.sk-nic.sk
-        
+
         Domain:                       pipoline.sk
         Registrant:                   H410977
         Admin Contact:                H410977
@@ -537,7 +532,7 @@ Hostname:             p.nic.dk
         Nameserver:                   ns1.cloudlikeaboss.com
         Nameserver:                   ns2.cloudlikeaboss.com
         EPP Status:                   ok
-        
+
         Registrar:                    PIPO-0002
         Name:                         Pipoline s.r.o.
         Organization:                 Pipoline s.r.o.
@@ -550,7 +545,7 @@ Hostname:             p.nic.dk
         Country Code:                 SK
         Created:                      2017-09-01
         Updated:                      2020-07-02
-        
+
         Contact:                      H410977
         Name:                         Ing. Peter Gonda
         Organization:                 Pipoline s.r.o

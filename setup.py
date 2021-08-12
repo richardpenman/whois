@@ -1,9 +1,12 @@
-import sys, os
+"""Install python-whois with setuptools."""
+import os
 import setuptools
 
 
 def read(filename):
+    """Open ``filename`` from same directory as script and read its contents."""
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
 
 setuptools.setup(
     name='python-whois',
@@ -29,7 +32,7 @@ setuptools.setup(
     url='https://github.com/richardpenman/whois',
     license='MIT',
     packages=['whois'],
-    package_dir={'whois':'whois'},
+    package_dir={'whois': 'whois'},
     extras_require={
         'better date conversion': ["python-dateutil"]
     },
