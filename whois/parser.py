@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-
+#
 # parser.py - Module for parsing whois response data
 # Copyright (c) 2008 Andrey Petrov
 #
 # This module is part of pywhois and is released under
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
+"""Parse information received from whois servers."""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -17,7 +18,7 @@ from datetime import datetime
 import json
 from past.builtins import basestring
 from builtins import str
-from builtins import *
+from builtins import *  # noqa
 
 standard_library.install_aliases()
 
@@ -28,7 +29,7 @@ try:
 except ImportError:
     DATEUTIL = False
 
-EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"  # noqa: E501
 
 KNOWN_FORMATS = [
     '%d-%b-%Y',                 # 02-jan-2000
@@ -76,22 +77,24 @@ KNOWN_FORMATS = [
 
 
 class PywhoisError(Exception):
+    """Any critical error during parsing."""
+
     pass
 
 
 def datetime_parse(s):
+    """Find all known date formats in s and return a datetime."""
     for known_format in KNOWN_FORMATS:
         try:
             s = datetime.strptime(s, known_format)
             break
-        except ValueError as e:
+        except ValueError:
             pass  # Wrong format, keep trying
     return s
 
 
 def cast_date(s, dayfirst=False, yearfirst=False):
-    """Convert any date string found in WHOIS to a datetime object.
-    """
+    """Convert any date string found in WHOIS to a datetime object."""
     if DATEUTIL:
         try:
             return dp.parse(
@@ -107,8 +110,12 @@ def cast_date(s, dayfirst=False, yearfirst=False):
 
 
 class WhoisEntry(dict):
-    """Base class for parsing a Whois entries.
+    """Dictionary that parses a Whois entries.
+
+    All data parsed will be set as attributes that can be access the same way
+    elements of a dict can be accessed.
     """
+
     # regular expressions to extract domain data from whois profile
     # child classes will override this
     _regex = {
@@ -135,6 +142,10 @@ class WhoisEntry(dict):
     yearfirst = False
 
     def __init__(self, domain, text, regex=None):
+        """Initialize entry for domain with text.
+
+        :raises: PywhoisError if text shows that no whois server was found.
+        """
         if 'This TLD has no whois server, but you can access the whois database at' in text:
             raise PywhoisError(text)
         else:
@@ -145,7 +156,9 @@ class WhoisEntry(dict):
             self.parse()
 
     def parse(self):
-        """The first time an attribute is called it will be calculated here.
+        """Parse self.text and set instance attributes with found data.
+
+        The first time an attribute is called it will be calculated here.
         The attribute is then set to be accessed directly by subsequent calls.
         """
         for attr, regex in list(self._regex.items()):
@@ -179,25 +192,38 @@ class WhoisEntry(dict):
         return value
 
     def __setitem__(self, name, value):
+        """Set attributes as dict values."""
         super(WhoisEntry, self).__setitem__(name, value)
 
     def __getattr__(self, name):
+        """Get attributes from dict elements."""
         return self.get(name)
 
     def __str__(self):
+        """Print JSON rendering of all attributes.
+
+        All attributes are rendered with str() first.
+        """
         def handler(e): return str(e)
         return json.dumps(self, indent=2, default=handler)
 
     def __getstate__(self):
+        """Pickle like a dict."""
         return self.__dict__
 
     def __setstate__(self, state):
+        """Unpickle like a dict."""
         self.__dict__ = state
 
     @staticmethod
     def load(domain, text):
-        """Given whois output in ``text``, return an instance of ``WhoisEntry``
+        """Create a WhoisEntry instance.
+
+        Given whois output in ``text``, return an instance of ``WhoisEntry``
         that represents its parsed contents.
+
+        Depending on the suffix in ``domain``, the appropriate subclass of
+        WhoisEntry will be chosen to get instantiated.
         """
         if text.strip() == 'No whois server is known for this kind of object.':
             raise PywhoisError(text)
@@ -363,7 +389,7 @@ class WhoisEntry(dict):
         elif domain.endswith('.ml'):
             return WhoisML(domain, text)
         elif domain.endswith('.ooo'):
-            return WhoisOOO(domain, text)
+            return WhoisOoo(domain, text)
         elif domain.endswith('.market'):
             return WhoisMarket(domain, text)
         else:
@@ -385,6 +411,10 @@ class WhoisCl(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -404,7 +434,10 @@ class WhoisSG(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
 
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Domain Not Found' in text:
             raise PywhoisError(text)
         else:
@@ -417,7 +450,9 @@ class WhoisSG(WhoisEntry):
         techmatch = re.compile('Technical Contact:(.*?)Name Servers:', re.DOTALL).search(text)
         if techmatch:
             for line in techmatch.groups()[0].strip().splitlines():
-                self['technical_conatact_'+ line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+                elem_name = line.split(':')[0].strip().lower()
+                elem_value = line.split(':')[1].strip()
+                self['technical_conatact_' + elem_name] = elem_value
 
 
 class WhoisPe(WhoisEntry):
@@ -436,6 +471,10 @@ class WhoisPe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -443,10 +482,13 @@ class WhoisPe(WhoisEntry):
 
 
 class WhoisSpace(WhoisEntry):
-    """Whois parser for .space domains
-    """
+    """Whois parser for .space domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -454,10 +496,13 @@ class WhoisSpace(WhoisEntry):
 
 
 class WhoisCom(WhoisEntry):
-    """Whois parser for .com domains
-    """
+    """Whois parser for .com domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -465,10 +510,13 @@ class WhoisCom(WhoisEntry):
 
 
 class WhoisNet(WhoisEntry):
-    """Whois parser for .net domains
-    """
+    """Whois parser for .net domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -476,8 +524,8 @@ class WhoisNet(WhoisEntry):
 
 
 class WhoisOrg(WhoisEntry):
-    """Whois parser for .org domains
-    """
+    """Whois parser for .org domains."""
+
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -492,6 +540,10 @@ class WhoisOrg(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'NOT FOUND':
             raise PywhoisError(text)
         else:
@@ -499,8 +551,8 @@ class WhoisOrg(WhoisEntry):
 
 
 class WhoisRo(WhoisEntry):
-    """Whois parser for .ro domains
-    """
+    """Whois parser for .ro domains."""
+
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'status':           r'Domain Status: *(.+)',
@@ -511,11 +563,14 @@ class WhoisRo(WhoisEntry):
         'creation_date':    r'Registered On: *(.+)',
         'expiration_date':  r'Expires On: *(.+)',
         'name_servers':     r'Nameserver: *(.+)',  # list of name servers
-        'status':           r'Status: *(.+)',  # list of statuses
         'dnssec':           r'DNSSEC: *(.+)',
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'NOT FOUND':
             raise PywhoisError(text)
         else:
@@ -523,8 +578,8 @@ class WhoisRo(WhoisEntry):
 
 
 class WhoisRu(WhoisEntry):
-    """Whois parser for .ru domains
-    """
+    """Whois parser for .ru domains."""
+
     regex = {
         'domain_name': r'domain: *(.+)',
         'registrar': r'registrar: *(.+)',
@@ -538,6 +593,10 @@ class WhoisRu(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found' in text:
             raise PywhoisError(text)
         else:
@@ -545,8 +604,8 @@ class WhoisRu(WhoisEntry):
 
 
 class WhoisNl(WhoisEntry):
-    """Whois parser for .nl domains
-        """
+    """Whois parser for .nl domains."""
+
     regex = {
         'domain_name':         r'Domain Name: *(.+)',
         'expiration_date':     r'Date\sout\sof\squarantine:\s*(.+)',
@@ -563,6 +622,10 @@ class WhoisNl(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.endswith('is free'):
             raise PywhoisError(text)
         else:
@@ -578,8 +641,8 @@ class WhoisNl(WhoisEntry):
 
 
 class WhoisName(WhoisEntry):
-    """Whois parser for .name domains
-    """
+    """Whois parser for .name domains."""
+
     regex = {
         'domain_name_id':  r'Domain Name ID: *(.+)',
         'domain_name':     r'Domain Name: *(.+)',
@@ -598,6 +661,10 @@ class WhoisName(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for ' in text:
             raise PywhoisError(text)
         else:
@@ -605,8 +672,8 @@ class WhoisName(WhoisEntry):
 
 
 class WhoisUs(WhoisEntry):
-    """Whois parser for .us domains
-    """
+    """Whois parser for .us domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -670,6 +737,10 @@ class WhoisUs(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Not found:' in text:
             raise PywhoisError(text)
         else:
@@ -677,8 +748,8 @@ class WhoisUs(WhoisEntry):
 
 
 class WhoisPl(WhoisEntry):
-    """Whois parser for .pl domains
-    """
+    """Whois parser for .pl domains."""
+
     regex = {
         'domain_name':                    r'DOMAIN NAME: *(.+)\n',
         'name_servers':                   r'nameservers:((?:\s+.+\n+)*)',
@@ -692,6 +763,10 @@ class WhoisPl(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No information available about domain name' in text:
             raise PywhoisError(text)
         else:
@@ -699,8 +774,8 @@ class WhoisPl(WhoisEntry):
 
 
 class WhoisCa(WhoisEntry):
-    """Whois parser for .ca domains
-    """
+    """Whois parser for .ca domains."""
+
     regex = {
         'domain_name':                    r'Domain name: *(.+)',
         'whois_server':                   r'Registrar WHOIS Server: *(.+)',
@@ -721,6 +796,10 @@ class WhoisCa(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Domain status:         available' in text or 'Not found:' in text:
             raise PywhoisError(text)
         else:
@@ -728,8 +807,8 @@ class WhoisCa(WhoisEntry):
 
 
 class WhoisMe(WhoisEntry):
-    """Whois parser for .me domains
-    """
+    """Whois parser for .me domains."""
+
     regex = {
         'domain_id':                   r'Registry Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -787,6 +866,10 @@ class WhoisMe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'NOT FOUND' in text:
             raise PywhoisError(text)
         else:
@@ -794,8 +877,8 @@ class WhoisMe(WhoisEntry):
 
 
 class WhoisUk(WhoisEntry):
-    """Whois parser for .uk domains
-    """
+    """Whois parser for .uk domains."""
+
     regex = {
         'domain_name':                    r'Domain name:\s*(.+)',
 
@@ -818,6 +901,10 @@ class WhoisUk(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for ' in text:
             raise PywhoisError(text)
         else:
@@ -825,8 +912,8 @@ class WhoisUk(WhoisEntry):
 
 
 class WhoisFr(WhoisEntry):
-    """Whois parser for .fr domains
-    """
+    """Whois parser for .fr domains."""
+
     regex = {
         'domain_name': r'domain: *(.+)',
         'registrar': r'registrar: *(.+)',
@@ -839,6 +926,10 @@ class WhoisFr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found' in text:
             raise PywhoisError(text)
         else:
@@ -846,8 +937,8 @@ class WhoisFr(WhoisEntry):
 
 
 class WhoisFi(WhoisEntry):
-    """Whois parser for .fi domains
-    """
+    """Whois parser for .fi domains."""
+
     regex = {
         'domain_name':                    r'domain\.*: *([\S]+)',
         'name':                           r'Holder\s*name\.*: (.+)',
@@ -869,6 +960,10 @@ class WhoisFi(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Domain not ' in text:
             raise PywhoisError(text)
         else:
@@ -876,8 +971,8 @@ class WhoisFi(WhoisEntry):
 
 
 class WhoisJp(WhoisEntry):
-    """Whois parser for .jp domains
-    """
+    """Whois parser for .jp domains."""
+
     regex = {
         'domain_name': r'a\. \[Domain Name\]\s*(.+)',
         'registrant_org': r'g\. \[(?:Organization|Registrant)\](.+)',
@@ -889,6 +984,10 @@ class WhoisJp(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match!!' in text:
             raise PywhoisError(text)
         else:
@@ -896,8 +995,8 @@ class WhoisJp(WhoisEntry):
 
 
 class WhoisAU(WhoisEntry):
-    """Whois parser for .au domains
-    """
+    """Whois parser for .au domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)\n',
         'updated_date':                  r'Last Modified: *(.+)\n',
@@ -909,6 +1008,10 @@ class WhoisAU(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No Data Found':
             raise PywhoisError(text)
         else:
@@ -916,20 +1019,24 @@ class WhoisAU(WhoisEntry):
 
 
 class WhoisEu(WhoisEntry):
-    """Whois parser for .eu domains
-    """
+    """Whois parser for .eu domains."""
+
     regex = {
         'domain_name': r'Domain: *([^\n\r]+)',
         'tech_name': r'Technical: *Name: *([^\n\r]+)',
         'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
         'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
-        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
-        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
+        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',  # noqa: E501
+        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',  # noqa: E501
         'registrar': r'Registrar: *Name: *([^\n\r]+)',
         'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'Status: AVAILABLE':
             raise PywhoisError(text)
         else:
@@ -937,25 +1044,29 @@ class WhoisEu(WhoisEntry):
 
 
 class WhoisEe(WhoisEntry):
-    """Whois parser for .ee domains
-    """
+    """Whois parser for .ee domains."""
+
     regex = {
         'domain_name': r'Domain: *[\n\r]+\s*name: *([^\n\r]+)',
         'status': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *([^\n\r]+)',
         'creation_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *([^\n\r]+)',
         'updated_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *([^\n\r]+)',
-        'expiration_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *[^\n\r]+\sexpire: *([^\n\r]+)',
+        'expiration_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *[^\n\r]+\sexpire: *([^\n\r]+)',  # noqa: E501
 
         # 'tech_name': r'Technical: *Name: *([^\n\r]+)',
         # 'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
         # 'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
-        # 'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
-        # 'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
+        # 'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',  # noqa: E501
+        # 'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',  # noqa: E501
         'registrar': r'Registrar: *[\n\r]+\s*name: *([^\n\r]+)',
         'name_servers': r'nserver: *(.*)',  # list of name servers
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'Domain not found':
             raise PywhoisError(text)
         else:
@@ -963,8 +1074,8 @@ class WhoisEe(WhoisEntry):
 
 
 class WhoisBr(WhoisEntry):
-    """Whois parser for .br domains
-    """
+    """Whois parser for .br domains."""
+
     regex = {
         'domain_name':                    r'domain: *(.+)\n',
         'registrant_name':               r'owner: *([\S ]+)',
@@ -988,7 +1099,10 @@ class WhoisBr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
 
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Not found:' in text:
             raise PywhoisError(text)
         else:
@@ -1004,11 +1118,11 @@ class WhoisBr(WhoisEntry):
                 dayfirst=self.dayfirst,
                 yearfirst=self.yearfirst)
         return value
-        
+
 
 class WhoisKr(WhoisEntry):
-    """Whois parser for .kr domains
-    """
+    """Whois parser for .kr domains."""
+
     regex = {
         'domain_name': r'Domain Name\s*: *(.+)',
         'registrant_name': r'Registrant\s*: *(.+)',
@@ -1025,6 +1139,10 @@ class WhoisKr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.endswith(' no match'):
             raise PywhoisError(text)
         else:
@@ -1032,8 +1150,8 @@ class WhoisKr(WhoisEntry):
 
 
 class WhoisPt(WhoisEntry):
-    """Whois parser for .pt domains
-    """
+    """Whois parser for .pt domains."""
+
     regex = {
         'domain_name': r'Domain: *(.+)',
         'creation_date': r'Creation Date: *(.+)',
@@ -1055,6 +1173,10 @@ class WhoisPt(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No entries found':
             raise PywhoisError(text)
         else:
@@ -1062,8 +1184,8 @@ class WhoisPt(WhoisEntry):
 
 
 class WhoisBg(WhoisEntry):
-    """Whois parser for .bg domains
-    """
+    """Whois parser for .bg domains."""
+
     regex = {
         'domain_name': r'DOMAIN NAME: *(.+)\n',
         'status': r'registration status: s*(.+)',
@@ -1072,6 +1194,10 @@ class WhoisBg(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'does not exist in database!' in text:
             raise PywhoisError(text)
         else:
@@ -1079,8 +1205,8 @@ class WhoisBg(WhoisEntry):
 
 
 class WhoisDe(WhoisEntry):
-    """Whois parser for .de domains
-    """
+    """Whois parser for .de domains."""
+
     regex = {
         'domain_name':      r'Domain: *(.+)',
         'status':           r'Status: *(.+)',
@@ -1099,6 +1225,10 @@ class WhoisDe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Status: free' in text:
             raise PywhoisError(text)
         else:
@@ -1106,8 +1236,8 @@ class WhoisDe(WhoisEntry):
 
 
 class WhoisAt(WhoisEntry):
-    """Whois parser for .at domains
-    """
+    """Whois parser for .at domains."""
+
     regex = {
         'domain_name': r'domain: *(.+)',
         'registrar': r'registrar: *(.+)',
@@ -1124,6 +1254,10 @@ class WhoisAt(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Status: free' in text:
             raise PywhoisError(text)
         else:
@@ -1131,8 +1265,8 @@ class WhoisAt(WhoisEntry):
 
 
 class WhoisBe(WhoisEntry):
-    """Whois parser for .be domains
-    """
+    """Whois parser for .be domains."""
+
     regex = {
         'name': r'Name: *(.+)',
         'org': r'Organisation: *(.+)',
@@ -1142,6 +1276,10 @@ class WhoisBe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Status: AVAILABLE' in text:
             raise PywhoisError(text)
         else:
@@ -1149,8 +1287,8 @@ class WhoisBe(WhoisEntry):
 
 
 class WhoisInfo(WhoisEntry):
-    """Whois parser for .info domains
-    """
+    """Whois parser for .info domains."""
+
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -1172,6 +1310,10 @@ class WhoisInfo(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'NOT FOUND':
             raise PywhoisError(text)
         else:
@@ -1179,24 +1321,30 @@ class WhoisInfo(WhoisEntry):
 
 
 class WhoisRf(WhoisRu):
-    """Whois parser for .su domains
+    """Whois parser for .su domains.
+
+    This parses results exactly the same as for .ru domains.
     """
 
     def __init__(self, domain, text):
+        """Initialize entry."""
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisSu(WhoisRu):
-    """Whois parser for .su domains
+    """Whois parser for .su domains.
+
+    This parses results exactly the same as for .ru domains.
     """
 
     def __init__(self, domain, text):
+        """Initialize entry."""
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisClub(WhoisEntry):
-    """Whois parser for .us domains
-    """
+    """Whois parser for .us domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -1267,6 +1415,10 @@ class WhoisClub(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Not found:' in text:
             raise PywhoisError(text)
         else:
@@ -1274,8 +1426,8 @@ class WhoisClub(WhoisEntry):
 
 
 class WhoisIo(WhoisEntry):
-    """Whois parser for .io domains
-    """
+    """Whois parser for .io domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Registry Domain ID: *(.+)',
@@ -1293,6 +1445,10 @@ class WhoisIo(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'is available for purchase' in text:
             raise PywhoisError(text)
         else:
@@ -1300,8 +1456,8 @@ class WhoisIo(WhoisEntry):
 
 
 class WhoisBiz(WhoisEntry):
-    """Whois parser for .biz domains
-    """
+    """Whois parser for .biz domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -1348,6 +1504,10 @@ class WhoisBiz(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No Data Found' in text:
             raise PywhoisError(text)
         else:
@@ -1355,8 +1515,8 @@ class WhoisBiz(WhoisEntry):
 
 
 class WhoisMobi(WhoisEntry):
-    """Whois parser for .mobi domains
-    """
+    """Whois parser for .mobi domains."""
+
     regex = {
         'domain_id':                   r'Registry Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -1414,6 +1574,10 @@ class WhoisMobi(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'NOT FOUND' in text:
             raise PywhoisError(text)
         else:
@@ -1421,8 +1585,8 @@ class WhoisMobi(WhoisEntry):
 
 
 class WhoisKg(WhoisEntry):
-    """Whois parser for .kg domains
-    """
+    """Whois parser for .kg domains."""
+
     regex = {
         'domain_name':                    r'Domain\s*([\w]+\.[\w]{2,5})',
         'registrar':                      r'Domain support: \s*(.+)',
@@ -1440,6 +1604,10 @@ class WhoisKg(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Data not found. This domain is available for registration' in text:
             raise PywhoisError(text)
         else:
@@ -1447,8 +1615,8 @@ class WhoisKg(WhoisEntry):
 
 
 class WhoisChLi(WhoisEntry):
-    """Whois Parser for .ch and .li domains
-    """
+    """Whois Parser for .ch and .li domains."""
+
     regex = {
         'domain_name':                      r'\nDomain name:\n*(.+)',
         'registrant_name':                  r'Holder of domain name:\s*(?:.*\n){1}\s*(.+)',
@@ -1461,6 +1629,10 @@ class WhoisChLi(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'We do not have an entry in our database matching your query.' in text:
             raise PywhoisError(text)
         else:
@@ -1468,8 +1640,8 @@ class WhoisChLi(WhoisEntry):
 
 
 class WhoisID(WhoisEntry):
-    """Whois parser for .id domains
-    """
+    """Whois parser for .id domains."""
+
     regex = {
         'domain_id':                   r'Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -1504,6 +1676,10 @@ class WhoisID(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'NOT FOUND' in text:
             raise PywhoisError(text)
         else:
@@ -1511,8 +1687,8 @@ class WhoisID(WhoisEntry):
 
 
 class WhoisSe(WhoisEntry):
-    """Whois parser for .se domains
-    """
+    """Whois parser for .se domains."""
+
     regex = {
         'domain_name':                    r'domain\.*: *(.+)',
         'registrant_name':                r'holder\.*: *(.+)',
@@ -1527,6 +1703,10 @@ class WhoisSe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1534,8 +1714,8 @@ class WhoisSe(WhoisEntry):
 
 
 class WhoisJobs(WhoisEntry):
-    """Whois parser for .jobs domains
-    """
+    """Whois parser for .jobs domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID: *(.+)',
@@ -1604,6 +1784,10 @@ class WhoisJobs(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1611,8 +1795,8 @@ class WhoisJobs(WhoisEntry):
 
 
 class WhoisIt(WhoisEntry):
-    """Whois parser for .it domains
-    """
+    """Whois parser for .it domains."""
+
     regex = {
         'domain_name':                    r'Domain: *(.+)',
         'creation_date':                  r'(?<! )Created: *(.+)',
@@ -1638,6 +1822,10 @@ class WhoisIt(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1645,8 +1833,8 @@ class WhoisIt(WhoisEntry):
 
 
 class WhoisSa(WhoisEntry):
-    """Whois parser for .sa domains
-    """
+    """Whois parser for .sa domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Created on: *(.+)',
@@ -1664,6 +1852,10 @@ class WhoisSa(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1671,8 +1863,8 @@ class WhoisSa(WhoisEntry):
 
 
 class WhoisSK(WhoisEntry):
-    """Whois parser for .sk domains
-    """
+    """Whois parser for .sk domains."""
+
     regex = {
         'domain_name':                    r'Domain: *(.+)',
         'creation_date':                  r'(?<=Domain:)[\s\w\W]*?Created: *(.+)',
@@ -1703,6 +1895,10 @@ class WhoisSK(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1710,8 +1906,8 @@ class WhoisSK(WhoisEntry):
 
 
 class WhoisMx(WhoisEntry):
-    """Whois parser for .mx domains
-    """
+    """Whois parser for .mx domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Created On: *(.+)',
@@ -1746,6 +1942,10 @@ class WhoisMx(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1753,8 +1953,8 @@ class WhoisMx(WhoisEntry):
 
 
 class WhoisTw(WhoisEntry):
-    """Whois parser for .tw domains
-    """
+    """Whois parser for .tw domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Record created on (.+) ',
@@ -1787,6 +1987,10 @@ class WhoisTw(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1794,8 +1998,8 @@ class WhoisTw(WhoisEntry):
 
 
 class WhoisTr(WhoisEntry):
-    """Whois parser for .tr domains
-    """
+    """Whois parser for .tr domains."""
+
     regex = {
         'domain_name':                    r'[**] Domain Name: *(.+)',
 
@@ -1826,6 +2030,10 @@ class WhoisTr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not found.' in text:
             raise PywhoisError(text)
         else:
@@ -1833,8 +2041,8 @@ class WhoisTr(WhoisEntry):
 
 
 class WhoisIs(WhoisEntry):
-    """Whois parser for .se domains
-    """
+    """Whois parser for .se domains."""
+
     regex = {
         'domain_name':      r'domain\.*: *(.+)',
         'registrant_name':  r'registrant: *(.+)',
@@ -1848,6 +2056,10 @@ class WhoisIs(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found' in text:
             raise PywhoisError(text)
         else:
@@ -1855,8 +2067,8 @@ class WhoisIs(WhoisEntry):
 
 
 class WhoisDk(WhoisEntry):
-    """Whois parser for .dk domains
-    """
+    """Whois parser for .dk domains."""
+
     regex = {
         'domain_name':         r'Domain: *(.+)',
         'creation_date':       r'Registered: *(.+)',
@@ -1873,6 +2085,10 @@ class WhoisDk(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for ' in text:
             raise PywhoisError(text)
         else:
@@ -1889,8 +2105,8 @@ class WhoisDk(WhoisEntry):
 
 
 class WhoisAi(WhoisEntry):
-    """Whois parser for .ai domains
-    """
+    """Whois parser for .ai domains."""
+
     regex = {
         'domain_name':      r'Complete Domain Name\.*: *(.+)',
         'name':             r'Name \(Last, First\)\.*: *(.+)',
@@ -1904,6 +2120,10 @@ class WhoisAi(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'not registered' in text:
             raise PywhoisError(text)
         else:
@@ -1911,8 +2131,8 @@ class WhoisAi(WhoisEntry):
 
 
 class WhoisIl(WhoisEntry):
-    """Whois parser for .il domains
-    """
+    """Whois parser for .il domains."""
+
     regex = {
         'domain_name':        r'domain: *(.+)',
         'expiration_date':    r'validity: *(.+)',
@@ -1929,6 +2149,10 @@ class WhoisIl(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No data was found' in text:
             raise PywhoisError(text)
         else:
@@ -1941,8 +2165,8 @@ class WhoisIl(WhoisEntry):
 
 
 class WhoisIn(WhoisEntry):
-    """Whois parser for .in domains
-    """
+    """Whois parser for .in domains."""
+
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -1961,6 +2185,10 @@ class WhoisIn(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'NOT FOUND' in text:
             raise PywhoisError(text)
         else:
@@ -1968,8 +2196,8 @@ class WhoisIn(WhoisEntry):
 
 
 class WhoisCat(WhoisEntry):
-    """Whois parser for .cat domains
-    """
+    """Whois parser for .cat domains."""
+
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -1982,6 +2210,10 @@ class WhoisCat(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'no matching objects' in text:
             raise PywhoisError(text)
         else:
@@ -1992,21 +2224,25 @@ class WhoisCat(WhoisEntry):
 
 
 class WhoisIe(WhoisEntry):
-    """Whois parser for .ie domains
-    """
+    """Whois parser for .ie domains."""
+
     regex = {
-        'domain_name':      r'Domain Name: *(.+)',
-        'creation_date':    r'Creation Date: *(.+)',
-        'expiration_date':  r'Registry Expiry Date: *(.+)',
-        'name_servers':     r'Name Server: *(.+)',
-        'status':           r'Domain status: *(.+)',
-        'admin_id':         r'Registry Admin ID: *(.+)',
-        'tech_id':          r'Registry Tech ID: *(.+)',
-        'registrar':        r'Registrar: *(.+)',
-        'registrar_contact':r'Registrar Abuse Contact Email: *(.+)'
+        'domain_name':       r'Domain Name: *(.+)',
+        'creation_date':     r'Creation Date: *(.+)',
+        'expiration_date':   r'Registry Expiry Date: *(.+)',
+        'name_servers':      r'Name Server: *(.+)',
+        'status':            r'Domain status: *(.+)',
+        'admin_id':          r'Registry Admin ID: *(.+)',
+        'tech_id':           r'Registry Tech ID: *(.+)',
+        'registrar':         r'Registrar: *(.+)',
+        'registrar_contact': r'Registrar Abuse Contact Email: *(.+)'
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'no matching objects' in text:
             raise PywhoisError(text)
         else:
@@ -2014,8 +2250,8 @@ class WhoisIe(WhoisEntry):
 
 
 class WhoisNz(WhoisEntry):
-    """Whois parser for .nz domains
-    """
+    """Whois parser for .nz domains."""
+
     regex = {
         'domain_name':          r'domain_name:\s*([^\n\r]+)',
         'registrar':            r'registrar_name:\s*([^\n\r]+)',
@@ -2033,6 +2269,10 @@ class WhoisNz(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'no matching objects' in text:
             raise PywhoisError(text)
         else:
@@ -2040,8 +2280,8 @@ class WhoisNz(WhoisEntry):
 
 
 class WhoisLu(WhoisEntry):
-    """Whois parser for .lu domains
-    """
+    """Whois parser for .lu domains."""
+
     regex = {
         'domain_name':              r'domainname: *(.+)',
         'creation_date':            r'registered: *(.+)',
@@ -2068,6 +2308,10 @@ class WhoisLu(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No such domain' in text:
             raise PywhoisError(text)
         else:
@@ -2075,8 +2319,8 @@ class WhoisLu(WhoisEntry):
 
 
 class WhoisCz(WhoisEntry):
-    """Whois parser for .cz domains
-    """
+    """Whois parser for .cz domains."""
+
     regex = {
         'domain_name':              r'domain: *(.+)',
         'registrant_name':          r'registrant: *(.+)',
@@ -2088,6 +2332,10 @@ class WhoisCz(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if '% No entries found.' in text or 'Your connection limit exceeded' in text:
             raise PywhoisError(text)
         else:
@@ -2095,8 +2343,8 @@ class WhoisCz(WhoisEntry):
 
 
 class WhoisOnline(WhoisEntry):
-    """Whois parser for .online domains
-    """
+    """Whois parser for .online domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -2117,6 +2365,10 @@ class WhoisOnline(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Not found:' in text:
             raise PywhoisError(text)
         else:
@@ -2124,8 +2376,8 @@ class WhoisOnline(WhoisEntry):
 
 
 class WhoisHr(WhoisEntry):
-    """Whois parser for .hr domains
-    """
+    """Whois parser for .hr domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'whois_server':                   r'Registrar WHOIS Server: *(.+)',
@@ -2139,6 +2391,10 @@ class WhoisHr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'ERROR: No entries found' in text:
             raise PywhoisError(text)
         else:
@@ -2146,8 +2402,8 @@ class WhoisHr(WhoisEntry):
 
 
 class WhoisHk(WhoisEntry):
-    """Whois parser for .hk domains
-    """
+    """Whois parser for .hk domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'status':                         r'Domain Status: *(.+)',
@@ -2191,6 +2447,10 @@ class WhoisHk(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'ERROR: No entries found' in text or 'The domain has not been registered' in text:
             raise PywhoisError(text)
         else:
@@ -2198,8 +2458,8 @@ class WhoisHk(WhoisEntry):
 
 
 class WhoisUA(WhoisEntry):
-    """Whois parser for .ua domains
-    """
+    """Whois parser for .ua domains."""
+
     regex = {
         'domain_name':                    r'domain: *(.+)',
         'status':                         r'status: *(.+)',
@@ -2224,8 +2484,8 @@ class WhoisUA(WhoisEntry):
 
         'admin':                         r'(?<=Administrative Contacts:)[\s\W\w]*?organization-loc:(.*)',
         'admin_country':                 r'(?<=Administrative Contacts:)[\s\W\w]*?country-loc:(.*)',
-        'admin_city':                    r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
-        'admin_state':                   r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
+        'admin_city':                    r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',  # noqa: E501
+        'admin_state':                   r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',  # noqa: E501
         'admin_address':                 r'(?<=Administrative Contacts:)[\s\W\w]*?address-loc:\s+(.*)\n',
         'admin_email':                   r'(?<=Administrative Contacts:)[\s\W\w]*?e-mail:(.*)',
         'admin_postal_code':             r'(?<=Administrative Contacts:)[\s\W\w]*?postal-code-loc:(.*)',
@@ -2239,6 +2499,10 @@ class WhoisUA(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'ERROR: No entries found' in text:
             raise PywhoisError(text)
         else:
@@ -2246,8 +2510,8 @@ class WhoisUA(WhoisEntry):
 
 
 class WhoisHn(WhoisEntry):
-    """Whois parser for .hn domains
-        """
+    """Whois parser for .hn domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Domain ID: *(.+)',
@@ -2313,6 +2577,10 @@ class WhoisHn(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No matching record.':
             raise PywhoisError(text)
         else:
@@ -2320,8 +2588,8 @@ class WhoisHn(WhoisEntry):
 
 
 class WhoisLat(WhoisEntry):
-    """Whois parser for .lat domains
-        """
+    """Whois parser for .lat domains."""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID: *(.+)',
@@ -2377,6 +2645,10 @@ class WhoisLat(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No matching record.':
             raise PywhoisError(text)
         else:
@@ -2384,8 +2656,8 @@ class WhoisLat(WhoisEntry):
 
 
 class WhoisCn(WhoisEntry):
-    """Whois parser for .cn domains
-    """
+    """Whois parser for .cn domains."""
+
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2399,6 +2671,10 @@ class WhoisCn(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No matching record.':
             raise PywhoisError(text)
         else:
@@ -2406,8 +2682,8 @@ class WhoisCn(WhoisEntry):
 
 
 class WhoisApp(WhoisEntry):
-    """Whois parser for .app domains
-    """
+    """Whois parser for .app domains."""
+
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2431,6 +2707,10 @@ class WhoisApp(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'Domain not found.':
             raise PywhoisError(text)
         else:
@@ -2438,8 +2718,8 @@ class WhoisApp(WhoisEntry):
 
 
 class WhoisMoney(WhoisEntry):
-    """Whois parser for .money domains
-    """
+    """Whois parser for .money domains."""
+
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2463,6 +2743,10 @@ class WhoisMoney(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'Domain not found.':
             raise PywhoisError(text)
         else:
@@ -2470,8 +2754,8 @@ class WhoisMoney(WhoisEntry):
 
 
 class WhoisAr(WhoisEntry):
-    """Whois parser for .ar domains
-    """
+    """Whois parser for .ar domains."""
+
     regex = {
         'domain_name':          r'domain: *(.+)',
         'registrar':            r'registrar: *(.+)',
@@ -2486,6 +2770,10 @@ class WhoisAr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'El dominio no se encuentra registrado en NIC Argentina':
             raise PywhoisError(text)
         else:
@@ -2493,8 +2781,8 @@ class WhoisAr(WhoisEntry):
 
 
 class WhoisBy(WhoisEntry):
-    """Whois parser for .by domains
-    """
+    """Whois parser for .by domains."""
+
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2511,6 +2799,10 @@ class WhoisBy(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'El dominio no se encuentra registrado en NIC Argentina':
             raise PywhoisError(text)
         else:
@@ -2518,8 +2810,8 @@ class WhoisBy(WhoisEntry):
 
 
 class WhoisCr(WhoisEntry):
-    """Whois parser for .cr domains
-    """
+    """Whois parser for .cr domains."""
+
     regex = {
         'domain_name':          r'domain: *(.+)',
         'registrant_name':      r'registrant: *(.+)',
@@ -2537,6 +2829,10 @@ class WhoisCr(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'El dominio no existe.':
             raise PywhoisError(text)
         else:
@@ -2544,8 +2840,8 @@ class WhoisCr(WhoisEntry):
 
 
 class WhoisVe(WhoisEntry):
-    """Whois parser for .ve domains
-    """
+    """Whois parser for .ve domains."""
+
     regex = {
         'domain_name':           r'Nombre de Dominio: *(.+)',
         'status':                r'Estatus del dominio: *(.+)',
@@ -2598,6 +2894,10 @@ class WhoisVe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'El dominio no existe.':
             raise PywhoisError(text)
         else:
@@ -2605,8 +2905,8 @@ class WhoisVe(WhoisEntry):
 
 
 class WhoisDo(WhoisEntry):
-    """Whois parser for .do domains
-    """
+    """Whois parser for .do domains."""
+
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'whois_server':         r'WHOIS Server: *(.+)',
@@ -2663,6 +2963,10 @@ class WhoisDo(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'Extensión de dominio no válido.':
             raise PywhoisError(text)
         else:
@@ -2670,8 +2974,8 @@ class WhoisDo(WhoisEntry):
 
 
 class WhoisAe(WhoisEntry):
-    """Whois parser for .ae domains
-    """
+    """Whois parser for .ae domains."""
+
     regex = {
         'domain_name':     r'Domain Name: *(.+)',
         'status':          r'Status: *(.+)',
@@ -2680,6 +2984,10 @@ class WhoisAe(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No Data Found':
             raise PywhoisError(text)
         else:
@@ -2687,8 +2995,8 @@ class WhoisAe(WhoisEntry):
 
 
 class WhoisSi(WhoisEntry):
-    """Whois parser for .si domains
-    """
+    """Whois parser for .si domains."""
+
     regex = {
         'domain_name':     r'domain: *(.+)',
         'registrar':       r'registrar: *(.+)',
@@ -2699,6 +3007,10 @@ class WhoisSi(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found for the selected source(s).' in text:
             raise PywhoisError(text)
         else:
@@ -2706,8 +3018,8 @@ class WhoisSi(WhoisEntry):
 
 
 class WhoisNo(WhoisEntry):
-    """Whois parser for .no domains
-    """
+    """Whois parser for .no domains."""
+
     regex = {
         'domain_name':     r'Domain Name.*:\s*(.+)',
         'creation_date':   r'Additional information:\nCreated:\s*(.+)',
@@ -2715,6 +3027,10 @@ class WhoisNo(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match' in text:
             raise PywhoisError(text)
         else:
@@ -2722,8 +3038,8 @@ class WhoisNo(WhoisEntry):
 
 
 class WhoisKZ(WhoisEntry):
-    """Whois parser for .kz domains
-    """
+    """Whois parser for .kz domains."""
+
     regex = {
         'domain_name':       r'Domain Name............: *(.+)',
         'registrar_created': r'Registrar Created: *(.+)',
@@ -2737,12 +3053,16 @@ class WhoisKZ(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if text.strip() == 'No entries found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisIR(WhoisEntry):
     """Whois parser for .ir domains."""
 
@@ -2757,6 +3077,10 @@ class WhoisIR(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -2777,17 +3101,24 @@ class WhoisZhongGuo(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisWebsite(WhoisEntry):
-    """Whois parser for .website domains
-    """
+    """Whois parser for .website domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No match for "' in text:
             raise PywhoisError(text)
         else:
@@ -2796,8 +3127,9 @@ class WhoisWebsite(WhoisEntry):
 
 class WhoisML(WhoisEntry):
     """Whois parser for .ml domains."""
+
     regex = {
-        'domain_name': r'Domain name:\s*([^(i|\n)]+)', 
+        'domain_name': r'Domain name:\s*([^(i|\n)]+)',
         'registrar': r'Organization: *(.+)',
         'creation_date': r'Domain registered: *(.+)',
         'expiration_date': r'Record will expire on: *(.+)',
@@ -2806,11 +3138,15 @@ class WhoisML(WhoisEntry):
     }
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'Invalid query or domain name not known in the Point ML Domain Registry' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-    
+
     def _preprocess(self, attr, value):
         if attr == 'name_servers':
             return [
@@ -2820,23 +3156,29 @@ class WhoisML(WhoisEntry):
             ]
         return super(WhoisML, self)._preprocess(attr, value)
 
-      
+
 class WhoisOoo(WhoisEntry):
-    """Whois parser for .ooo domains
-    """
+    """Whois parser for .ooo domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found for the selected source(s).' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisMarket(WhoisEntry):
-    """Whois parser for .market domains
-    """
+    """Whois parser for .market domains."""
 
     def __init__(self, domain, text):
+        """Initialize entry.
+
+        :raises: PywhoisError if text indicates domain was not found.
+        """
         if 'No entries found for the selected source(s).' in text:
             raise PywhoisError(text)
         else:
