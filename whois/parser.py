@@ -32,6 +32,7 @@ EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@
 
 KNOWN_FORMATS = [
     '%d-%b-%Y',                 # 02-jan-2000
+    '%Y-%b-%d',                 # 2019-Aug-22
     '%d-%B-%Y',                 # 11-February-2000
     '%d-%m-%Y',                 # 20-10-2000
     '%Y-%m-%d',                 # 2000-01-02
@@ -1798,8 +1799,8 @@ class WhoisTr(WhoisEntry):
     regex = {
         'domain_name':                    r'[**] Domain Name: *(.+)',
 
-        'creation_date':                  r'Created on.*: *(.+)',
-        'expiration_date':                r'Expires on.*: *(.+)',
+        'creation_date':                  r'Created on.*: *(.+)\.$',
+        'expiration_date':                r'Expires on.*: *(.+)\.$',
 
         'name_servers':                   r'[**] Domain servers:((?:\s.+)*)',  # servers in one string sep by \n
 
