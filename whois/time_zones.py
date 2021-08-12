@@ -1,10 +1,13 @@
+"""Correspondance between different formats of timezone notations."""
+
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
-from builtins import *
+from builtins import *  # noqa
+
 _tz_string = '''-12 Y
 -11 X NUT SST
 -10 W CKT HAST HST TAHT TKT
