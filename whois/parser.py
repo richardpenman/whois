@@ -878,11 +878,11 @@ class WhoisJp(WhoisEntry):
     """Whois parser for .jp domains
     """
     regex = {
-        'domain_name': r'a\. \[Domain Name\]\s*(.+)',
-        'registrant_org': r'g\. \[(?:Organization|Registrant)\](.+)',
+        'domain_name': r'.*\[Domain Name\]\s*(.+)',
+        'registrant_org': r'.*\[(?:Organization|Registrant)\](.+)',
         'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
         'expiration_date': r'\[Expires on\]\s*(.+)',
-        'name_servers': r'p\. \[Name Server\]\s*(.+)',  # list of name servers
+        'name_servers': r'.*\[Name Server\]\s*(.+)',  # list of name servers
         'updated_date':  r'\[Last Updated?\]\s?(.+)',
         'status': r'\[(?:State|Status)\]\s*(.+)',  # list of statuses
     }
