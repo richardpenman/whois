@@ -347,6 +347,18 @@ class WhoisEntry(dict):
             return WhoisTr(domain, text)
         elif domain.endswith('.ve'):
             return WhoisVe(domain, text)
+        elif domain.endswith('co.ve'):
+            return WhoisVe(domain, text)
+        elif domain.endswith('com.ve'):
+            return WhoisVe(domain, text)
+        elif domain.endswith('web.ve'):
+            return WhoisVe(domain, text)
+        elif domain.endswith('org.ve'):
+            return WhoisVe(domain, text)
+        elif domain.endswith('edu.ve'):
+            return WhoisVe(domain, text)    
+        elif domain.endswith('net.ve'):
+            return WhoisVe(domain, text)   
         elif domain.endswith('.ua'):
             return WhoisUA(domain, text)
         elif domain.endswith('.kz'):
