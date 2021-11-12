@@ -14,6 +14,7 @@ import subprocess
 import socket
 from .parser import WhoisEntry
 from .whois import NICClient
+from .public_suffix_list import suffixes
 import logging
 
 
@@ -52,7 +53,6 @@ def whois(url, command=False, flags=0, executable="whois"):
     return WhoisEntry.load(domain, text)
 
 
-suffixes = None
 def extract_domain(url):
     """Extract the domain from the given URL
 
