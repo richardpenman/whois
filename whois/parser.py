@@ -363,6 +363,8 @@ class WhoisEntry(dict):
             return WhoisML(domain, text)
         elif domain.endswith('.ooo'):
             return WhoisOOO(domain, text)
+        elif domain.endswith('.group'):
+            return WhoisGroup(domain, text)
         elif domain.endswith('.market'):
             return WhoisMarket(domain, text)
         else:
@@ -696,6 +698,28 @@ class WhoisPl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisGroup(WhoisEntry):
+    """Whois parser for .group domains
+    """
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain_id':                      r'Registry Domain ID:(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: (.+)',
+        'creation_date':                  r'Creation Date: (.+)',
+        'expiration_date':                r'Expir\w+ Date:\s?(.+)',
+        'registrar':                      r'Registrar:(.+)',
+        'status':                         r'Domain status: *(.+)',
+        'registrant_name':                r'Registrant Name:(.+)',
+        'name_servers':                   r'Name Server: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if 'Domain not found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCa(WhoisEntry):
     """Whois parser for .ca domains
