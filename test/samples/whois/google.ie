@@ -1,23 +1,25 @@
-% Rights restricted by copyright; http://iedr.ie/index.php/mnudomregs/mnudnssearch/96
-% Do not remove this notice
+# whois.weare.ie
 
-Domain:                  google.ie
-Domain Holder:           Google, Inc
-Admin-c:                 AAV410-IEDR
-Tech-c:                  CCA7-IEDR
-Account Name:            Markmonitor Inc
-Registrar Abuse Contact: Service not supported currently
-Registration Date:       21-March-2002
-Renewal Date:            21-March-2020
-Holder-type:             Billable
-Locked status:           YES
-Renewal status:          Active
-In-zone:                 1
-Nserver:                 ns1.google.com
-Nserver:                 ns2.google.com
-Nserver:                 ns3.google.com
-
-% Important Notice
-% If you believe that information published on this page is incorrect, or should not be published, please contact your Registrar, or the IEDR Registration Services Department who will advise you further.
-% You can also contact your Registrar or the IEDR if your domain holder name isn’t showing and you would like it to be published.
-% Our contact information is available at https://www.iedr.ie/contact-us/
+Domain Name: google.ie
+Registry Domain ID: 762999-IEDR
+Registrar WHOIS Server: whois.weare.ie
+Registrar URL: http://www.eMarkmonitor.com
+Updated Date: 2021-05-05T14:19:51Z
+Creation Date: 2002-03-21T00:00:00Z
+Registry Expiry Date: 2022-03-21T14:13:27Z
+Registrar: Markmonitor Inc
+Registrar IANA ID: not applicable
+Registrar Abuse Contact Email: abusecomplaints@markmonitor.com
+Registrar Abuse Contact Phone: +1.2086851865
+Domain Status: serverDeleteProhibited https://icann.org/epp#serverDeleteProhibited
+Domain Status: serverTransferProhibited https://icann.org/epp#serverTransferProhibited
+Domain Status: serverUpdateProhibited https://icann.org/epp#serverUpdateProhibited
+Registry Registrant ID: 379250-IEDR
+Registrant Name: Google LLC
+Registry Admin ID: 5672149-IEDR
+Registry Tech ID: 534389-IEDR
+Registry Billing ID: REDACTED FOR PRIVACY
+Name Server: ns1.google.com
+Name Server: ns2.google.com
+Name Server: ns3.google.com
+DNSSEC: unsigned
