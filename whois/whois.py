@@ -95,6 +95,7 @@ class NICClient(object):
     OOO_HOST = "whois.nic.ooo"
     MARKET_HOST = "whois.nic.market"
     NL_HOST = 'whois.domain-registry.nl'
+    JP_HOST = 'whois.jprs.jp'
     
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -270,7 +271,9 @@ class NICClient(object):
         elif tld == 'market':
             return NICClient.MARKET_HOST
         elif tld == 'nl':
-            return NICClient.NL_HOST    
+            return NICClient.NL_HOST
+        elif tld == 'jp':
+            return NICClient.JP_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
         
