@@ -95,6 +95,12 @@ class NICClient(object):
     OOO_HOST = "whois.nic.ooo"
     MARKET_HOST = "whois.nic.market"
     NL_HOST = 'whois.domain-registry.nl'
+    COZA_HOST = "coza-whois.dns.net.za"
+    GOVZA_HOST = "mta.gov.za"
+    ORGZA_HOST = "orgza-whois.dns.net.za"
+    JOBURG_HOST = "joburg-whois.dns.net.za"
+    CAPETOWN_HOST = "capetown-whois.dns.net.za"
+    DURBAN_HOST = "durban-whois.dns.net.za"
     
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -271,6 +277,19 @@ class NICClient(object):
             return NICClient.MARKET_HOST
         elif tld == 'nl':
             return NICClient.NL_HOST    
+        elif tld == 'joburg':
+            return NICClient.JOBURG_HOST
+        elif tld == 'capetown':
+            return NICClient.CAPETOWN_HOST
+        elif tld == 'durban':
+            return NICClient.DURBAN_HOST
+        elif tld == 'za':
+            if domain[-2]=="co":
+                return NICClient.COZA_HOST
+            elif domain[-2]=="gov":
+                return NICClient.GOVZA_HOST
+            else:
+                return tld + NICClient.QNICHOST_TAIL
         else:
             return tld + NICClient.QNICHOST_TAIL
         
