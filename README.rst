@@ -45,7 +45,7 @@ Or checkout latest version from repository:
 
 .. sourcecode:: bash
 
-    $ git clone git@github.com:richardpenman/pywhois.git
+    $ git clone git@github.com:richardpenman/whois.git
 
 Note that then you will need to manually install the futures module, which allows supporting both Python 2 & 3:
 
@@ -88,7 +88,7 @@ Problems?
 Pull requests are welcome! 
 
 Thanks to the many who have sent patches for additional TLDs. If you want to add or fix a TLD it's quite straightforward. 
-See example domains in `whois/parser.py <https://github.com/richardpenman/pywhois/blob/master/whois/parser.py>`_
+See example domains in `whois/parser.py <https://github.com/richardpenman/whois/blob/master/whois/parser.py>`_
 
 Basically each TLD has a similar format to the following:
 
