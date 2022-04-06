@@ -366,7 +366,6 @@ class WhoisEntry(dict):
             return WhoisOoo(domain, text)
         elif domain.endswith('.market'):
             return WhoisMarket(domain, text)
-        #START CHANGES
         elif domain.endswith('.city'):
             return WhoisCity(domain, text)
         elif domain.endswith('.credit'):
@@ -385,7 +384,8 @@ class WhoisEntry(dict):
             return WhoisAsia(domain, text)
         elif domain.endswith('.top'):
             return WhoisTop(domain, text)
-        #END CHANGES
+        elif domain.endswith('.berlin'):
+            return WhoisBerlin(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2931,7 +2931,7 @@ class WhoisCity(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisCredit(WhoisEntry):
     """""Whois parser for .credit domains
     """
@@ -3386,7 +3386,24 @@ class WhoisTop(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
+class WhoisBerlin(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'registry_expiry_date':           r'Registry Expiry Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',  
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'status':                         r'Domain Status: *(.+)',   
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
 
 
 
