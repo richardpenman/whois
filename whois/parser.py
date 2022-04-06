@@ -392,6 +392,8 @@ class WhoisEntry(dict):
             return WhoisDeals(domain, text)
         elif domain.endswith('.domains'):
             return WhoisDomains(domain, text)
+        elif domain.endswith('.gl'):
+            return WhoisDomains(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3671,7 +3673,7 @@ class WhoisDomains(WhoisEntry):
 class WhoisDownload(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
-        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registry_domain_id':            r'Registry Domain ID: *(.+)',
         'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
         'registrar_url':                  r'Registrar URL: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
@@ -3734,7 +3736,7 @@ class WhoisDownload(WhoisEntry):
 class WhoisFm(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
-        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registry_domain_id':            r'Registry Domain ID: *(.+)',
         'registrar_url':                  r'Registrar URL: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
         'creation_date':                  r'Creation Date: *(.+)',
@@ -3757,3 +3759,49 @@ class WhoisFm(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisGl(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain_id':             r'Registry Domain ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'registry_expiry_date':           r'Registry Expiry Date: *(.+)',
+        'registrar_registration_exp_date':r'Registrar Registration Expiration Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',  
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',
+        'status':                         r'Domain Status: *(.+)',   
+        'registry_registrant_id':         r'Registry RegistrantID: *(.+)',
+        'registrant_name':                r'RegistrantName: *(.+)',
+        'registrant_org':                 r'RegistrantOrganization: *(.+)',
+        'registrant_street':              r'RegistrantStreet: *(.+)',
+        'registrant_city':                r'RegistrantCity: *(.+)',
+        'registrant_state/province':      r'RegistrantState/Province: *(.+)',
+        'registrant_postal_code':         r'RegistrantPostal Code: *(.+)',
+        'registrant_country':             r'RegistrantCountry: *(.+)',
+        'registrant_phone':               r'RegistrantPhone: *(.+)',
+        'registrant_email':               r'RegistrantEmail: *(.+)',
+        'registry_admin_id':              r'Registry AdminID: *(.+)',
+        'admin_name':                     r'AdminName: *(.+)',
+        'admin_org':                      r'AdminOrganization: *(.+)',
+        'admin_street':                   r'AdminStreet: *(.+)',
+        'admin_city':                     r'AdminCity: *(.+)',
+        'admin_state/province':           r'AdminState/Province: *(.+)',
+        'admin_postal_code':              r'AdminPostal Code: *(.+)',
+        'admin_country':                  r'AdminCountry: *(.+)',
+        'admin_phone':                    r'AdminPhone: *(.+)',
+        'admin_email':                    r'AdminEmail: *(.+)',
+        'registry_tech_id':               r'Registry TechID: *(.+)',
+        'tech_name':                      r'TechName: *(.+)',
+        'tech_org':                       r'TechOrganization: *(.+)',
+        'tech_street':                    r'TechStreet: *(.+)',
+        'tech_city':                      r'TechCity: *(.+)',
+        'tech_state/province':            r'TechState/Province: *(.+)',
+        'tech_postal_code':               r'TechPostal Code: *(.+)',
+        'tech_country':                   r'TechCountry: *(.+)',
+        'tech_phone':                     r'TechPhone: *(.+)',
+        'tech_email':                     r'TechEmail: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+    }
