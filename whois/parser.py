@@ -368,7 +368,6 @@ class WhoisEntry(dict):
         else:
             return WhoisEntry(domain, text)
 
-
 class WhoisCl(WhoisEntry):
     """Whois parser for .cl domains."""
 
