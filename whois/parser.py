@@ -393,7 +393,9 @@ class WhoisEntry(dict):
         elif domain.endswith('.domains'):
             return WhoisDomains(domain, text)
         elif domain.endswith('.gl'):
-            return WhoisDomains(domain, text)
+            return WhoisGl(domain, text)
+        elif domain.endswith('.group'):
+            return WhoisGroup(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3874,4 +3876,3 @@ class WhoisGroup(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-            
