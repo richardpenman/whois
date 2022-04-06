@@ -3406,6 +3406,11 @@ class WhoisBerlin(WhoisEntry):
         'dnssec':                         r'DNSSEC: *(.+)',
         'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
     }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisBike(WhoisEntry):
     regex = {
@@ -3464,4 +3469,9 @@ class WhoisBike(WhoisEntry):
         'dnssec':                         r'DNSSEC: *(.+)',
         'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
     }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
