@@ -1,1 +1,1 @@
-{"domain_name": "google.de", "status": "connect", "updated_date": "2018-03-12 21:44:25", "name": null, "org": null, "address": null, "zipcode": null, "city": null, "country_code": null, "phone": null, "fax": null, "name_servers": ["ns1.google.com", "ns2.google.com", "ns3.google.com", "ns4.google.com"], "emails": null}
+{"domain_name": "google.de", "expiration_date": null, "updated_date": "2018-03-12 21:44:25", "creation_date": null, "status": "connect"}

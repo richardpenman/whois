@@ -1,1 +1,1 @@
-{"domain_name": "google.com.pe","status": ["clientTransferProhibited", "clientDeleteProhibited", "clientUpdateProhibited"],  "whois_server": "NIC .PE", "registrant": "Google LLC", "registrar": "MarkMonitor Inc.", "admin": "Google LLC", "admin_email": "dns-admin@google.com", "dnssec": "unsigned", "name_servers": ["ns1.google.com", "ns2.google.com", "ns3.google.com", "ns4.google.com"]}
+{"domain_name": "google.com.pe", "expiration_date": null, "updated_date": null, "creation_date": null, "status": ["clientTransferProhibited", "clientDeleteProhibited", "clientUpdateProhibited"]}
