@@ -5546,6 +5546,25 @@ class WhoisLc(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisLt(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain: *(.+)',
+        'status':                         r'Status: *(.+)',
+        'creation_date':                  r'Registered: *(.+)',
+        'expiration_date':                r'Expires: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',  
+        'registrar_url':                  r'Registrar website: *(.+)',
+        'registrar_email':                r'Registrar email: *(.+)',
+        'registrant_org':                 r'Contact organization: *(.+)',
+        'registrant_email':               r'Contact email: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 
 
