@@ -4739,4 +4739,31 @@ class WhoisCo(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-
+class WhoisCr(WhoisEntry):
+    regex = {
+        'domain_name':                   r'domain: *(.+)',
+        'registrant':                    r'registrant: *(.+)',
+        'admin_c':                       r'admin-c: *(.+)',
+        'nsset':                         r'nsset: *(.+)',
+        'registrar':                     r'registrar: *(.+)',
+        'status':                        r'status: *(.+)',
+        'registered':                    r'registered: *(.+)',
+        'updated_date':                  r'changed: *(.+)',
+        'expiration_date':               r'expire: *(.+)',
+        'contact':                       r'contact: *(.+)',
+        'org':                           r'org: *(.+)',
+        'name':                          r'name: *(.+)',
+        'address':                       r'address: *(.+)',
+        'phone':                         r'phone: *(.+)',
+        'fax':                           r'fax-no: *(.+)',
+        'email':                         r'e-mail: *(.+)',
+        'registrar':                     r'registrar: *(.+)',
+        'creation_date':                 r'created: *(.+)',
+        'name_server':                   r'nserver: *(.+)',
+        'tech-c':                        r'tech-c: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
