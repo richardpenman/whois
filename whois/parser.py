@@ -5601,6 +5601,35 @@ class WhoisLy(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 
+class WhoisMa(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'sponsoring_registrar':           r'Sponsoring Registrar: *(.+)',
+        'status':                         r'Domain Status: *(.+)',   
+        'admin_email':                    r'Admin Email: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'admin_name':                     r'Admin Name: *(.+)',
+        'admin_phone':                    r'Admin Phone: *(.+)',
+        'admin_phone_ext':                r'Admin Phone Ext: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_phone':                     r'Tech Phone: *(.+)',
+        'tech_phone_ext':                 r'Tech Phone Ext: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 
 

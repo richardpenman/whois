@@ -1,0 +1,1 @@
+{"domain_name": "google.ma", "expiration_date": "2023-03-24 00:00:00", "updated_date": "2022-03-03 19:39:33.170000", "creation_date": "2009-03-24 00:00:00", "status": ["ok", "clientTransferProhibited"]}
