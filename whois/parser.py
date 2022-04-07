@@ -436,6 +436,8 @@ class WhoisEntry(dict):
             return WhoisGy(domain, text)
         elif domain.endswith('.ht'):
             return WhoisHt(domain, text)
+        elif domain.endswith('.ke'):
+            return WhoisKe(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -5242,6 +5244,44 @@ class WhoisHt(WhoisEntry):
         'billing_phone':                  r'Tech Phone: *(.+)',
         'billing_fax':                    r'Tech Fax: *(.+)',
         'billing_email':                  r'Tech Email: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisKe(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registry_registrant_id':         r'Registry Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_org':                 r'Registrant Organization: *(.+)',
+        'registrant_street':              r'Registrant Street: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state/province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_phone':               r'Registrant Phone: *(.+)',
+        'registrant_phone_ext':           r'Registrant Phone Ext: *(.+)',
+        'registrant_fax':                 r'Registrant Fax: *(.+)',
+        'registrant_fax_ext':             r'Registrant Fax Ext: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
         'name_server':                    r'Name Server: *(.+)',
         'dnssec':                         r'DNSSEC: *(.+)',
         'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
