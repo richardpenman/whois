@@ -420,6 +420,8 @@ class WhoisEntry(dict):
             return WhoisCo(domain, text)
         elif domain.endswith('.cx'):
             return WhoisCx(domain, text)
+        elif domain.endswith('.dm'):
+            return WhoisDm(domain, text)    
         else:
             return WhoisEntry(domain, text)
 
@@ -517,7 +519,7 @@ class WhoisCom(WhoisEntry):
         'registrar_url':                  r'Registrar URL: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
         'creation_date':                  r'Creation Date: *(.+)',
-        'expiration_date':           r'Registry Expiry Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
         'registrar':                      r'Registrar: *(.+)',
         'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
         'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
@@ -583,7 +585,7 @@ class WhoisNet(WhoisEntry):
         'registrar_url':                  r'Registrar URL: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
         'creation_date':                  r'Creation Date: *(.+)',
-        'expiration_date':           r'Registry Expiry Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
         'registrar':                      r'Registrar: *(.+)',
         'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
         'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
@@ -4843,4 +4845,79 @@ class WhoisCx(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisDm(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registry_registrant_id':         r'Registry Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_org':                 r'Registrant Organization: *(.+)',
+        'registrant_street':              r'Registrant Street: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state/province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_phone':               r'Registrant Phone: *(.+)',
+        'registrant_phone_ext':           r'Registrant Phone Ext: *(.+)',
+        'registrant_fax':                 r'Registrant Fax: *(.+)',
+        'registrant_fax_ext':             r'Registrant Fax Ext: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'registry_admin_id':              r'Registry Admin ID: *(.+)',
+        'admin_name':                     r'Admin Name: *(.+)',
+        'admin_org':                      r'Admin Organization: *(.+)',
+        'admin_street':                   r'Admin Street: *(.+)',
+        'admin_city':                     r'Admin City: *(.+)',
+        'admin_state/province':           r'Admin State/Province: *(.+)',
+        'admin_postal_code':              r'Admin Postal Code: *(.+)',
+        'admin_country':                  r'Admin Country: *(.+)',
+        'admin_phone':                    r'Admin Phone: *(.+)',
+        'admin_phone_ext':                r'Admin Phone Ext: *(.+)',
+        'admin_fax':                      r'Admin Fax: *(.+)',
+        'admin_fax_ext':                  r'Admin Fax Ext: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'registry_tech_id':               r'Registry Tech ID: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_org':                       r'Tech Organization: *(.+)',
+        'tech_street':                    r'Tech Street: *(.+)',
+        'tech_city':                      r'Tech City: *(.+)',
+        'tech_state/province':            r'Tech State/Province: *(.+)',
+        'tech_postal_code':               r'Tech Postal Code: *(.+)',
+        'tech_country':                   r'Tech Country: *(.+)',
+        'tech_phone':                     r'Tech Phone: *(.+)',
+        'tech_phone_ext':                 r'Tech Phone Ext: *(.+)',
+        'tech_fax':                       r'Tech Fax: *(.+)',
+        'tech_fax_ext':                   r'Tech Fax Ext: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'registry_billing_id':            r'Registry Billing ID: *(.+)',
+        'billing_name':                   r'Tech Name: *(.+)',
+        'billing_org':                    r'Tech Organization: *(.+)',
+        'billing_street':                 r'Tech Street: *(.+)',
+        'billing_city':                   r'Tech City: *(.+)',
+        'billing_state/province':         r'Tech State/Province: *(.+)',
+        'billing_postal_code':            r'Tech Postal Code: *(.+)',
+        'billing_country':                r'Tech Country: *(.+)',
+        'billing_phone':                  r'Tech Phone: *(.+)',
+        'billing_fax':                    r'Tech Fax: *(.+)',
+        'billing_email':                  r'Tech Email: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
