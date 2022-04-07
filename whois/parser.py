@@ -426,6 +426,10 @@ class WhoisEntry(dict):
             return WhoisFo(domain, text)
         elif domain.endswith('.gd'):
             return WhoisGd(domain, text)
+        elif domain.endswith('.ge'):
+            return WhoisGe(domain, text)
+        elif domain.endswith('.gq'):
+            return WhoisGq(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -4986,5 +4990,40 @@ class WhoisGd(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisGe(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',  
+        'status':                         r'Domain Status: *(.+)',  
+        'registrant':                     r'Registrant: *(.+)', 
+        'admin_name':                     r'Admin Name: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisGq(WhoisEntry):
+    regex = {
+        'creation_date':                  r'Domain registered: *(.+)',
+        'expiration_date':                r'Record will expire on: *(.+)',
+        'registrar':                      r'Record maintained by: *(.+)',
+
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 
