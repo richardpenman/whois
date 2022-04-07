@@ -3179,7 +3179,7 @@ class WhoisCredit(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisAgency(WhoisEntry):
     """""Whois parser for .agency domains
     """
@@ -3245,7 +3245,7 @@ class WhoisAgency(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisCommunity(WhoisEntry):
 
 
@@ -3310,7 +3310,7 @@ class WhoisCommunity(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisAero(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3339,7 +3339,7 @@ class WhoisAero(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisNetwork(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3402,7 +3402,7 @@ class WhoisNetwork(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisGoog(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3477,7 +3477,7 @@ class WhoisGoog(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisAsia(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3506,7 +3506,7 @@ class WhoisAsia(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-#Done
+
 class WhoisTop(WhoisEntry):
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
