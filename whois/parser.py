@@ -462,6 +462,8 @@ class WhoisEntry(dict):
             return WhoisMn(domain, text)
         elif domain.endswith('.mu'):
             return WhoisMu(domain, text)
+        elif domain.endswith('.nc'):
+            return WhoisNc(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -5939,4 +5941,23 @@ class WhoisMu(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisNc(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain                   : *(.+)',
+        'updated_date':                   r'Last updated on          : *(.+)',
+        'creation_date':                  r'Created on               : *(.+)',
+        'expiration_date':                r'Expires on               : *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'name_server':                    r'Domain server 1          : *(.+)',
+        'name_server':                    r'Domain server 2          : *(.+)',
+        'name_server':                    r'Domain server 3          : *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
 
