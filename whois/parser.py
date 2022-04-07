@@ -442,6 +442,8 @@ class WhoisEntry(dict):
             return WhoisKn(domain, text)
         elif domain.endswith('.ky'):
             return WhoisKy(domain, text)
+        elif domain.endswith('.kz'):
+            return WhoisKz(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -5445,3 +5447,45 @@ class WhoisKy(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisKz(WhoisEntry):
+    regex = {
+        'registrant_name':                r'Name...................: *(.+)',
+        'org_name':                       r'Organization Name......: *(.+)',
+        'registrant_street':              r'Street Address.........: *(.+)',
+        'registrant_city':                r'City...................: *(.+)',
+        'registrant_state/province':      r'State..................: *(.+)',
+        'registrant_postal_code':         r'Postal Code............: *(.+)',
+        'registrant_country':             r'Country................: *(.+)',
+        
+        'nic_handle':                     r'NIC Handle.............: *(.+)',
+        'admin_phone':                    r'Phone Number...........: *(.+)',
+        'admin_fax':                      r'Fax Number.............: *(.+)',
+        'admin_email':                    r'Email Address..........: *(.+)',
+        'name_server':                    r'Primary server.........: *(.+)',
+        'name_server':                    r'Primary ip address.....: *(.+)',
+        'name_server':                    r'Secondary server.......: *(.+)',
+        'name_server':                    r'Secondary ip address...: *(.+)',
+        'creation_date':                  r'Domain created: *(.+)',
+        'updated_date':                   r'Last modified : *(.+)',
+        'status':                         r'Domain status : *(.+)',
+        'registrar':                      r'Current Registrar: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+
+
+
+
+
+
+
+
+
+
