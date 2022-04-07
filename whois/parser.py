@@ -450,6 +450,10 @@ class WhoisEntry(dict):
             return WhoisLc(domain, text)
         elif domain.endswith('.ly'):
             return WhoisLy(domain, text)
+        elif domain.endswith('.ma'):
+            return WhoisMa(domain, text)
+        elif domain.endswith('.md'):
+            return WhoisMd(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -5629,6 +5633,16 @@ class WhoisMa(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisMd(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain   name: *(.+)',
+        'domain_status':                  r'Domain  state: *(.+)',
+        'creation_date':                  r'Registered on: *(.+)',
+        'expiration_date':                r'Expires    on: *(.+)',
+        'name_server':                    r'Nameserver: *(.+)',
+    }
 
 
 
