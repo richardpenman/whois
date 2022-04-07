@@ -5478,6 +5478,37 @@ class WhoisKz(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisLa(WhoisEntry):
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain_id':             r'Registry Domain ID: *(.+)',
+        'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'registrar_registration_exp_date':r'Registrar Registration Expiration Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',  
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',
+        'reseller':                       r'Reseller: *(.+)', 
+        'status':                         r'Domain Status: *(.+)',   
+        'admin_email':                    r'Admin Email: *(.+)',
+        'billing_email':                  r'Billing Email: *(.+)',
+        'registrant_org':                 r'Registrant Organization: *(.+)',
+        'registrant_state/province':      r'Registrant State/Province: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 
 
