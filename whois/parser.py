@@ -504,6 +504,8 @@ class WhoisEntry(dict):
             return WhoisDigital(domain, text)
         elif domain.endswith('.design'):
             return WhoisDesign(domain, text)
+        elif domain.endswith('.vegas'):
+            return WhoisVegas(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -7586,8 +7588,37 @@ class WhoisDesign(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-
-
+class WhoisVegas(WhoisEntry):
+    """Whois parser for .vegas domains
+    """
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'registry_domain__id':            r'Registry Domain ID: *(.+)',
+        'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
+        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registrant_org':                 r'Registrant Organization: *(.+)',
+        'registrant_state/province':      r'Registrant State/Province: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'name_server':                    r'Name Server: *(.+)',
+        'dnssec':                         r'DNSSEC: *(.+)',
+        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 
 
