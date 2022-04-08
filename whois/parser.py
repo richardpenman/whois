@@ -1412,7 +1412,7 @@ class WhoisSu(WhoisRu):
 
 
 class WhoisClub(WhoisEntry):
-    """Whois parser for .us domains
+    """Whois parser for .club domains
     """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3062,7 +3062,6 @@ class WhoisMarket(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 
-#START EDIT
 class WhoisCity(WhoisEntry):
     """Whois parser for .city domains
     """
@@ -3261,7 +3260,8 @@ class WhoisAgency(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCommunity(WhoisEntry):
-
+    """Whois parser for .community domains
+    """
 
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
@@ -3327,6 +3327,8 @@ class WhoisCommunity(WhoisEntry):
 
 class WhoisAero(WhoisEntry):
     regex = {
+        """Whois parser for .aero domains
+        """
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
         'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
@@ -3355,6 +3357,8 @@ class WhoisAero(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisNetwork(WhoisEntry):
+    """Whois parser for .network domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3419,6 +3423,8 @@ class WhoisNetwork(WhoisEntry):
 
 class WhoisGoog(WhoisEntry):
     regex = {
+        """Whois parser for .goog domains
+        """
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
         'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
@@ -3470,7 +3476,6 @@ class WhoisGoog(WhoisEntry):
         'tech_fax':                       r'Tech Fax: *(.+)',
         'tech_fax_ext':                   r'Tech Fax Ext: *(.+)',
         'tech_email':                     r'Tech Email: *(.+)',
-
         'registry_billing_id':         r'Registry Billing ID: *(.+)',
         'billing_name':                r'Billing Name: *(.+)',
         'billing_org':                 r'Billing Organization: *(.+)',
@@ -3493,6 +3498,8 @@ class WhoisGoog(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisAsia(WhoisEntry):
+    """Whois parser for .asia domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3522,6 +3529,8 @@ class WhoisAsia(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisTop(WhoisEntry):
+    """Whois parser for .top domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3585,6 +3594,8 @@ class WhoisTop(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisBerlin(WhoisEntry):
+    """Whois parser for .berlin domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3608,6 +3619,8 @@ class WhoisBerlin(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisBike(WhoisEntry):
+    """Whois parser for .bike domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3671,6 +3684,8 @@ class WhoisBike(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisBingo(WhoisEntry):
+    """Whois parser for .bingo domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3734,6 +3749,8 @@ class WhoisBingo(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisDeals(WhoisEntry):
+    """Whois parser for .deals domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3797,6 +3814,8 @@ class WhoisDeals(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisDomains(WhoisEntry):
+    """Whois parser for .domains domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -3860,14 +3879,16 @@ class WhoisDomains(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisDownload(WhoisEntry):
+    """Whois parser for .download domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
-        'registry_domain_id':            r'Registry Domain ID: *(.+)',
+        'registry_domain_id':             r'Registry Domain ID: *(.+)',
         'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
         'registrar_url':                  r'Registrar URL: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
         'creation_date':                  r'Creation Date: *(.+)',
-        'expiration_date':           r'Registry Expiry Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
         'registrar':                      r'Registrar: *(.+)',
         'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
         'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
@@ -3923,6 +3944,8 @@ class WhoisDownload(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisFm(WhoisEntry):
+    """Whois parser for .fm domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':            r'Registry Domain ID: *(.+)',
@@ -3950,6 +3973,8 @@ class WhoisFm(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGl(WhoisEntry):
+    """Whois parser for .gl domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -4001,6 +4026,8 @@ class WhoisGl(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGroup(WhoisEntry):
+    """Whois parser for .group domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4064,6 +4091,8 @@ class WhoisGroup(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisLease(WhoisEntry):
+    """Whois parser for .lease domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4127,6 +4156,8 @@ class WhoisLease(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisOne(WhoisEntry):
+    """Whois parser for .one domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4191,6 +4222,8 @@ class WhoisOne(WhoisEntry):
     
 
 class WhoisPhoto(WhoisEntry):
+    """Whois parser for .photo domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4265,6 +4298,8 @@ class WhoisPhoto(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisAcademy(WhoisEntry):
+    """Whois parser for .academy domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4328,6 +4363,8 @@ class WhoisAcademy(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisReview(WhoisEntry):
+    """Whois parser for .review domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4391,6 +4428,8 @@ class WhoisReview(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisAmsterdam(WhoisEntry):
+    """Whois parser for .amsterdam domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4454,6 +4493,8 @@ class WhoisAmsterdam(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisBio(WhoisEntry):
+    """Whois parser for .bio domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4517,6 +4558,8 @@ class WhoisBio(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisAc(WhoisEntry):
+    """Whois parser for .ac domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4580,6 +4623,8 @@ class WhoisAc(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisAg(WhoisEntry):
+    """Whois parser for .ag domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -4610,6 +4655,8 @@ class WhoisAg(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
     
 class WhoisCd(WhoisEntry):
+    """Whois parser for .cd domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -4646,6 +4693,8 @@ class WhoisCd(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCi(WhoisEntry):
+    """Whois parser for .ci domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4720,25 +4769,8 @@ class WhoisCi(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCo(WhoisEntry):
-    regex = {
-        'domain_name':                    r'Domain Name: *(.+)',
-        'roid':                           r'ROID: *(.+)',
-        'status':                         r'Domain Status: *(.+)',
-        'registrant':                     r'Registrant: *(.+)',
-        'registrant_contact_email':       r'Registrant Contact Email: *(.+)',
-        'sponsoring_registrar':           r'Sponsoring Registrar: *(.+)',
-        'name_server':                    r'Name Server: *(.+)',
-        'registration_time':              r'Registration Time: *(.+)',
-        'expiration_time':                r'Expiration Time: *(.+)',
-        'dnssec':                         r'DNSSEC: *(.+)',
-    }
-    def __init__(self, domain, text):
-        if 'Not found:' in text:
-            raise PywhoisError(text)
-        else:
-            WhoisEntry.__init__(self, domain, text, self.regex)
-
-class WhoisCo(WhoisEntry):
+    """Whois parser for .co domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4802,6 +4834,8 @@ class WhoisCo(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCr(WhoisEntry):
+    """Whois parser for .cr domains
+    """
     regex = {
         'domain_name':                   r'domain: *(.+)',
         'registrant':                    r'registrant: *(.+)',
@@ -4831,6 +4865,8 @@ class WhoisCr(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCx(WhoisEntry):
+    """Whois parser for .cx domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4905,6 +4941,8 @@ class WhoisCx(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisDm(WhoisEntry):
+    """Whois parser for .dm domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -4979,6 +5017,8 @@ class WhoisDm(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisFo(WhoisEntry):
+    """Whois parser for .fo domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -5010,6 +5050,8 @@ class WhoisFo(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGd(WhoisEntry):
+    """Whois parser for .gd domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -5043,6 +5085,8 @@ class WhoisGd(WhoisEntry):
 
 
 class WhoisGe(WhoisEntry):
+    """Whois parser for .ge domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Creation Date: *(.+)',
@@ -5063,6 +5107,8 @@ class WhoisGe(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGq(WhoisEntry):
+    """Whois parser for .gq domains
+    """
     regex = {
         'creation_date':                  r'Domain registered: *(.+)',
         'expiration_date':                r'Record will expire on: *(.+)',
@@ -5075,6 +5121,8 @@ class WhoisGq(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGs(WhoisEntry):
+    """Whois parser for .gs domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5149,6 +5197,8 @@ class WhoisGs(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisGy(WhoisEntry):
+    """Whois parser for .gy domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5223,6 +5273,8 @@ class WhoisGy(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisHt(WhoisEntry):
+    """Whois parser for .ht domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5298,6 +5350,8 @@ class WhoisHt(WhoisEntry):
 
 
 class WhoisKe(WhoisEntry):
+    """Whois parser for .ke domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5336,6 +5390,8 @@ class WhoisKe(WhoisEntry):
 
 
 class WhoisKn(WhoisEntry):
+    """Whois parser for .kn domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5411,6 +5467,8 @@ class WhoisKn(WhoisEntry):
 
 
 class WhoisKy(WhoisEntry):
+    """Whois parser for .ky domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5486,6 +5544,8 @@ class WhoisKy(WhoisEntry):
 
 
 class WhoisKz(WhoisEntry):
+    """Whois parser for .kz domains
+    """
     regex = {
         'registrant_name':                r'Name...................: *(.+)',
         'org_name':                       r'Organization Name......: *(.+)',
@@ -5515,6 +5575,8 @@ class WhoisKz(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisLa(WhoisEntry):
+    """Whois parser for .la domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -5547,6 +5609,8 @@ class WhoisLa(WhoisEntry):
 
 
 class WhoisLc(WhoisEntry):
+    """Whois parser for .lc domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -5579,6 +5643,8 @@ class WhoisLc(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisLt(WhoisEntry):
+    """Whois parser for .lt domains
+    """
     regex = {
         'domain_name':                    r'Domain: *(.+)',
         'status':                         r'Status: *(.+)',
@@ -5599,6 +5665,8 @@ class WhoisLt(WhoisEntry):
 
 
 class WhoisLy(WhoisEntry):
+    """Whois parser for .ly domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain_id':             r'Registry Domain ID: *(.+)',
@@ -5632,6 +5700,8 @@ class WhoisLy(WhoisEntry):
 
 
 class WhoisMa(WhoisEntry):
+    """Whois parser for .ma domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
@@ -5662,6 +5732,8 @@ class WhoisMa(WhoisEntry):
 
 
 class WhoisMd(WhoisEntry):
+    """Whois parser for .md domains
+    """
     regex = {
         'domain_name':                    r'Domain   name: *(.+)',
         'domain_status':                  r'Domain  state: *(.+)',
@@ -5678,6 +5750,8 @@ class WhoisMd(WhoisEntry):
 
 
 class WhoisMg(WhoisEntry):
+    """Whois parser for .mg domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5751,57 +5825,10 @@ class WhoisMg(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-class WhoisMg(WhoisEntry):
-    regex = {
-        'domain_name':                    r'Domain Name: *(.+)',
-        'registry_domain__id':            r'Registry Domain ID: *(.+)',
-        'registrar_whois_server':         r'Registrar WHOIS Server: *(.+)',
-        'registrar_url':                  r'Registrar URL: *(.+)',
-        'updated_date':                   r'Updated Date: *(.+)',
-        'creation_date':                  r'Creation Date: *(.+)',
-        'expiration_date':                r'Registry Expiry Date: *(.+)',
-        'registrar':                      r'Registrar: *(.+)',
-        'registrar_iana_id':              r'Registrar IANA ID: *(.+)',  
-        'registrar_abuse_contact_email':  r'Registrar Abuse Contact Email: *(.+)',
-        'registrar_abuse_contact_phone':  r'Registrar Abuse Contact Phone: *(.+)',
-        'status':                         r'Domain Status: *(.+)',
-        'registry_registrant_id':         r'Registry Registrant ID: *(.+)',
-        'registrant_name':                r'Registrant Name: *(.+)',
-        'registrant_org':                 r'Registrant Organization: *(.+)',
-        'registrant_street':              r'Registrant Street: *(.+)',
-        'registrant_city':                r'Registrant City: *(.+)',
-        'registrant_state/province':      r'Registrant State/Province: *(.+)',
-        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
-        'registrant_country':             r'Registrant Country: *(.+)',
-        'registrant_phone':               r'Registrant Phone: *(.+)',
-        'registrant_phone_ext':           r'Registrant Phone Ext: *(.+)',
-        'registrant_fax':                 r'Registrant Fax: *(.+)',
-        'registrant_fax_ext':             r'Registrant Fax Ext: *(.+)',
-        'registrant_email':               r'Registrant Email: *(.+)',
-        'registry_admin_id':              r'Registry Admin ID: *(.+)',
-        'admin_name':                     r'Admin Name: *(.+)',
-        'admin_org':                      r'Admin Organization: *(.+)',
-        'admin_street':                   r'Admin Street: *(.+)',
-        'admin_city':                     r'Admin City: *(.+)',
-        'admin_state/province':           r'Admin State/Province: *(.+)',
-        'admin_postal_code':              r'Admin Postal Code: *(.+)',
-        'admin_country':                  r'Admin Country: *(.+)',
-        'admin_phone':                    r'Admin Phone: *(.+)',
-        'admin_phone_ext':                r'Admin Phone Ext: *(.+)',
-        'admin_fax':                      r'Admin Fax: *(.+)',
-        'admin_fax_ext':                  r'Admin Fax Ext: *(.+)',
-        'admin_email':                    r'Admin Email: *(.+)',
-        'name_server':                    r'Name Server: *(.+)',
-        'dnssec':                         r'DNSSEC: *(.+)',
-        'url_of_icann_form':              r'URL of the ICANN Whois Inaccuracy Complaint Form: *(.+)',
-    }
-    def __init__(self, domain, text):
-        if 'Not found:' in text:
-            raise PywhoisError(text)
-        else:
-            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisMn(WhoisEntry):
+    """Whois parser for .mn domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5866,6 +5893,8 @@ class WhoisMn(WhoisEntry):
 
 
 class WhoisMs(WhoisEntry):
+    """Whois parser for .ms domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -5940,6 +5969,8 @@ class WhoisMs(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisMu(WhoisEntry):
+    """Whois parser for .mu domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Domain ID: *(.+)',
@@ -5959,6 +5990,8 @@ class WhoisMu(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisNc(WhoisEntry):
+    """Whois parser for .nc domains
+    """
     regex = {
         'domain_name':                    r'Domain                   : *(.+)',
         'updated_date':                   r'Last updated on          : *(.+)',
@@ -5976,6 +6009,8 @@ class WhoisNc(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisNf(WhoisEntry):
+    """Whois parser for .nf domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6051,6 +6086,8 @@ class WhoisNf(WhoisEntry):
 
 
 class WhoisNg(WhoisEntry):
+    """Whois parser for .ng domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Domain ID: *(.+)',
@@ -6069,24 +6106,10 @@ class WhoisNg(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-class WhoisNc(WhoisEntry):
-    regex = {
-        'domain_name':                    r'Domain                   : *(.+)',
-        'updated_date':                   r'Last updated on          : *(.+)',
-        'creation_date':                  r'Created on               : *(.+)',
-        'expiration_date':                r'Expires on               : *(.+)',
-        'registrar':                      r'Registrar: *(.+)',
-        'name_server':                    r'Domain server 1          : *(.+)',
-        'name_server':                    r'Domain server 2          : *(.+)',
-        'name_server':                    r'Domain server 3          : *(.+)',
-    }
-    def __init__(self, domain, text):
-        if 'Not found:' in text:
-            raise PywhoisError(text)
-        else:
-            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisNf(WhoisEntry):
+    """Whois parser for .nf domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6162,6 +6185,8 @@ class WhoisNf(WhoisEntry):
 
 
 class WhoisNg(WhoisEntry):
+    """Whois parser for .ng domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6237,6 +6262,8 @@ class WhoisNg(WhoisEntry):
 
 
 class WhoisOm(WhoisEntry):
+    """Whois parser for .om domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'updated_date':                   r'Last Modified: *(.+)',
@@ -6256,6 +6283,8 @@ class WhoisOm(WhoisEntry):
     }
 
 class WhoisCloud(WhoisEntry):
+    """Whois parser for .cloud domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6320,6 +6349,8 @@ class WhoisCloud(WhoisEntry):
 
 
 class WhoisTech(WhoisEntry):
+    """Whois parser for .tech domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6350,6 +6381,8 @@ class WhoisTech(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisIcu(WhoisEntry):
+    """Whois parser for .icu domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6381,6 +6414,8 @@ class WhoisIcu(WhoisEntry):
 
 
 class WhoisXyz(WhoisEntry):
+    """Whois parser for .xyz domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6411,6 +6446,8 @@ class WhoisXyz(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisPage(WhoisEntry):
+    """Whois parser for .page domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6475,6 +6512,8 @@ class WhoisPage(WhoisEntry):
 
 
 class WhoisParis(WhoisEntry):
+    """Whois parser for .paris domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6550,6 +6589,8 @@ class WhoisParis(WhoisEntry):
 
 
 class WhoisParty(WhoisEntry):
+    """Whois parser for .party domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
@@ -6613,6 +6654,8 @@ class WhoisParty(WhoisEntry):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisProperty(WhoisEntry):
+    """Whois parser for .property domains
+    """
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'registry_domain__id':            r'Registry Domain ID: *(.+)',
