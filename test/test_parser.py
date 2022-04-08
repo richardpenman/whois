@@ -72,7 +72,7 @@ class TestParser(unittest.TestCase):
             # parse results This will overwrite the existing expected results.
             # Only do this if you've manually confirmed that the parser is
             # generating correct values at its current state.
-            if True:
+            if False:
                 def date2str4json(obj):
                     if isinstance(obj, datetime.datetime):
                         return str(obj)

@@ -10,7 +10,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
-from tabnanny import NannyNag
 from future import standard_library
 
 import re
@@ -7619,11 +7618,3 @@ class WhoisVegas(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-
-
-
-
-
-
-
-
