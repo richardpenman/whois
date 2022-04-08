@@ -1,0 +1,1 @@
+{"domain_name": "google.cr", "expiration_date": "2023-03-03 00:00:00", "updated_date": ["2017-02-28 06:39:43", "2021-01-02 10:43:15", "2014-08-14 05:51:08"], "creation_date": ["2011-03-06 22:22:36", "2011-03-06 12:51:41"], "status": ["Deletion forbidden", "Sponsoring registrar change forbidden", "Update forbidden", "Administratively blocked", "Registrant change forbidden"]}
