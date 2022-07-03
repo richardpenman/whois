@@ -3,7 +3,7 @@
 # parser.py - Module for parsing whois response data
 # Copyright (c) 2008 Andrey Petrov
 #
-# This module is part of pywhois and is released under
+# This module is part of python-whois and is released under
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
 
 from __future__ import absolute_import
