@@ -68,6 +68,7 @@ class NICClient(object):
     GAMES_HOST = "whois.nic.games"
     GNICHOST = "whois.nic.gov"
     GOOGLE_HOST = "whois.nic.google"
+    GROUP_HOST = 'whois.namecheap.com'
     HK_HOST = "whois.hkirc.hk"
     HN_HOST = "whois.nic.hn"
     HR_HOST = "whois.dns.hr"
@@ -245,6 +246,8 @@ class NICClient(object):
             return NICClient.GAMES_HOST
         elif tld == 'goog' or tld == 'google':
             return NICClient.GOOGLE_HOST
+        elif tld == 'group':
+            return NICClient.GROUP_HOST
         elif tld == 'hk':
             return NICClient.HK_HOST
         elif tld == 'hn':
