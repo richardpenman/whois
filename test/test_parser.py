@@ -54,7 +54,7 @@ class TestParser(unittest.TestCase):
         To generate fresh expected value dumps, see NOTE below.
         """
         keys_to_test = ['domain_name', 'expiration_date', 'updated_date',
-                        'creation_date', 'status']
+                        'registrar', 'registrar_url', 'creation_date', 'status']
         fail = 0
         total = 0
         whois_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'samples','whois','*')
