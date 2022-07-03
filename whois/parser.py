@@ -367,6 +367,8 @@ class WhoisEntry(dict):
             return WhoisOOO(domain, text)
         elif domain.endswith('.market'):
             return WhoisMarket(domain, text)
+        elif domain.endswith('.za'):
+            return WhoisZa(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -2865,6 +2867,79 @@ class WhoisMarket(WhoisEntry):
 
     def __init__(self, domain, text):
         if 'No entries found for the selected source(s).' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisZa(WhoisEntry):
+    """Whois parser for .za domains"""
+    regex = {
+        'domain_name':                    r'Domain Name: *(.+)',
+        'domain__id':                     r'Domain ID: *(.+)',
+        'whois_server':                   r'Registrar WHOIS Server: *(.+)',
+        'registrar':                      r'Registrar: *(.+)',
+        'registrar_id':                   r'Registrar IANA ID: *(.+)',
+        'registrar_url':                  r'Registrar URL: *(.+)',
+        'registrar_email':                r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':                r'Registrar Abuse Contact Phone: *(.+)',
+        'status':                         r'Domain Status: *(.+)',
+        'registrant_id':                  r'Registry Registrant ID: *(.+)',
+        'registrant_name':                r'Registrant Name: *(.+)',
+        'registrant_organization':        r'Registrant Organization: *(.+)',
+        'registrant_street':              r'Registrant Street: *(.+)',
+        'registrant_city':                r'Registrant City: *(.+)',
+        'registrant_state_province':      r'Registrant State/Province: *(.+)',
+        'registrant_postal_code':         r'Registrant Postal Code: *(.+)',
+        'registrant_country':             r'Registrant Country: *(.+)',
+        'registrant_phone':               r'Registrant Phone: *(.+)',
+        'registrant_email':               r'Registrant Email: *(.+)',
+        'registrant_fax':                 r'Registrant Fax: *(.+)',
+        'admin_id':                       r'Registry Admin ID: *(.+)',
+        'admin':                          r'Admin Name: *(.+)',
+        'admin_organization':             r'Admin Organization: *(.+)',
+        'admin_street':                   r'Admin Street: *(.+)',
+        'admin_city':                     r'Admin City: *(.+)',
+        'admin_state_province':           r'Admin State/Province: *(.+)',
+        'admin_postal_code':              r'Admin Postal Code: *(.+)',
+        'admin_country':                  r'Admin Country: *(.+)',
+        'admin_phone':                    r'Admin Phone: *(.+)',
+        'admin_phone_ext':                r'Admin Phone Ext: *(.+)',
+        'admin_email':                    r'Admin Email: *(.+)',
+        'admin_fax':                      r'Admin Fax: *(.+)',
+        'admin_fax_ext':                  r'Admin Fax Ext: *(.+)',
+        'admin_application_purpose':      r'Admin Application Purpose: *(.+)',
+        'billing_name': 				  r'Billing Name: *(.+)',
+        'billing_organization': 		  r'Billing Organization: *(.+)',
+        'billing_street': 				  r'Billing Street: *(.+)',
+        'billing_city': 				  r'Billing City: *(.+)',
+        'billing_state_province': 		  r'Billing State/Province: *(.+)',
+        'billing_postal_code': 			  r'Billing Postal Code: *(.+)',
+        'billing_country': 				  r'Billing Country: *(.+)',
+        'billing_phone': 				  r'Billing Phone: *(.+)',
+        'billing_phone_ext': 			  r'Billing Phone Ext: *(.+)',
+        'billing_fax': 					  r'Billing Fax: *(.+)',
+        'billing_fax_ext': 				  r'Billing Fax Ext: *(.+)',
+        'billing_email': 				  r'Billing Email: *(.+)',
+        'tech_id':                        r'Registry Tech ID: *(.+)',
+        'tech_name':                      r'Tech Name: *(.+)',
+        'tech_organization':              r'Tech Organization: *(.+)',
+        'tech_street':                    r'Tech Street: *(.+)',
+        'tech_city':                      r'Tech City: *(.+)',
+        'tech_state_province':            r'Tech State/Province: *(.+)',
+        'tech_postal_code':               r'Tech Postal Code: *(.+)',
+        'tech_country':                   r'Tech Country: *(.+)',
+        'tech_phone':                     r'Tech Phone: *(.+)',
+        'tech_email':                     r'Tech Email: *(.+)',
+        'tech_fax':                       r'Tech Fax: *(.+)',
+        'name_servers':                   r'Name Server: *(.+)',  # list of name servers
+        'creation_date':                  r'Creation Date: *(.+)',
+        'expiration_date':                r'Registry Expiry Date: *(.+)',
+        'updated_date':                   r'Updated Date: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if text.startswith('Available'):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)

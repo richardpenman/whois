@@ -96,7 +96,8 @@ class NICClient(object):
     MARKET_HOST = "whois.nic.market"
     NL_HOST = 'whois.domain-registry.nl'
     LT_HOST = 'whois.domreg.lt'
-    
+    ZA_HOST = "whois.registry.net.za"
+
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
@@ -274,6 +275,8 @@ class NICClient(object):
             return NICClient.NL_HOST
         elif tld == 'lt':
             return NICClient.LT_HOST
+        elif tld == 'za':
+            return NICClient.ZA_HOST
         else:
             return tld + NICClient.QNICHOST_TAIL
         
@@ -296,6 +299,7 @@ class NICClient(object):
                 flags |= NICClient.WHOIS_RECURSE
 
         if 'country' in options and options['country'] is not None:
+
             result = self.whois(
                 query_arg,
                 options['country'] + NICClient.QNICHOST_TAIL,
