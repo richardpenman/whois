@@ -497,7 +497,7 @@ class WhoisOrg(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip() == 'NOT FOUND':
+        if text.strip().startswith('NOT FOUND'):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
@@ -2968,3 +2968,4 @@ class WhoisZa(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
