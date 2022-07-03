@@ -59,7 +59,7 @@ class TestParser(unittest.TestCase):
         To generate fresh expected value dumps, see NOTE below.
         """
         keys_to_test = ['domain_name', 'expiration_date', 'updated_date',
-                        'creation_date', 'status']
+                        'registrar', 'registrar_url', 'creation_date', 'status']
         fail = 0
         total = 0
         whois_path = os.path.join(
@@ -419,7 +419,7 @@ DNSSEC: signedDelegation
             "status": "active",
             'registrar_address': 'Drienerlolaan 5',
             'registrar': 'Universiteit Twente',
-            'registrar_zip_code': '7522NB',
+            'registrar_postal_code': '7522NB',
             'registrar_city': 'ENSCHEDE',
             'registrar_country': 'Netherlands',
             'dnssec': 'yes'
@@ -491,7 +491,7 @@ Hostname:             p.nic.dk
             "status": "Active",
             'registrant_name': 'DK HOSTMASTER A/S',
             'registrant_address': 'Ørestads Boulevard 108, 11.',
-            'registrant_zip_code': '2300',
+            'registrant_postal_code': '2300',
             'registrant_city': 'København S',
             'registrant_country': 'DK',
             'dnssec': 'Signed delegation'
