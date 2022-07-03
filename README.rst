@@ -16,20 +16,25 @@ Example
 .. sourcecode:: bash
 
     >>> import whois
-    >>> w = whois.whois('webscraping.com')
+    >>> w = whois.whois('example.com')
     >>> w.expiration_date  # dates converted to datetime object
-    datetime.datetime(2013, 6, 26, 0, 0)
+    datetime.datetime(2022, 8, 13, 4, 0)
     >>> w.text  # the content downloaded from whois server
-    u'\nWhois Server Version 2.0\n\nDomain names in the .com and .net 
+    u'\nDomain Name: EXAMPLE.COM
+    Registry Domain ID: 2336799_DOMAIN_COM-VRSN
     ...'
 
-    >>> print w  # print values of all found attributes
-    creation_date: 2004-06-26 00:00:00
-    domain_name: [u'WEBSCRAPING.COM', u'WEBSCRAPING.COM']
-    emails: [u'WEBSCRAPING.COM@domainsbyproxy.com', u'WEBSCRAPING.COM@domainsbyproxy.com']
-    expiration_date: 2013-06-26 00:00:00
+    >>> print w  # print values of all found attributes    
+    {
+        "creation_date": "1995-08-14 04:00:00",
+        "expiration_date": "2022-08-13 04:00:00",
+        "updated_date": "2021-08-14 07:01:44",
+        "domain_name": "EXAMPLE.COM",
+        "name_servers": [
+            "A.IANA-SERVERS.NET",
+            "B.IANA-SERVERS.NET"
+        ],
     ...
-
 
 
 Install
