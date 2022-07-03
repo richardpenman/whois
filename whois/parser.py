@@ -978,7 +978,8 @@ class WhoisEu(WhoisEntry):
         'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
         'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
         'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
-        'registrar': r'Registrar: *Name: *([^\n\r]+)',
+        'registrar': r'Registrar:\n *Name: *([^\n\r]+)',
+        'registrar_url': r'\n *Website: *([^\n\r]+)',
         'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
     }
 
