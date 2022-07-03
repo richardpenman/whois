@@ -225,6 +225,8 @@ class WhoisEntry(dict):
             return WhoisFr(domain, text)
         elif domain.endswith('.nl'):
             return WhoisNl(domain, text)
+        elif domain.endswith('.lt'):
+            return WhoisLt(domain, text)
         elif domain.endswith('.fi'):
             return WhoisFi(domain, text)
         elif domain.endswith('.hr'):
@@ -576,6 +578,32 @@ class WhoisNl(WhoisEntry):
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
             self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
+            
+            
+class WhoisLt(WhoisEntry):
+    """Whois parser for .lt domains
+        """
+    regex = {
+        'domain_name':         r'Domain:\s?(.+)',
+        'expiration_date':     r'Expires:\s?(.+)',
+        'creation_date':       r'Registered:\s?(.+)',
+        'status':              r'\nStatus:\s?(.+)',  # list of statuses
+        'name':                None,
+    }
+
+    def __init__(self, domain, text):
+        if text.endswith('available'):
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+        match = re.compile(r'Domain nameservers:(.*?)Record maintained by', re.DOTALL).search(text)
+        if match:
+            duplicate_nameservers_with_ip = [line.strip()
+                                             for line in match.groups()[0].strip().splitlines()]
+            duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
+                                                for nameserver in duplicate_nameservers_with_ip]
+            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))            
 
 
 class WhoisName(WhoisEntry):
