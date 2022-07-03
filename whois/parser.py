@@ -211,7 +211,7 @@ class WhoisEntry(dict):
             return WhoisName(domain, text)
         elif domain.endswith('.me'):
             return WhoisMe(domain, text)
-        elif domain.endswith('ae'):
+        elif domain.endswith('.ae'):
             return WhoisAe(domain, text)
         elif domain.endswith('.au'):
             return WhoisAU(domain, text)
@@ -265,7 +265,7 @@ class WhoisEntry(dict):
             return WhoisInfo(domain, text)
         elif domain.endswith('.su'):
             return WhoisSu(domain, text)
-        elif domain.endswith('si'):
+        elif domain.endswith('.si'):
             return WhoisSi(domain, text)
         elif domain.endswith('.kg'):
             return WhoisKg(domain, text)
@@ -285,7 +285,7 @@ class WhoisEntry(dict):
             return WhoisSK(domain, text)
         elif domain.endswith('.se'):
             return WhoisSe(domain, text)
-        elif domain.endswith('no'):
+        elif domain.endswith('.no'):
             return WhoisNo(domain, text)
         elif domain.endswith('.nu'):
             return WhoisSe(domain, text)
@@ -364,7 +364,7 @@ class WhoisEntry(dict):
         elif domain.endswith('.ml'):
             return WhoisML(domain, text)
         elif domain.endswith('.ooo'):
-            return WhoisOOO(domain, text)
+            return WhoisOoo(domain, text)
         elif domain.endswith('.group'):
             return WhoisGroup(domain, text)
         elif domain.endswith('.market'):
