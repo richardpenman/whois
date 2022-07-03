@@ -70,6 +70,7 @@ class NICClient(object):
     HR_HOST = "whois.dns.hr"
     APP_HOST = "whois.nic.google"
     DEV_HOST = "whois.nic.google"
+    GOOGLE_HOST = "whois.nic.google"
     GAMES_HOST = "whois.nic.games"
     PAGE_HOST = "whois.nic.page"
     CL_HOST = "whois.nic.cl"
@@ -223,6 +224,8 @@ class NICClient(object):
             return NICClient.APP_HOST
         elif tld == 'dev':
             return NICClient.DEV_HOST
+        elif tld == 'goog' or tld == 'google':
+            return NICClient.GOOGLE_HOST
         elif tld == 'games':
             return NICClient.GAMES_HOST
         elif tld == 'page':
