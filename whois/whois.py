@@ -48,55 +48,56 @@ logger = logging.getLogger(__name__)
 class NICClient(object):
 
     ABUSEHOST = "whois.abuse.net"
-    NICHOST = "whois.crsnic.net"
-    INICHOST = "whois.networksolutions.com"
-    DNICHOST = "whois.nic.mil"
-    GNICHOST = "whois.nic.gov"
-    ANICHOST = "whois.arin.net"
-    LNICHOST = "whois.lacnic.net"
-    RNICHOST = "whois.ripe.net"
-    PNICHOST = "whois.apnic.net"
-    MNICHOST = "whois.ra.net"
-    QNICHOST_TAIL = ".whois-servers.net"
-    SNICHOST = "whois.6bone.net"
-    BNICHOST = "whois.registro.br"
-    NORIDHOST = "whois.norid.no"
-    IANAHOST = "whois.iana.org"
-    PANDIHOST = "whois.pandi.or.id"
-    DENICHOST = "whois.denic.de"
     AI_HOST = "whois.nic.ai"
-    AR_HOST = "whois.nic.ar"
-    BY_HOST = "whois.cctld.by"
-    HR_HOST = "whois.dns.hr"
+    ANICHOST = "whois.arin.net"
     APP_HOST = "whois.nic.google"
-    DEV_HOST = "whois.nic.google"
-    GOOGLE_HOST = "whois.nic.google"
-    GAMES_HOST = "whois.nic.games"
-    PAGE_HOST = "whois.nic.page"
+    AR_HOST = "whois.nic.ar"
+    BNICHOST = "whois.registro.br"
+    BY_HOST = "whois.cctld.by"
+    CA_HOST = "whois.ca.fury.ca"
+    CHAT_HOST = "whois.nic.chat"
     CL_HOST = "whois.nic.cl"
     CR_HOST = "whois.nic.cr"
+    DEFAULT_PORT = "nicname"
+    DENICHOST = "whois.denic.de"
+    DEV_HOST = "whois.nic.google"
     DE_HOST = "whois.denic.de"
     DK_HOST = "whois.dk-hostmaster.dk"
+    DNICHOST = "whois.nic.mil"
     DO_HOST = "whois.nic.do"
-    CA_HOST = "whois.ca.fury.ca"
+    GAMES_HOST = "whois.nic.games"
+    GNICHOST = "whois.nic.gov"
+    GOOGLE_HOST = "whois.nic.google"
     HK_HOST = "whois.hkirc.hk"
     HN_HOST = "whois.nic.hn"
-    KZ_HOST = "whois.nic.kz"
-    DEFAULT_PORT = "nicname"
-    MONEY_HOST = "whois.nic.money"
+    HR_HOST = "whois.dns.hr"
+    IANAHOST = "whois.iana.org"
+    INICHOST = "whois.networksolutions.com"
+    IST_HOST = "whois.afilias-srs.net"
     JOBS_HOST = "whois.nic.jobs"
+    JP_HOST = 'whois.jprs.jp'
+    KZ_HOST = "whois.nic.kz"
     LAT_HOST = "whois.nic.lat"
     LI_HOST = "whois.nic.li"
-    MX_HOST = "whois.mx"
-    PE_HOST = "kero.yachay.pe"
-    ONLINE_HOST = "whois.nic.online"
-    IST_HOST = "whois.afilias-srs.net"
-    CHAT_HOST = "whois.nic.chat"
-    WEBSITE_HOST = "whois.nic.website"
-    OOO_HOST = "whois.nic.ooo"
-    MARKET_HOST = "whois.nic.market"
-    NL_HOST = 'whois.domain-registry.nl'
+    LNICHOST = "whois.lacnic.net"
     LT_HOST = 'whois.domreg.lt'
+    MARKET_HOST = "whois.nic.market"
+    MNICHOST = "whois.ra.net"
+    MONEY_HOST = "whois.nic.money"
+    MX_HOST = "whois.mx"
+    NICHOST = "whois.crsnic.net"
+    NL_HOST = 'whois.domain-registry.nl'
+    NORIDHOST = "whois.norid.no"
+    ONLINE_HOST = "whois.nic.online"
+    OOO_HOST = "whois.nic.ooo"
+    PAGE_HOST = "whois.nic.page"
+    PANDIHOST = "whois.pandi.or.id"
+    PE_HOST = "kero.yachay.pe"
+    PNICHOST = "whois.apnic.net"
+    QNICHOST_TAIL = ".whois-servers.net"
+    RNICHOST = "whois.ripe.net"
+    SNICHOST = "whois.6bone.net"
+    WEBSITE_HOST = "whois.nic.website"
     ZA_HOST = "whois.registry.net.za"
 
     WHOIS_RECURSE = 0x01
@@ -222,62 +223,64 @@ class NICClient(object):
             return NICClient.AI_HOST
         elif tld == 'app':
             return NICClient.APP_HOST
-        elif tld == 'dev':
-            return NICClient.DEV_HOST
-        elif tld == 'goog' or tld == 'google':
-            return NICClient.GOOGLE_HOST
-        elif tld == 'games':
-            return NICClient.GAMES_HOST
-        elif tld == 'page':
-            return NICClient.PAGE_HOST
-        elif tld == 'money':
-            return NICClient.MONEY_HOST
-        elif tld == 'online':
-            return NICClient.ONLINE_HOST
-        elif tld == 'cl':
-            return NICClient.CL_HOST
         elif tld == 'ar':
             return NICClient.AR_HOST
         elif tld == 'by':
             return NICClient.BY_HOST
-        elif tld == 'cr':
-            return NICClient.CR_HOST
         elif tld == 'ca':
             return NICClient.CA_HOST
-        elif tld == 'do':
-            return NICClient.DO_HOST
+        elif tld == 'chat':
+            return NICClient.CHAT_HOST
+        elif tld == 'cl':
+            return NICClient.CL_HOST
+        elif tld == 'cr':
+            return NICClient.CR_HOST
         elif tld == 'de':
             return NICClient.DE_HOST
+        elif tld == 'dev':
+            return NICClient.DEV_HOST
+        elif tld == 'do':
+            return NICClient.DO_HOST
+        elif tld == 'games':
+            return NICClient.GAMES_HOST
+        elif tld == 'goog' or tld == 'google':
+            return NICClient.GOOGLE_HOST
         elif tld == 'hk':
             return NICClient.HK_HOST
         elif tld == 'hn':
             return NICClient.HN_HOST
+        elif tld == 'ist':
+            return NICClient.IST_HOST
         elif tld == 'jobs':
             return NICClient.JOBS_HOST
+        elif tld == 'jp':
+            return NICClient.JP_HOST
+        elif tld == 'kz':
+            return NICClient.KZ_HOST
         elif tld == 'lat':
             return NICClient.LAT_HOST
         elif tld == 'li':
             return NICClient.LI_HOST
-        elif tld == 'mx':
-            return NICClient.MX_HOST
-        elif tld == 'pe':
-            return NICClient.PE_HOST
-        elif tld == 'ist':
-            return NICClient.IST_HOST
-        elif tld == 'kz':
-            return NICClient.KZ_HOST
-        elif tld == 'chat':
-            return NICClient.CHAT_HOST
-        elif tld == 'website':
-            return NICClient.WEBSITE_HOST
-        elif tld == 'ooo':
-            return NICClient.OOO_HOST
-        elif tld == 'market':
-            return NICClient.MARKET_HOST
-        elif tld == 'nl':
-            return NICClient.NL_HOST
         elif tld == 'lt':
             return NICClient.LT_HOST
+        elif tld == 'market':
+            return NICClient.MARKET_HOST
+        elif tld == 'money':
+            return NICClient.MONEY_HOST
+        elif tld == 'mx':
+            return NICClient.MX_HOST
+        elif tld == 'nl':
+            return NICClient.NL_HOST
+        elif tld == 'online':
+            return NICClient.ONLINE_HOST
+        elif tld == 'ooo':
+            return NICClient.OOO_HOST
+        elif tld == 'page':
+            return NICClient.PAGE_HOST
+        elif tld == 'pe':
+            return NICClient.PE_HOST
+        elif tld == 'website':
+            return NICClient.WEBSITE_HOST
         elif tld == 'za':
             return NICClient.ZA_HOST
         else:
