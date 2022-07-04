@@ -68,6 +68,7 @@ class NICClient(object):
     GAMES_HOST = "whois.nic.games"
     GNICHOST = "whois.nic.gov"
     GOOGLE_HOST = "whois.nic.google"
+    GROUP_HOST = 'whois.namecheap.com'
     HK_HOST = "whois.hkirc.hk"
     HN_HOST = "whois.nic.hn"
     HR_HOST = "whois.dns.hr"
@@ -245,6 +246,8 @@ class NICClient(object):
             return NICClient.GAMES_HOST
         elif tld == 'goog' or tld == 'google':
             return NICClient.GOOGLE_HOST
+        elif tld == 'group':
+            return NICClient.GROUP_HOST
         elif tld == 'hk':
             return NICClient.HK_HOST
         elif tld == 'hn':
@@ -287,11 +290,12 @@ class NICClient(object):
             return tld + NICClient.QNICHOST_TAIL
         
 
-    def whois_lookup(self, options, query_arg, flags):
+    def whois_lookup(self, options, query_arg, flags, quiet=False):
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
         flag is false, perform a second lookup on the region-specific
-        server for contact records"""
+        server for contact records.  If `quiet` is `True`, no message
+        will be printed to STDOUT when a socket error is encountered."""
         nichost = None
         # whoud happen when this function is called by other than main
         if options is None:
@@ -309,16 +313,17 @@ class NICClient(object):
             result = self.whois(
                 query_arg,
                 options['country'] + NICClient.QNICHOST_TAIL,
-                flags
+                flags,
+                quiet=quiet,
             )
         elif self.use_qnichost:
             nichost = self.choose_server(query_arg)
             if nichost is not None:
-                result = self.whois(query_arg, nichost, flags)
+                result = self.whois(query_arg, nichost, flags, quiet=quiet)
             else:
                 result = ''
         else:
-            result = self.whois(query_arg, options['whoishost'], flags)
+            result = self.whois(query_arg, options['whoishost'], flags, quiet=quiet)
         return result
 
 
