@@ -171,6 +171,117 @@ class TestParser(unittest.TestCase):
         self._parse_and_compare('testcompany.ca', data, expected_results,
                                 whois_entry=WhoisCa)
 
+    def test_ai_parse(self):
+        data = """
+Domain Name: google.ai
+Registry Domain ID: 325702_nic_ai
+Registry WHOIS Server: whois.nic.ai
+Creation Date: 2017-12-16T05:37:20.801Z
+Registrar: Markmonitor
+Registrar Abuse Contact Email: ccops@markmonitor.com
+Registrar Abuse Contact Phone: +1.2083895740
+Registry RegistrantID: Vlmri-g0QZU
+RegistrantName: Domain Administrator
+RegistrantOrganization: Google LLC
+RegistrantStreet: 1600 Amphitheatre Parkway
+RegistrantCity: Mountain View
+RegistrantState/Province: CA
+RegistrantPostal Code: 94043
+RegistrantCountry: US
+RegistrantPhone: +1.6502530000
+RegistrantFax: +1.6502530001
+RegistrantEmail: dns-admin@google.com
+Registry AdminID: F4699-Tinjk
+AdminName: Domain Administrator
+AdminOrganization: Google LLC
+AdminStreet: 1600 Amphitheatre Parkway
+AdminCity: Mountain View
+AdminState/Province: CA
+AdminPostal Code: 94043
+AdminCountry: US
+AdminPhone: +1.6502530000
+AdminFax: +1.6502530001
+AdminEmail: dns-admin@google.com
+Registry TechID: htY0V-EnRVF
+TechName: Domain Administrator
+TechOrganization: Google LLC
+TechStreet: 1600 Amphitheatre Parkway
+TechCity: Mountain View
+TechState/Province: CA
+TechPostal Code: 94043
+TechCountry: US
+TechPhone: +1.6502530000
+TechFax: +1.6502530001
+TechEmail: dns-admin@google.com
+Registry BillingID: REFum-eZX0X
+BillingName: CCOPS Billing
+BillingOrganization: MarkMonitor Inc.
+BillingStreet: 3540 East Longwing Lane
+BillingStreet: Suite 300
+BillingCity: Meridian
+BillingState/Province: Idaho
+BillingPostal Code: 83646
+BillingCountry: US
+BillingPhone: +1.2083895740
+BillingFax: +1.2083895771
+BillingEmail: ccopsbilling@markmonitor.com
+Name Server: ns3.zdns.google
+Name Server: ns4.zdns.google
+Name Server: ns1.zdns.google
+Name Server: ns2.zdns.google
+DNSSEC: unsigned
+        """
+
+        expected_results = {
+             'admin_address': '1600 Amphitheatre Parkway',
+             'admin_city': 'Mountain View',
+             'admin_country': 'US',
+             'admin_email': 'dns-admin@google.com',
+             'admin_name': 'Domain Administrator',
+             'admin_org': 'Google LLC',
+             'admin_phone': '+1.6502530000',
+             'admin_postal_code': '94043',
+             'admin_state': 'CA',
+             'billing_address': ['3540 East Longwing Lane', 'Suite 300'],
+             'billing_city': 'Meridian',
+             'billing_country': 'US',
+             'billing_email': 'ccopsbilling@markmonitor.com',
+             'billing_name': 'CCOPS Billing',
+             'billing_org': 'MarkMonitor Inc.',
+             'billing_phone': '+1.2083895740',
+             'billing_postal_code': '83646',
+             'billing_state': 'Idaho',
+             'creation_date': datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
+             'domain_id': '325702_nic_ai',
+             'domain_name': 'google.ai',
+             'name_servers': ['ns3.zdns.google',
+                              'ns4.zdns.google',
+                              'ns1.zdns.google',
+                              'ns2.zdns.google'],
+             'registrant_address': '1600 Amphitheatre Parkway',
+             'registrant_city': 'Mountain View',
+             'registrant_country': 'US',
+             'registrant_email': 'dns-admin@google.com',
+             'registrant_name': 'Domain Administrator',
+             'registrant_org': 'Google LLC',
+             'registrant_phone': '+1.6502530000',
+             'registrant_postal_code': '94043',
+             'registrant_state': 'CA',
+             'registrar': 'Markmonitor',
+             'registrar_email': 'ccops@markmonitor.com',
+             'registrar_phone': '+1.2083895740',
+             'tech_address': '1600 Amphitheatre Parkway',
+             'tech_city': 'Mountain View',
+             'tech_country': 'US',
+             'tech_email': 'dns-admin@google.com',
+             'tech_name': 'Domain Administrator',
+             'tech_org': 'Google LLC',
+             'tech_phone': '+1.6502530000',
+             'tech_postal_code': '94043',
+             'tech_state': 'CA'}
+        self._parse_and_compare('google.ai', data, expected_results)
+
+
     def test_cn_parse(self):
         data = """
             Domain Name: cnnic.com.cn
@@ -506,6 +617,8 @@ Hostname:             p.nic.dk
 
     def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
         results = whois_entry.load(domain_name, data)
+        if domain_name=='google.ai':
+            print(results)
         fail = 0
         total = 0
         # Compare each key
