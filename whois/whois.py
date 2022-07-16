@@ -133,7 +133,7 @@ class NICClient(object):
         then, if the quick flag is false, search that result
         for the region-specifc whois server and do a lookup
         there for contact details.  If `quiet` is `True`, will
-        send a message to logger when a socket error
+        not send a message to logger when a socket error
         is encountered.
         """
         response = b''
