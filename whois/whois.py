@@ -133,7 +133,7 @@ class NICClient(object):
         then, if the quick flag is false, search that result
         for the region-specifc whois server and do a lookup
         there for contact details.  If `quiet` is `True`, will
-        not print a message to STDOUT when a socket error
+        send a message to logger when a socket error
         is encountered.
         """
         response = b''
@@ -194,7 +194,7 @@ class NICClient(object):
                 response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
-                print("Error trying to connect to socket: closing socket - {}".format(exc))
+                logger.error("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
             response = "Socket not responding: {}".format(exc)
         return response
