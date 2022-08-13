@@ -2023,8 +2023,6 @@ class WhoisTw(WhoisEntry):
         'creation_date':                  r'Record created on (.+) ',
         'expiration_date':                r'Record expires on (.+) ',
 
-        'name_servers':                   r'Domain servers in listed order:((?:\s.+)*)',  # servers in one string sep by \n
-
         'registrar':                      r'Registration Service Provider: *(.+)',
         'registrar_url':                  r'Registration Service URL: *(.+)',
 
@@ -2058,6 +2056,10 @@ class WhoisTw(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'Domain servers in listed order:\n([\n\S\s]+?)\n\n', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].splitlines()]
 
 
 class WhoisTr(WhoisEntry):
