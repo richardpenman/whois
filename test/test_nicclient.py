@@ -24,5 +24,5 @@ class TestNICClient(unittest.TestCase):
         domain = 'рнидс.срб'
         chosen = self.client.choose_server(domain)
         suffix = domain.split('.')[-1].encode('idna').decode('utf-8')
-        correct = '{}.whois-servers.net'.format(suffix)
+        correct = 'whois.nic.{}'.format(suffix)
         self.assertEqual(chosen, correct)
