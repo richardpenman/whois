@@ -98,6 +98,7 @@ class NICClient(object):
     PE_HOST = "kero.yachay.pe"
     PNICHOST = "whois.apnic.net"
     QNICHOST_TAIL = ".whois-servers.net"
+    QNICHOST_HEAD = "whois.nic."
     RNICHOST = "whois.ripe.net"
     SNICHOST = "whois.6bone.net"
     WEBSITE_HOST = "whois.nic.website"
@@ -211,7 +212,7 @@ class NICClient(object):
                 response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc:
             if not quiet:
-                print("Error trying to connect to socket: closing socket - {}".format(exc))
+                logger.error("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
             # 'response' is assigned a value (also a str) even on socket
             # timeout
@@ -306,8 +307,12 @@ class NICClient(object):
         elif tld == 'za':
             return NICClient.ZA_HOST
         else:
-            return tld + NICClient.QNICHOST_TAIL
-
+            server = tld + NICClient.QNICHOST_TAIL
+            try:
+                socket.gethostbyname(server)
+            except socket.gaierror:
+                server = NICClient.QNICHOST_HEAD + tld
+            return server
 
     def whois_lookup(self, options, query_arg, flags, quiet=False):
         """Perform whois lookups.
