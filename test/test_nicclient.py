@@ -6,10 +6,11 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+import unittest
+from whois.whois import NICClient
+
+
 standard_library.install_aliases()
-from builtins import *  # noqa
-import unittest  # noqa: E402
-from whois.whois import NICClient  # noqa: E402
 
 
 class TestNICClient(unittest.TestCase):

@@ -6,10 +6,11 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+import unittest
+from whois import extract_domain
+
+
 standard_library.install_aliases()
-from builtins import *  # noqa
-import unittest  # noqa: E402
-from whois import extract_domain  # noqa: E402
 
 
 class TestExtractDomain(unittest.TestCase):

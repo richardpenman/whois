@@ -6,23 +6,24 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
-standard_library.install_aliases()
-from builtins import *  # noqa
-import unittest  # noqa: E402
+import unittest
 
-import os  # noqa: E402
-import sys  # noqa: E402
-sys.path.append('../')
+import os
+import sys
 
-import datetime  # noqa: E402
+import datetime
 
 try:
     import json
 except ImportError:
     import simplejson as json
-from glob import glob  # noqa: E402
+from glob import glob
 
-from whois.parser import WhoisEntry, cast_date, WhoisCa  # noqa: E402
+from whois.parser import WhoisEntry, cast_date, WhoisCa
+
+
+sys.path.append('../')
+standard_library.install_aliases()
 
 
 class TestParser(unittest.TestCase):
