@@ -38,8 +38,6 @@ import optparse
 import socket
 import sys
 import re
-from builtins import object
-from builtins import *  # noqa
 import logging
 standard_library.install_aliases()
 

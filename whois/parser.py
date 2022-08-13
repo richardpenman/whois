@@ -17,8 +17,6 @@ import re
 from datetime import datetime
 import json
 from past.builtins import basestring
-from builtins import str
-from builtins import *  # noqa
 
 standard_library.install_aliases()
 

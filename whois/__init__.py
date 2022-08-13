@@ -6,17 +6,17 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
 from future import standard_library
-standard_library.install_aliases()
-from builtins import *  # noqa
-import re  # noqa: E402
-import sys  # noqa: E402
-import os  # noqa: E402
-import subprocess  # noqa: E402
-import socket  # noqa: E402
-from .parser import WhoisEntry  # noqa: E402
-from .whois import NICClient  # noqa: E402
-import logging  # noqa: E402
+import re
+import sys
+import os
+import subprocess
+import socket
+from .parser import WhoisEntry
+from .whois import NICClient
+import logging
 
+
+standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
