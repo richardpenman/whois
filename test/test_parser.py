@@ -292,7 +292,6 @@ DNSSEC: unsigned
              'tech_state': 'CA'}
         self._parse_and_compare('google.ai', data, expected_results)
 
-
     def test_cn_parse(self):
         """Parse a .cn domain's whois response, result should fit expectations."""
         data = """
@@ -611,7 +610,7 @@ Hostname:             p.nic.dk
 
     def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
         results = whois_entry.load(domain_name, data)
-        if domain_name=='google.ai':
+        if domain_name == 'google.ai':
             print(results)
         fail = 0
         total = 0

@@ -644,8 +644,8 @@ class WhoisNl(WhoisEntry):
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
             self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
-            
-            
+
+
 class WhoisLt(WhoisEntry):
     """Whois parser for .lt domains
         """
@@ -669,7 +669,7 @@ class WhoisLt(WhoisEntry):
                                              for line in match.groups()[0].strip().splitlines()]
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
-            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))            
+            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
 
 
 class WhoisName(WhoisEntry):
@@ -804,9 +804,10 @@ class WhoisPl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
 class WhoisGroup(WhoisEntry):
-    """Whois parser for .group domains
-    """
+    """Whois parser for .group domains"""
+
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID:(.+)',
@@ -826,6 +827,7 @@ class WhoisGroup(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisCa(WhoisEntry):
     """Whois parser for .ca domains."""
@@ -2163,7 +2165,7 @@ class WhoisAi(WhoisEntry):
 
     regex = {
         'domain_name':                      r'Domain Name\.*: *(.+)',
-        'domain_id' :                       r'Registry Domain ID\.*: *(.+)',
+        'domain_id':                        r'Registry Domain ID\.*: *(.+)',
         'creation_date':                    r'Creation Date: (.+)',
         'registrar':                        r'Registrar: (.+)',
         'registrar_phone':                  r'Registrar Abuse Contact Phone:(.+)',
