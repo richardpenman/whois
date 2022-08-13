@@ -16,7 +16,6 @@ from future import standard_library
 import re
 from datetime import datetime
 import json
-from past.builtins import basestring
 
 standard_library.install_aliases()
 
@@ -181,7 +180,7 @@ class WhoisEntry(dict):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and not value.isdigit() and '_date' in attr:
+        if value and isinstance(value, str) and not value.isdigit() and '_date' in attr:
             # try casting to date format
             value = cast_date(
                 value,
@@ -1171,7 +1170,7 @@ class WhoisBr(WhoisEntry):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and '_date' in attr:
+        if value and isinstance(value, str) and '_date' in attr:
             # try casting to date format
             value = re.findall(r"[\w\s:.-\\/]+", value)[0].strip()
             value = cast_date(
