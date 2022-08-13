@@ -1,1 +1,1 @@
-{"domain_name": "liechtenstein.li", "registrant": "", "registrar": "switchplus AG", "creation_date": "1996-02-08 00:00:00", "dnssec": "N", "tech": "", "name_servers": ""}
+{"domain_name": "liechtenstein.li", "registrant": "", "registrar": "switchplus AG", "creation_date": "1996-02-08 00:00:00", "dnssec": "N", "tech": "", "name_servers": ["pdns.llv.li    [193.222.114.65]", "scsnms.switch.ch    [130.59.31.26]", "scsnms.switch.ch    [2001:620:0:ff::a7]"]}

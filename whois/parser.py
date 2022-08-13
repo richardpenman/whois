@@ -1688,7 +1688,6 @@ class WhoisChLi(WhoisEntry):
         'creation_date':                    r'First registration date:\n*(.+)',
         'dnssec':                           r'DNSSEC:*([\S]+)',
         'tech-c':                           r'Technical contact:\n*([\n\s\S]+)\nRegistrar:',
-        'name_servers':                     r'Name servers:\n *([\n\S\s]+)'
     }
 
     def __init__(self, domain, text):
@@ -1700,6 +1699,10 @@ class WhoisChLi(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'Name servers:\n([\n\S\s]+)', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].splitlines()]
 
 
 class WhoisID(WhoisEntry):
