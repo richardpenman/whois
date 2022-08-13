@@ -1,1 +1,1 @@
-{"domain_name": "SLASHDOT.ORG", "expiration_date": "2008-10-04 04:00:00", "updated_date": null, "creation_date": null, "status": "OK", "registrar": "Tucows Inc. (R11-LROR)"}
+{"domain_name": "SLASHDOT.ORG", "expiration_date": "2008-10-04 04:00:00", "updated_date": null, "creation_date": null, "status": "OK", "registrar": "Tucows Inc. (R11-LROR)", "name_servers": ["NS-1.CH3.SOURCEFORGE.COM", "NS-2.CH3.SOURCEFORGE.COM", "NS-3.CORP.SOURCEFORGE.COM"]}

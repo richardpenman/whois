@@ -1,1 +1,1 @@
-{"domain_name": "sapo.pt", "expiration_date": "2019-11-02 23:59:00", "updated_date": null, "creation_date": "2002-10-30 00:00:00", "status": "Registered"}
+{"domain_name": "sapo.pt", "expiration_date": "2019-11-02 23:59:00", "updated_date": null, "creation_date": "2002-10-30 00:00:00", "status": "Registered", "name_servers": ["ns2.sapo.pt", "dns01.sapo.pt", "dns02.sapo.pt", "ns.sapo.pt"]}

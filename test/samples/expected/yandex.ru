@@ -1,1 +1,1 @@
-{"domain_name": "YANDEX.RU", "expiration_date": "2018-09-30 21:00:00", "updated_date": null, "creation_date": "1997-09-23 09:45:07", "status": "REGISTERED, DELEGATED, VERIFIED", "registrar": "RU-CENTER-RU"}
+{"domain_name": "YANDEX.RU", "expiration_date": "2018-09-30 21:00:00", "updated_date": null, "creation_date": "1997-09-23 09:45:07", "status": "REGISTERED, DELEGATED, VERIFIED", "registrar": "RU-CENTER-RU", "name_servers": ["ns1.yandex.ru. 213.180.193.1, 2a02:6b8::1", "ns2.yandex.ru. 93.158.134.1, 2a02:6b8:0:1::1", "ns9.z5h64q92x9.net."]}

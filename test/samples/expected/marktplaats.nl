@@ -1,1 +1,1 @@
-{"domain_name": "marktplaats.nl", "status": "active", "registrar": "MarkMonitor Inc.", "registrar_address": "3540 East Longwing Lane", "registrar_country": "Abuse Contact:"}
+{"domain_name": "marktplaats.nl", "status": "active", "registrar": "MarkMonitor Inc.", "registrar_address": "3540 East Longwing Lane", "registrar_country": "Abuse Contact:", "name_servers": ["ns1.p13.dynect.net", "ns2.p13.dynect.net", "ns3.p13.dynect.net", "ns4.p13.dynect.net"]}
