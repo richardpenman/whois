@@ -1079,13 +1079,13 @@ class WhoisEu(WhoisEntry):
 
     regex = {
         'domain_name': r'Domain: *([^\n\r]+)',
-        'tech_name': r'Technical: *Name: *([^\n\r]+)',
-        'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
-        'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
-        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',  # noqa: E501
-        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',  # noqa: E501
-        'registrar': r'Registrar: *Name: *([^\n\r]+)',
-        'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
+        'tech_name': r'Technical:\n\s*(?:.+\n)*\s*Name:\s*([^\n\r]+)',
+        'tech_org': r'Technical:\n\s*(?:.+\n)*\s*Organisation:\s*([^\n\r]+)',
+        'tech_phone': r'Technical:\n\s*(?:.+\n)*\s*Phone:\s*([^\n\r]+)',
+        'tech_fax': r'Technical:\n\s*(?:.+\n)*\s*Fax:\s*([^\n\r]+)',
+        'tech_email': r'Technical:\n\s*(?:.+\n)*\s*Email:\s*([^\n\r]+)',
+        'registrar': r'Registrar:\n\s*(?:.+\n)*\s*Name:\s*([^\n\r]+)',
+        'registrar_url': r'Registrar:\n\s*(?:.+\n)*\s*Website: *([^\n\r]+)',
     }
 
     def __init__(self, domain, text):
@@ -1097,6 +1097,10 @@ class WhoisEu(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'Name servers:\n *([\n\S\s]+?)\n\n', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].strip().splitlines()]
 
 
 class WhoisEe(WhoisEntry):
