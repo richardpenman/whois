@@ -1869,7 +1869,6 @@ class WhoisIt(WhoisEntry):
         'updated_date':                   r'(?<! )Last Update: *(.+)',
         'expiration_date':                r'(?<! )Expire Date: *(.+)',
         'status':                         r'Status: *(.+)',  # list of statuses
-        'name_servers':                   r'Nameservers[\s]((?:.+\n)*)',  # servers in one string sep by \n
 
         'registrant_organization':        r'(?<=Registrant)[\s\S]*?Organization:(.*)',
         'registrant_address':             r'(?<=Registrant)[\s\S]*?Address:(.*)',
@@ -1896,6 +1895,10 @@ class WhoisIt(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'Nameservers[\s]*\n *([\n\S\s]+)', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].splitlines() if line]
 
 
 class WhoisSa(WhoisEntry):
