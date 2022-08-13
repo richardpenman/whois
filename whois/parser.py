@@ -2954,8 +2954,6 @@ class WhoisVe(WhoisEntry):
         'creation_date':         r'Fecha de Creación: *(.+)',
         'expiration_date':       r'Fecha de Vencimiento: *(.+)',
 
-        'name_servers':          r'Nombres de Dominio:((?:\s+- .*)*)',
-
         'registrant_name':       r'Titular:\s*(?:.*\n){1}\s+(.*)',
         'registrant_city':       r'Titular:\s*(?:.*\n){3}\s+([\s\w]*)',
         'registrant_street':     r'Titular:\s*(?:.*\n){2}\s+(.*)',
@@ -3004,6 +3002,10 @@ class WhoisVe(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'Nombres de Dominio:((?:\s+- .*)*)\n\n', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].replace('-', '').splitlines() if line]
 
 
 class WhoisDo(WhoisEntry):
