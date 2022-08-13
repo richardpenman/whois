@@ -784,13 +784,12 @@ class WhoisPl(WhoisEntry):
 
     regex = {
         'domain_name':                    r'DOMAIN NAME: *(.+)\n',
-        'name_servers':                   r'nameservers:((?:\s+.+\n+)*)',
         'registrar':                      r'REGISTRAR:\s*(.+)',
         'registrar_url':                  r'URL: *(.+)',        # not available
         'status':                         r'Registration status:\n\s*(.+)',  # not available
         'registrant_name':                r'Registrant:\n\s*(.+)',   # not available
         'creation_date':                  r'(?<! )created: *(.+)\n',
-        'expiration_date':                r'renewal date: *(.+)',
+        'expiration_date':                r'renewal date: *(.+)\n',
         'updated_date':                   r'last modified: *(.+)\n',
     }
 
@@ -803,6 +802,10 @@ class WhoisPl(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+        nsmatch = re.compile(r'nameservers:(.+)\ncreated:', re.DOTALL).search(text)
+        if nsmatch:
+            self['name_servers'] = [line.strip() for line in nsmatch.groups()[0].splitlines() if line]
 
 
 class WhoisGroup(WhoisEntry):
