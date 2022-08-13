@@ -37,7 +37,7 @@ setuptools.setup(
         'better date conversion': ["python-dateutil"]
     },
     test_suite='nose.collector',
-    tests_require=['nose', 'simplejson'],
+    tests_require=['flake8', 'nose', 'simplejson'],
     include_package_data=True,
     zip_safe=False
 )
