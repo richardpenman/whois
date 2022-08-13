@@ -610,8 +610,6 @@ Hostname:             p.nic.dk
 
     def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
         results = whois_entry.load(domain_name, data)
-        if domain_name == 'google.ai':
-            print(results)
         fail = 0
         total = 0
         # Compare each key
