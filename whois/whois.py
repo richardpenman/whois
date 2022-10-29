@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Whois client for python
 
@@ -27,25 +25,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
 
 import os
 import optparse
 import socket
 import sys
 import re
-from builtins import object
-from builtins import *
+
 import logging
-standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
 
-class NICClient(object):
+
+class NICClient:
 
     ABUSEHOST = "whois.abuse.net"
     AI_HOST = "whois.nic.ai"
@@ -153,18 +145,16 @@ class NICClient(object):
             socksproxy, port = proxy.split(":")
             socks_proto = socket.AF_INET
             if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
-                socks_proto=socket.AF_INET6
+                socks_proto = socket.AF_INET6
             s = socks.socksocket(socks_proto)
             s.set_proxy(socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
-        try: # socket.connect in a try, in order to allow things like looping whois on different domains without stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
+        try:  # socket.connect in a try, in order to allow things like looping whois on different domains without stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
             s.connect((hostname, 43))
             try:
                 query = query.decode('utf-8')
-            except UnicodeEncodeError:
-                pass  # Already Unicode (python2's error)
             except AttributeError:
                 pass  # Already Unicode (python3's error)
 
@@ -193,20 +183,18 @@ class NICClient(object):
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None:
                 response += self.whois(query, nhost, 0, quiet=True)
-        except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
+        except socket.error as exc:  # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
-                logger.error("Error trying to connect to socket: closing socket - {}".format(exc))
+                logger.error(f"Error trying to connect to socket: closing socket - {exc}")
             s.close()
-            response = "Socket not responding: {}".format(exc)
+            response = f"Socket not responding: {exc}"
         return response
 
     def choose_server(self, domain):
         """Choose initial lookup NIC host"""
         try:
             domain = domain.encode('idna').decode('utf-8')
-        except TypeError:
-            domain = domain.decode('utf-8').encode('idna').decode('utf-8')
-        except AttributeError:
+        except (TypeError, AttributeError):
             domain = domain.decode('utf-8').encode('idna').decode('utf-8')
         if domain.endswith("-NORID"):
             return NICClient.NORIDHOST
@@ -294,7 +282,6 @@ class NICClient(object):
             except socket.gaierror:
                 server = NICClient.QNICHOST_HEAD + tld
             return server
-        
 
     def whois_lookup(self, options, query_arg, flags, quiet=False):
         """Main entry point: Perform initial lookup on TLD whois server,
@@ -344,37 +331,37 @@ def parse_command_line(argv):
     parser = optparse.OptionParser(add_help_option=False, usage=usage)
     parser.add_option("-a", "--arin", action="store_const",
                       const=NICClient.ANICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.ANICHOST)
+                      help=f"Lookup using host {NICClient.ANICHOST}")
     parser.add_option("-A", "--apnic", action="store_const",
                       const=NICClient.PNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.PNICHOST)
+                      help=f"Lookup using host {NICClient.PNICHOST}")
     parser.add_option("-b", "--abuse", action="store_const",
                       const=NICClient.ABUSEHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.ABUSEHOST)
+                      help=f"Lookup using host {NICClient.ABUSEHOST}")
     parser.add_option("-c", "--country", action="store",
                       type="string", dest="country",
                       help="Lookup using country-specific NIC")
     parser.add_option("-d", "--mil", action="store_const",
                       const=NICClient.DNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.DNICHOST)
+                      help=f"Lookup using host {NICClient.DNICHOST}")
     parser.add_option("-g", "--gov", action="store_const",
                       const=NICClient.GNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.GNICHOST)
+                      help=f"Lookup using host {NICClient.GNICHOST}")
     parser.add_option("-h", "--host", action="store",
                       type="string", dest="whoishost",
                       help="Lookup using specified whois host")
     parser.add_option("-i", "--nws", action="store_const",
                       const=NICClient.INICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.INICHOST)
+                      help=f"Lookup using host {NICClient.INICHOST}")
     parser.add_option("-I", "--iana", action="store_const",
                       const=NICClient.IANAHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.IANAHOST)
+                      help=f"Lookup using host {NICClient.IANAHOST}")
     parser.add_option("-l", "--lcanic", action="store_const",
                       const=NICClient.LNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.LNICHOST)
+                      help=f"Lookup using host {NICClient.LNICHOST}")
     parser.add_option("-m", "--ra", action="store_const",
                       const=NICClient.MNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.MNICHOST)
+                      help=f"Lookup using host {NICClient.MNICHOST}")
     parser.add_option("-p", "--port", action="store",
                       type="int", dest="port",
                       help="Lookup using specified tcp port")
@@ -383,16 +370,16 @@ def parse_command_line(argv):
                       help="Perform quick lookup")
     parser.add_option("-r", "--ripe", action="store_const",
                       const=NICClient.RNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.RNICHOST)
+                      help=f"Lookup using host {NICClient.RNICHOST}")
     parser.add_option("-R", "--ru", action="store_const",
                       const="ru", dest="country",
                       help="Lookup Russian NIC")
     parser.add_option("-6", "--6bone", action="store_const",
                       const=NICClient.SNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.SNICHOST)
+                      help=f"Lookup using host {NICClient.SNICHOST}")
     parser.add_option("-n", "--ina", action="store_const",
                       const=NICClient.PANDIHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.PANDIHOST)
+                      help=f"Lookup using host {NICClient.PANDIHOST}")
     parser.add_option("-?", "--help", action="help")
 
     return parser.parse_args(argv)

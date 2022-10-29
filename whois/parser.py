@@ -1,25 +1,12 @@
-# -*- coding: utf-8 -*-
-
 # parser.py - Module for parsing whois response data
 # Copyright (c) 2008 Andrey Petrov
 #
 # This module is part of python-whois and is released under
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from future import standard_library
-
+import json
 import re
 from datetime import datetime
-import json
-from past.builtins import basestring
-from builtins import str
-from builtins import *
-
-standard_library.install_aliases()
 
 try:
     import dateutil.parser as dp
@@ -169,7 +156,7 @@ class WhoisEntry(dict):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and not value.isdigit() and '_date' in attr:
+        if value and isinstance(value, str) and not value.isdigit() and '_date' in attr:
             # try casting to date format
             value = cast_date(
                 value,
@@ -422,7 +409,7 @@ class WhoisSG(WhoisEntry):
         techmatch = re.compile('Technical Contact:(.*?)Name Servers:', re.DOTALL).search(text)
         if techmatch:
             for line in techmatch.groups()[0].strip().splitlines():
-                self['technical_conatact_'+ line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+                self['technical_conatact_' + line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
 
 
 class WhoisPe(WhoisEntry):
@@ -580,8 +567,8 @@ class WhoisNl(WhoisEntry):
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
             self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
-            
-            
+
+
 class WhoisLt(WhoisEntry):
     """Whois parser for .lt domains
         """
@@ -605,7 +592,7 @@ class WhoisLt(WhoisEntry):
                                              for line in match.groups()[0].strip().splitlines()]
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
-            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))            
+            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
 
 
 class WhoisName(WhoisEntry):
@@ -728,6 +715,7 @@ class WhoisPl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
 class WhoisGroup(WhoisEntry):
     """Whois parser for .group domains
     """
@@ -750,6 +738,7 @@ class WhoisGroup(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisCa(WhoisEntry):
     """Whois parser for .ca domains
@@ -1050,7 +1039,7 @@ class WhoisBr(WhoisEntry):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and '_date' in attr:
+        if value and isinstance(value, str) and '_date' in attr:
             # try casting to date format
             value = re.findall(r"[\w\s:.-\\/]+", value)[0].strip()
             value = cast_date(
@@ -1058,7 +1047,7 @@ class WhoisBr(WhoisEntry):
                 dayfirst=self.dayfirst,
                 yearfirst=self.yearfirst)
         return value
-        
+
 
 class WhoisKr(WhoisEntry):
     """Whois parser for .kr domains
@@ -1947,7 +1936,7 @@ class WhoisAi(WhoisEntry):
     """
     regex = {
         'domain_name':                      r'Domain Name\.*: *(.+)',
-        'domain_id' :                       r'Registry Domain ID\.*: *(.+)',
+        'domain_id':                       r'Registry Domain ID\.*: *(.+)',
         'creation_date':                    r'Creation Date: (.+)',
         'registrar':                        r'Registrar: (.+)',
         'registrar_phone':                  r'Registrar Abuse Contact Phone:(.+)',
@@ -2083,15 +2072,15 @@ class WhoisIe(WhoisEntry):
     """Whois parser for .ie domains
     """
     regex = {
-        'domain_name':      r'Domain Name: *(.+)',
-        'creation_date':    r'Creation Date: *(.+)',
-        'expiration_date':  r'Registry Expiry Date: *(.+)',
-        'name_servers':     r'Name Server: *(.+)',
-        'status':           r'Domain status: *(.+)',
-        'admin_id':         r'Registry Admin ID: *(.+)',
-        'tech_id':          r'Registry Tech ID: *(.+)',
-        'registrar':        r'Registrar: *(.+)',
-        'registrar_contact':r'Registrar Abuse Contact Email: *(.+)'
+        'domain_name':       r'Domain Name: *(.+)',
+        'creation_date':     r'Creation Date: *(.+)',
+        'expiration_date':   r'Registry Expiry Date: *(.+)',
+        'name_servers':      r'Name Server: *(.+)',
+        'status':            r'Domain status: *(.+)',
+        'admin_id':          r'Registry Admin ID: *(.+)',
+        'tech_id':           r'Registry Tech ID: *(.+)',
+        'registrar':         r'Registrar: *(.+)',
+        'registrar_contact': r'Registrar Abuse Contact Email: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2829,8 +2818,8 @@ class WhoisKZ(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisIR(WhoisEntry):
     """Whois parser for .ir domains."""
 
@@ -2869,8 +2858,8 @@ class WhoisZhongGuo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisWebsite(WhoisEntry):
     """Whois parser for .website domains
     """
@@ -2885,7 +2874,7 @@ class WhoisWebsite(WhoisEntry):
 class WhoisML(WhoisEntry):
     """Whois parser for .ml domains."""
     regex = {
-        'domain_name': r'Domain name:\s*([^(i|\n)]+)', 
+        'domain_name': r'Domain name:\s*([^(i|\n)]+)',
         'registrar': r'Organization: *(.+)',
         'creation_date': r'Domain registered: *(.+)',
         'expiration_date': r'Record will expire on: *(.+)',
@@ -2898,7 +2887,7 @@ class WhoisML(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-    
+
     def _preprocess(self, attr, value):
         if attr == 'name_servers':
             return [
@@ -2908,7 +2897,7 @@ class WhoisML(WhoisEntry):
             ]
         return super(WhoisML, self)._preprocess(attr, value)
 
-      
+
 class WhoisOoo(WhoisEntry):
     """Whois parser for .ooo domains
     """
@@ -2918,8 +2907,8 @@ class WhoisOoo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisMarket(WhoisEntry):
     """Whois parser for .market domains
     """

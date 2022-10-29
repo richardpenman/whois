@@ -1,21 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
-from builtins import *
-import re
-import sys
+import logging
 import os
-import subprocess
+import re
 import socket
+import subprocess
+import sys
+
 from .parser import WhoisEntry
 from .whois import NICClient
-import logging
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -56,6 +47,8 @@ def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=
 
 
 suffixes = None
+
+
 def extract_domain(url):
     """Extract the domain from the given URL
 
@@ -107,7 +100,7 @@ def extract_domain(url):
             domain = b'.' + domain
         domain = section.encode('utf-8') + domain
         if domain not in suffixes:
-            if not b'.' in domain and len(split_url) >= 2:
+            if b'.' not in domain and len(split_url) >= 2:
                 # If this is the first section and there wasn't a match, try to
                 # match the first two sections - if that works, keep going
                 # See https://github.com/richardpenman/whois/issues/50
@@ -123,6 +116,6 @@ if __name__ == '__main__':
     try:
         url = sys.argv[1]
     except IndexError:
-        logger.error('Usage: %s url' % sys.argv[0])
+        logger.error(f'Usage: {sys.argv[0]} url')
     else:
         logger.info(whois(url))

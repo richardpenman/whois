@@ -1,27 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import *
-import unittest
-
+import datetime
+import json
 import os
 import sys
-sys.path.append('../')
-
-import datetime
-
-try:
-    import json
-except:
-    import simplejson as json
+import unittest
 from glob import glob
 
-from whois.parser import WhoisEntry, cast_date, WhoisCl, WhoisAr, WhoisBy, \
-    WhoisCa, WhoisBiz, WhoisCr, WhoisDe, WhoisNl
+sys.path.append('../')
+
+from whois.parser import WhoisEntry, cast_date, WhoisCa
 
 
 class TestParser(unittest.TestCase):
@@ -57,8 +43,8 @@ class TestParser(unittest.TestCase):
                         'registrar', 'registrar_url', 'creation_date', 'status']
         fail = 0
         total = 0
-        whois_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'samples','whois','*')
-        expect_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'samples','expected')
+        whois_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'samples', 'whois', '*')
+        expect_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'samples', 'expected')
         for path in glob(whois_path):
             # Parse whois data
             domain = os.path.basename(path)
@@ -78,14 +64,15 @@ class TestParser(unittest.TestCase):
                         return str(obj)
                     raise TypeError(
                             '{} is not JSON serializable'.format(repr(obj)))
+
                 outfile_name = os.path.join(expect_path, domain)
                 with open(outfile_name, 'w') as outfil:
                     expected_results = json.dump(results, outfil,
-                                                       default=date2str4json)
+                                                 default=date2str4json)
                 continue
 
             # Load expected result
-            with open(os.path.join(expect_path, domain)) as infil:    
+            with open(os.path.join(expect_path, domain)) as infil:
                 expected_results = json.load(infil)
 
             # Compare each key
@@ -95,7 +82,7 @@ class TestParser(unittest.TestCase):
             for key in compare_keys:
                 total += 1
                 if key not in results:
-                    print("%s \t(%s):\t Missing in results" % (domain, key,))
+                    print(f"{domain} \t({key}):\t Missing in results")
                     fail += 1
                     continue
 
@@ -106,12 +93,11 @@ class TestParser(unittest.TestCase):
                     result = str(result)
                 expected = expected_results.get(key)
                 if expected != result:
-                    print("%s \t(%s):\t %s != %s" % (domain, key, result, expected))
+                    print(f"{domain} \t({key}):\t {result} != {expected}")
                     fail += 1
 
         if fail:
-            self.fail("%d/%d sample whois attributes were not parsed properly!"
-                      % (fail, total))
+            self.fail(f"{fail}/{total} sample whois attributes were not parsed properly!")
 
     def test_ca_parse(self):
         data = """
@@ -233,54 +219,53 @@ DNSSEC: unsigned
         """
 
         expected_results = {
-             'admin_address': '1600 Amphitheatre Parkway',
-             'admin_city': 'Mountain View',
-             'admin_country': 'US',
-             'admin_email': 'dns-admin@google.com',
-             'admin_name': 'Domain Administrator',
-             'admin_org': 'Google LLC',
-             'admin_phone': '+1.6502530000',
-             'admin_postal_code': '94043',
-             'admin_state': 'CA',
-             'billing_address': ['3540 East Longwing Lane', 'Suite 300'],
-             'billing_city': 'Meridian',
-             'billing_country': 'US',
-             'billing_email': 'ccopsbilling@markmonitor.com',
-             'billing_name': 'CCOPS Billing',
-             'billing_org': 'MarkMonitor Inc.',
-             'billing_phone': '+1.2083895740',
-             'billing_postal_code': '83646',
-             'billing_state': 'Idaho',
-             'creation_date': datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
-             'domain_id': '325702_nic_ai',
-             'domain_name': 'google.ai',
-             'name_servers': ['ns3.zdns.google',
-                              'ns4.zdns.google',
-                              'ns1.zdns.google',
-                              'ns2.zdns.google'],
-             'registrant_address': '1600 Amphitheatre Parkway',
-             'registrant_city': 'Mountain View',
-             'registrant_country': 'US',
-             'registrant_email': 'dns-admin@google.com',
-             'registrant_name': 'Domain Administrator',
-             'registrant_org': 'Google LLC',
-             'registrant_phone': '+1.6502530000',
-             'registrant_postal_code': '94043',
-             'registrant_state': 'CA',
-             'registrar': 'Markmonitor',
-             'registrar_email': 'ccops@markmonitor.com',
-             'registrar_phone': '+1.2083895740',
-             'tech_address': '1600 Amphitheatre Parkway',
-             'tech_city': 'Mountain View',
-             'tech_country': 'US',
-             'tech_email': 'dns-admin@google.com',
-             'tech_name': 'Domain Administrator',
-             'tech_org': 'Google LLC',
-             'tech_phone': '+1.6502530000',
-             'tech_postal_code': '94043',
-             'tech_state': 'CA'}
+            'admin_address': '1600 Amphitheatre Parkway',
+            'admin_city': 'Mountain View',
+            'admin_country': 'US',
+            'admin_email': 'dns-admin@google.com',
+            'admin_name': 'Domain Administrator',
+            'admin_org': 'Google LLC',
+            'admin_phone': '+1.6502530000',
+            'admin_postal_code': '94043',
+            'admin_state': 'CA',
+            'billing_address': ['3540 East Longwing Lane', 'Suite 300'],
+            'billing_city': 'Meridian',
+            'billing_country': 'US',
+            'billing_email': 'ccopsbilling@markmonitor.com',
+            'billing_name': 'CCOPS Billing',
+            'billing_org': 'MarkMonitor Inc.',
+            'billing_phone': '+1.2083895740',
+            'billing_postal_code': '83646',
+            'billing_state': 'Idaho',
+            'creation_date': datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
+            'domain_id': '325702_nic_ai',
+            'domain_name': 'google.ai',
+            'name_servers': ['ns3.zdns.google',
+                             'ns4.zdns.google',
+                             'ns1.zdns.google',
+                             'ns2.zdns.google'],
+            'registrant_address': '1600 Amphitheatre Parkway',
+            'registrant_city': 'Mountain View',
+            'registrant_country': 'US',
+            'registrant_email': 'dns-admin@google.com',
+            'registrant_name': 'Domain Administrator',
+            'registrant_org': 'Google LLC',
+            'registrant_phone': '+1.6502530000',
+            'registrant_postal_code': '94043',
+            'registrant_state': 'CA',
+            'registrar': 'Markmonitor',
+            'registrar_email': 'ccops@markmonitor.com',
+            'registrar_phone': '+1.2083895740',
+            'tech_address': '1600 Amphitheatre Parkway',
+            'tech_city': 'Mountain View',
+            'tech_country': 'US',
+            'tech_email': 'dns-admin@google.com',
+            'tech_name': 'Domain Administrator',
+            'tech_org': 'Google LLC',
+            'tech_phone': '+1.6502530000',
+            'tech_postal_code': '94043',
+            'tech_state': 'CA'}
         self._parse_and_compare('google.ai', data, expected_results)
-
 
     def test_cn_parse(self):
         data = """
@@ -486,20 +471,20 @@ DNSSEC: signedDelegation
             "tech_id": "JM474-IEDR"
         }
         expected_results = {
-          "status": "ok https://icann.org/epp#ok",
-          "expiration_date": "2025-03-31 13:20:07",
-          "creation_date": "2000-02-11 00:00:00",
-          "domain_name": "rte.ie",
-          "tech_id": "3159-IEDR",
-          "registrar": "Blacknight Solutions",
-          "name_servers": [
-            "ns1.rte.ie",
-            "ns2.rte.ie",
-            "ns3.rte.ie",
-            "ns4.rte.ie"
-          ],
-          "admin_id": "202753-IEDR",
-          "registrar_contact": "abuse@blacknight.com"
+            "status": "ok https://icann.org/epp#ok",
+            "expiration_date": "2025-03-31 13:20:07",
+            "creation_date": "2000-02-11 00:00:00",
+            "domain_name": "rte.ie",
+            "tech_id": "3159-IEDR",
+            "registrar": "Blacknight Solutions",
+            "name_servers": [
+                "ns1.rte.ie",
+                "ns2.rte.ie",
+                "ns3.rte.ie",
+                "ns4.rte.ie"
+            ],
+            "admin_id": "202753-IEDR",
+            "registrar_contact": "abuse@blacknight.com"
         }
         self._parse_and_compare('rte.ie', data, expected_results)
 
@@ -617,7 +602,7 @@ Hostname:             p.nic.dk
 
     def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
         results = whois_entry.load(domain_name, data)
-        if domain_name=='google.ai':
+        if domain_name == 'google.ai':
             print(results)
         fail = 0
         total = 0
@@ -629,11 +614,10 @@ Hostname:             p.nic.dk
                 result = str(result)
             expected = expected_results.get(key)
             if expected != result:
-                print("%s \t(%s):\t %s != %s" % (domain_name, key, result, expected))
+                print(f"{domain_name} \t({key}):\t {result} != {expected}")
                 fail += 1
         if fail:
-            self.fail("%d/%d sample whois attributes were not parsed properly!"
-                      % (fail, total))
+            self.fail(f"{fail}/{total} sample whois attributes were not parsed properly!")
 
     def test_sk_parse(self):
         data = """
