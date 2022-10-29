@@ -31,6 +31,7 @@ KNOWN_FORMATS = [
     '%Y%m%d %H:%M:%S',          # 20110908 14:44:51
     '%d/%m/%Y',                 # 02/01/2013
     '%Y. %m. %d.',              # 2000. 01. 02.
+    '%Y-%b-%d.',                # 2000-Aug-02.
     '%Y.%m.%d %H:%M:%S',        # 2014.03.08 10:28:24
     '%d-%b-%Y %H:%M:%S %Z',     # 24-Jul-2009 13:20:03 UTC
     '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
@@ -371,8 +372,8 @@ class WhoisCl(WhoisEntry):
         'registrant_organization': r'Registrant organisation: *(.+)',
         'registrar': r'registrar name: *(.+)',
         'registrar_url': r'Registrar URL: *(.+)',
-        'creation_date': r'Creation date: *(.+)',
-        'expiration_date': r'Expiration date: *(.+)',
+        'creation_date': r'Creation date: *(.+) CLST',
+        'expiration_date': r'Expiration date: *(.+) CLST',
         'name_servers': r'Name server: *(.+)',  # list of name servers
     }
 
@@ -1127,7 +1128,7 @@ class WhoisDe(WhoisEntry):
     regex = {
         'domain_name':            r'Domain: *(.+)',
         'status':                 r'Status: *(.+)',
-        'updated_date':           r'Changed: *(.+)',
+        'updated_date':           r'Changed: *([^+]*)',
         'name':                   r'name: *(.+)',
         'org':                    r'Organisation: *(.+)',
         'address':                r'Address: *(.+)',
@@ -1936,7 +1937,7 @@ class WhoisAi(WhoisEntry):
     """
     regex = {
         'domain_name':                      r'Domain Name\.*: *(.+)',
-        'domain_id':                       r'Registry Domain ID\.*: *(.+)',
+        'domain_id':                        r'Registry Domain ID\.*: *(.+)',
         'creation_date':                    r'Creation Date: (.+)',
         'registrar':                        r'Registrar: (.+)',
         'registrar_phone':                  r'Registrar Abuse Contact Phone:(.+)',
@@ -2309,9 +2310,9 @@ class WhoisUA(WhoisEntry):
         'admin_phone':                   r'(?<=Administrative Contacts:)[\s\W\w]*?phone:(.*)',
         'admin_fax':                     r'(?<=Administrative Contacts:)[\s\W\w]*?fax:(.*)',
 
-        'updated_date':                   r'modified: *(.+)',
-        'creation_date':                  r'created: (.+)',
-        'expiration_date':                r'expires: (.+)',
+        'updated_date':                   r'modified: *([^+]*)',
+        'creation_date':                  r'created: ([^+]*)',
+        'expiration_date':                r'expires: ([^+]*)',
         'name_servers':                   r'nserver: *(.+)'
     }
 
