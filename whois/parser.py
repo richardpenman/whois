@@ -28,7 +28,8 @@ try:
 except ImportError:
     DATEUTIL = False
 
-EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+EMAIL_REGEX = r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[" \
+              r"a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])? "
 
 KNOWN_FORMATS = [
     '%d-%b-%Y',                 # 02-jan-2000
@@ -83,7 +84,7 @@ def datetime_parse(s):
         try:
             s = datetime.strptime(s, known_format)
             break
-        except ValueError as e:
+        except ValueError:
             pass  # Wrong format, keep trying
     return s
 
@@ -371,6 +372,18 @@ class WhoisEntry(dict):
             return WhoisMarket(domain, text)
         elif domain.endswith('.za'):
             return WhoisZa(domain, text)
+        elif domain.endswith('.bz'):
+            return WhoisBz(domain, text)
+        elif domain.endswith('.city'):
+            return WhoisCity(domain, text)
+        elif domain.endswith('.design'):
+            return WhoisDesign(domain, text)
+        elif domain.endswith('.studio'):
+            return WhoisStudio(domain, text)
+        elif domain.endswith('.style'):
+            return WhoisStyle(domain, text)
+        elif domain.endswith('.рус') or domain.endswith('.xn--p1acf'):
+            return WhoisPyc(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -422,7 +435,7 @@ class WhoisSG(WhoisEntry):
         techmatch = re.compile('Technical Contact:(.*?)Name Servers:', re.DOTALL).search(text)
         if techmatch:
             for line in techmatch.groups()[0].strip().splitlines():
-                self['technical_conatact_'+ line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+                self['technical_contact_' + line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
 
 
 class WhoisPe(WhoisEntry):
@@ -528,7 +541,9 @@ class WhoisRo(WhoisEntry):
 
 
 class WhoisRu(WhoisEntry):
-    """Whois parser for .ru domains
+    """
+    Whois parser for .ru domains
+    Ref: whois.nic.ru
     """
     regex = {
         'domain_name': r'domain: *(.+)',
@@ -728,6 +743,7 @@ class WhoisPl(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
 class WhoisGroup(WhoisEntry):
     """Whois parser for .group domains
     """
@@ -750,6 +766,7 @@ class WhoisGroup(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisCa(WhoisEntry):
     """Whois parser for .ca domains
@@ -975,9 +992,12 @@ class WhoisEu(WhoisEntry):
         'domain_name': r'Domain: *([^\n\r]+)',
         'tech_name': r'Technical: *Name: *([^\n\r]+)',
         'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
-        'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *([^\n\r]+)',
-        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *([^\n\r]+)',
-        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *[^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
+        'tech_phone': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *(['
+                      r'^\n\r]+)',
+        'tech_fax': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *['
+                    r'^\n\r]+\s*Fax: *([^\n\r]+)',
+        'tech_email': r'Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *['
+                      r'^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)',
         'registrar': r'Registrar:\n *Name: *([^\n\r]+)',
         'registrar_url': r'\n *Website: *([^\n\r]+)',
         'name_servers': r'Name servers:\n *([\n\S\s]+)',  # list of name servers
@@ -997,8 +1017,10 @@ class WhoisEe(WhoisEntry):
         'domain_name': r'Domain: *[\n\r]+\s*name: *([^\n\r]+)',
         'status': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *([^\n\r]+)',
         'creation_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *([^\n\r]+)',
-        'updated_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *([^\n\r]+)',
-        'expiration_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *[^\n\r]+\sexpire: *([^\n\r]+)',
+        'updated_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: *(['
+                        r'^\n\r]+)',
+        'expiration_date': r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *[^\n\r]+\sregistered: *[^\n\r]+\schanged: '
+                           r'*[^\n\r]+\sexpire: *([^\n\r]+)',
 
         # 'tech_name': r'Technical: *Name: *([^\n\r]+)',
         # 'tech_org': r'Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)',
@@ -1242,6 +1264,54 @@ class WhoisRf(WhoisRu):
 
 class WhoisSu(WhoisRu):
     """Whois parser for .su domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisBz(WhoisRu):
+    """Whois parser for .bz domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisCity(WhoisRu):
+    """Whois parser for .city domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisDesign(WhoisRu):
+    """Whois parser for .design domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisStudio(WhoisRu):
+    """Whois parser for .studio domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisStyle(WhoisRu):
+    """Whois parser for .style domains
+    """
+
+    def __init__(self, domain, text):
+        WhoisRu.__init__(self, domain, text)
+
+
+class WhoisPyc(WhoisRu):
+    """Whois parser for .рус domains
     """
 
     def __init__(self, domain, text):
@@ -1947,7 +2017,7 @@ class WhoisAi(WhoisEntry):
     """
     regex = {
         'domain_name':                      r'Domain Name\.*: *(.+)',
-        'domain_id' :                       r'Registry Domain ID\.*: *(.+)',
+        'domain_id':                        r'Registry Domain ID\.*: *(.+)',
         'creation_date':                    r'Creation Date: (.+)',
         'registrar':                        r'Registrar: (.+)',
         'registrar_phone':                  r'Registrar Abuse Contact Phone:(.+)',
@@ -2083,15 +2153,15 @@ class WhoisIe(WhoisEntry):
     """Whois parser for .ie domains
     """
     regex = {
-        'domain_name':      r'Domain Name: *(.+)',
-        'creation_date':    r'Creation Date: *(.+)',
-        'expiration_date':  r'Registry Expiry Date: *(.+)',
-        'name_servers':     r'Name Server: *(.+)',
-        'status':           r'Domain status: *(.+)',
-        'admin_id':         r'Registry Admin ID: *(.+)',
-        'tech_id':          r'Registry Tech ID: *(.+)',
-        'registrar':        r'Registrar: *(.+)',
-        'registrar_contact':r'Registrar Abuse Contact Email: *(.+)'
+        'domain_name':       r'Domain Name: *(.+)',
+        'creation_date':     r'Creation Date: *(.+)',
+        'expiration_date':   r'Registry Expiry Date: *(.+)',
+        'name_servers':      r'Name Server: *(.+)',
+        'status':            r'Domain status: *(.+)',
+        'admin_id':          r'Registry Admin ID: *(.+)',
+        'tech_id':           r'Registry Tech ID: *(.+)',
+        'registrar':         r'Registrar: *(.+)',
+        'registrar_contact': r'Registrar Abuse Contact Email: *(.+)'
     }
 
     def __init__(self, domain, text):
@@ -2312,8 +2382,10 @@ class WhoisUA(WhoisEntry):
 
         'admin':                         r'(?<=Administrative Contacts:)[\s\W\w]*?organization-loc:(.*)',
         'admin_country':                 r'(?<=Administrative Contacts:)[\s\W\w]*?country-loc:(.*)',
-        'admin_city':                    r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n',
-        'admin_state':                   r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n',
+        'admin_city':                    r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){'
+                                         r'2}address-loc:\s+(.*)\n',
+        'admin_state':                   r'(?<=Administrative Contacts:)[\s\W\w]*?(?:address\-loc:\s+.*\n){'
+                                         r'1}address-loc:\s+(.*)\n',
         'admin_address':                 r'(?<=Administrative Contacts:)[\s\W\w]*?address-loc:\s+(.*)\n',
         'admin_email':                   r'(?<=Administrative Contacts:)[\s\W\w]*?e-mail:(.*)',
         'admin_postal_code':             r'(?<=Administrative Contacts:)[\s\W\w]*?postal-code-loc:(.*)',
@@ -2815,7 +2887,7 @@ class WhoisKZ(WhoisEntry):
     regex = {
         'domain_name':       r'Domain Name............: *(.+)',
         'registrar_created': r'Registrar Created: *(.+)',
-        'current_registrar': r'Current Regisrtar: *(.+)',
+        'current_registrar': r'Current Registrar: *(.+)',
         'creation_date':     r'Domain created: *(.+)',
         'last_modified':     r'Last modified : *(.+)',
         'name_servers':      r'server.*: *(.+)',  # list of name servers

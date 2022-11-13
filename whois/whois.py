@@ -38,12 +38,12 @@ import optparse
 import socket
 import sys
 import re
-from builtins import object
 from builtins import *
 import logging
 standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
+
 
 class NICClient(object):
 
@@ -101,6 +101,15 @@ class NICClient(object):
     SNICHOST = "whois.6bone.net"
     WEBSITE_HOST = "whois.nic.website"
     ZA_HOST = "whois.registry.net.za"
+    RU_HOST = "whois.nic.ru"
+    IDS_HOST = "whois.identitydigital.services"
+    GDD_HOST = "whois.dnrs.godaddy"
+    SHOP_HOST = "whois.nic.shop"
+    STORE_HOST = "whois.centralnic.com"
+    DETI_HOST = "whois.nic.xn--d1acj3b"
+    MOSKVA_HOST = "whois.registry.nic.xn--80adxhks"
+    RF_HOST = "whois.registry.tcinet.ru"
+    PIR_HOST = "whois.publicinterestregistry.org"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -110,12 +119,14 @@ class NICClient(object):
     def __init__(self):
         self.use_qnichost = False
 
-    def findwhois_server(self, buf, hostname, query):
-        """Search the initial TLD lookup results for the regional-specifc
+    @staticmethod
+    def findwhois_server(buf, hostname, query):
+        """Search the initial TLD lookup results for the regional-specific
         whois server for getting contact details.
         """
         nhost = None
-        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query), flags=re.IGNORECASE | re.DOTALL).search(buf)
+        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query),
+                           flags=re.IGNORECASE | re.DOTALL).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
@@ -132,7 +143,7 @@ class NICClient(object):
     def whois(self, query, hostname, flags, many_results=False, quiet=False):
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
-        for the region-specifc whois server and do a lookup
+        for the region-specific whois server and do a lookup
         there for contact details.  If `quiet` is `True`, will
         not send a message to logger when a socket error
         is encountered.
@@ -142,7 +153,8 @@ class NICClient(object):
             try:
                 import socks
             except ImportError as e:
-                logger.error("You need to install the Python socks module. Install PIP (https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
+                logger.error("You need to install the Python socks module. Install PIP "
+                             "(https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
                 raise e
             socks_user, socks_password = None, None
             if "@" in os.environ["SOCKS"]:
@@ -153,13 +165,14 @@ class NICClient(object):
             socksproxy, port = proxy.split(":")
             socks_proto = socket.AF_INET
             if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
-                socks_proto=socket.AF_INET6
+                socks_proto = socket.AF_INET6
             s = socks.socksocket(socks_proto)
             s.set_proxy(socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
-        try: # socket.connect in a try, in order to allow things like looping whois on different domains without stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
+        try:  # socket.connect in a try, in order to allow things like looping whois on different domains without
+            # stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
             s.connect((hostname, 43))
             try:
                 query = query.decode('utf-8')
@@ -193,14 +206,15 @@ class NICClient(object):
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None:
                 response += self.whois(query, nhost, 0, quiet=True)
-        except socket.error as exc: # 'response' is assigned a value (also a str) even on socket timeout
+        except socket.error as exc:  # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
                 logger.error("Error trying to connect to socket: closing socket - {}".format(exc))
             s.close()
             response = "Socket not responding: {}".format(exc)
         return response
 
-    def choose_server(self, domain):
+    @staticmethod
+    def choose_server(domain):
         """Choose initial lookup NIC host"""
         try:
             domain = domain.encode('idna').decode('utf-8')
@@ -287,6 +301,47 @@ class NICClient(object):
             return NICClient.WEBSITE_HOST
         elif tld == 'za':
             return NICClient.ZA_HOST
+        elif tld == 'ru':
+            return NICClient.RU_HOST
+        elif tld == 'bz':
+            return NICClient.RU_HOST
+        elif tld == 'city':
+            return NICClient.RU_HOST
+        elif tld == 'design':
+            return NICClient.RU_HOST
+        elif tld == 'studio':
+            return NICClient.RU_HOST
+        elif tld == 'style':
+            return NICClient.RU_HOST
+        elif tld == 'su':
+            return NICClient.RU_HOST
+        elif tld == 'рус' or tld == 'xn--p1acf':
+            return NICClient.RU_HOST
+        elif tld == 'direct':
+            return NICClient.IDS_HOST
+        elif tld == 'group':
+            return NICClient.IDS_HOST
+        elif tld == 'immo':
+            return NICClient.IDS_HOST
+        elif tld == 'life':
+            return NICClient.IDS_HOST
+        elif tld == 'fashion':
+            return NICClient.GDD_HOST
+        elif tld == 'vip':
+            return NICClient.GDD_HOST
+        elif tld == 'shop':
+            return NICClient.SHOP_HOST
+        elif tld == 'store':
+            return NICClient.STORE_HOST
+        elif tld == 'дети' or tld == 'xn--d1acj3b':
+            return NICClient.DETI_HOST
+        elif tld == 'москва' or tld == 'xn--80adxhks':
+            return NICClient.MOSKVA_HOST
+        elif tld == 'рф' or tld == 'xn--p1ai':
+            return NICClient.RF_HOST
+        elif tld == 'орг' or tld == 'xn--c1avg':
+            return NICClient.PIR_HOST
+
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:
@@ -295,7 +350,6 @@ class NICClient(object):
                 server = NICClient.QNICHOST_HEAD + tld
             return server
         
-
     def whois_lookup(self, options, query_arg, flags, quiet=False):
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
