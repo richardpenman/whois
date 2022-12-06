@@ -2323,7 +2323,10 @@ class WhoisUA(WhoisEntry):
         'updated_date':                   r'modified: *(.+)',
         'creation_date':                  r'created: (.+)',
         'expiration_date':                r'expires: (.+)',
-        'name_servers':                   r'nserver: *(.+)'
+        'name_servers':                   r'nserver: *(.+)',
+
+        'emails':                         EMAIL_REGEX,  # list of email addresses
+
     }
 
     def __init__(self, domain, text):
