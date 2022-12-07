@@ -100,7 +100,7 @@ def cast_date(s, dayfirst=False, yearfirst=False):
                 dayfirst=dayfirst,
                 yearfirst=yearfirst
             ).replace(tzinfo=None)
-        except (dp.parse.ParserError, dp.parse.OverflowError, dp.ParseError, dp.UnknownTimezoneWarning):
+        except Exception:
             return datetime_parse(s)
     else:
         return datetime_parse(s)
@@ -1313,7 +1313,7 @@ class WhoisBz(WhoisRu):
     """
     regex = {
         'domain_name':                      r'Domain Name: *(.+)',
-        'domain__id':                       r'Registry Domain ID: *(.+)',
+        'domain_id':                        r'Registry Domain ID: *(.+)',
         'whois_server':                     r'Registrar WHOIS Server: *(.+)',
         'registrar':                        r'Registrar: *(.+)',
         'registrar_id':                     r'Registrar IANA ID: *(.+)',
