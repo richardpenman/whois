@@ -110,6 +110,7 @@ class NICClient(object):
     MOSKVA_HOST = "whois.registry.nic.xn--80adxhks"
     RF_HOST = "whois.registry.tcinet.ru"
     PIR_HOST = "whois.publicinterestregistry.org"
+    NG_HOST = "whois.nic.net.ng"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -341,7 +342,8 @@ class NICClient(object):
             return NICClient.RF_HOST
         elif tld == 'орг' or tld == 'xn--c1avg':
             return NICClient.PIR_HOST
-
+        elif tld == 'ng':
+            return NICClient.NG_HOST
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:

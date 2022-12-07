@@ -2656,14 +2656,14 @@ class WhoisBy(WhoisEntry):
     """Whois parser for .by domains
     """
     regex = {
-        'domain_name':          r'Domain Name: *(.+)',
+        'domain_name':          r'Domain name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
-        'updated_date':         r'Updated Date: *(.+)',
+        'updated_date':         r'Update Date: *(.+)',
         'creation_date':        r'Creation Date: *(.+)',
         'expiration_date':      r'Expiration Date: *(.+)',
         'name_servers':         r'Name Server: *(.+)',  # list of name servers
-        'status':               r'Domain Status: *(.+)',
-        'name':                 r'Person: *(.+)',
+        'status':               r'Domain Status: *(.+)',  # could not be found in sample, but might be correct
+        'name':                 r'Person: *(.+)',  # could not be found in sample, but might be correct
         'org':                  r'Org: *(.+)',
         'registrant_country':   r'Country: *(.+)',
         'registrant_address':   r'Address: *(.+)',
@@ -2671,7 +2671,7 @@ class WhoisBy(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip() == 'El dominio no se encuentra registrado en NIC Argentina':
+        if text.strip() == 'Object does not exist':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
