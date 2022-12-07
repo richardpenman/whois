@@ -101,6 +101,7 @@ class NICClient(object):
     SNICHOST = "whois.6bone.net"
     WEBSITE_HOST = "whois.nic.website"
     ZA_HOST = "whois.registry.net.za"
+    NG_HOST = "whois.nic.net.ng"
 
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -287,6 +288,8 @@ class NICClient(object):
             return NICClient.WEBSITE_HOST
         elif tld == 'za':
             return NICClient.ZA_HOST
+        elif tld == 'ng':
+            return NICClient.NG_HOST
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:
