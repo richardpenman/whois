@@ -1313,7 +1313,7 @@ class WhoisBz(WhoisRu):
     """
     regex = {
         'domain_name':                      r'Domain Name: *(.+)',
-        'domain__id':                       r'Registry Domain ID: *(.+)',
+        'domain_id':                        r'Registry Domain ID: *(.+)',
         'whois_server':                     r'Registrar WHOIS Server: *(.+)',
         'registrar':                        r'Registrar: *(.+)',
         'registrar_id':                     r'Registrar IANA ID: *(.+)',
