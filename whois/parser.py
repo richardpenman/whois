@@ -90,8 +90,7 @@ def datetime_parse(s):
 
 
 def cast_date(s, dayfirst=False, yearfirst=False):
-    """Convert any date string found in WHOIS to a datetime object.
-    """
+    """Convert any date string found in WHOIS to a datetime object."""
     if DATEUTIL:
         try:
             return dp.parse(
@@ -107,8 +106,7 @@ def cast_date(s, dayfirst=False, yearfirst=False):
 
 
 class WhoisEntry(dict):
-    """Base class for parsing a Whois entries.
-    """
+    """Base class for parsing a Whois entries."""
     # regular expressions to extract domain data from whois profile
     # child classes will override this
     _regex = {
@@ -389,8 +387,7 @@ class WhoisEntry(dict):
 
 
 class WhoisCl(WhoisEntry):
-    """Whois parser for .cl domains.
-    """
+    """Whois parser for .cl domains"""
 
     regex = {
         'domain_name': r'Domain name: *(.+)',
@@ -411,8 +408,7 @@ class WhoisCl(WhoisEntry):
 
 
 class WhoisSG(WhoisEntry):
-    """Whois parser for .sg domains.
-    """
+    """Whois parser for .sg domains"""
 
     regex = {
         'domain_name':      r'Domain name: *(.+)',
@@ -441,8 +437,7 @@ class WhoisSG(WhoisEntry):
 
 
 class WhoisPe(WhoisEntry):
-    """Whois parser for .pe domains.
-    """
+    """Whois parser for .pe domains"""
 
     regex = {
         'domain_name':              r'Domain name: *(.+)',
@@ -464,8 +459,7 @@ class WhoisPe(WhoisEntry):
 
 
 class WhoisSpace(WhoisEntry):
-    """Whois parser for .space domains
-    """
+    """Whois parser for .space domains"""
 
     def __init__(self, domain, text):
         if 'No match for "' in text:
@@ -475,8 +469,7 @@ class WhoisSpace(WhoisEntry):
 
 
 class WhoisCom(WhoisEntry):
-    """Whois parser for .com domains
-    """
+    """Whois parser for .com domains"""
 
     def __init__(self, domain, text):
         if 'No match for "' in text:
@@ -486,8 +479,7 @@ class WhoisCom(WhoisEntry):
 
 
 class WhoisNet(WhoisEntry):
-    """Whois parser for .net domains
-    """
+    """Whois parser for .net domains"""
 
     def __init__(self, domain, text):
         if 'No match for "' in text:
@@ -497,8 +489,7 @@ class WhoisNet(WhoisEntry):
 
 
 class WhoisOrg(WhoisEntry):
-    """Whois parser for .org domains
-    """
+    """Whois parser for .org domains"""
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -520,8 +511,7 @@ class WhoisOrg(WhoisEntry):
 
 
 class WhoisRo(WhoisEntry):
-    """Whois parser for .ro domains
-    """
+    """Whois parser for .ro domains"""
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'domain_status':    r'Domain Status: *(.+)',
@@ -544,9 +534,7 @@ class WhoisRo(WhoisEntry):
 
 
 class WhoisRu(WhoisEntry):
-    """Whois parser for .ru domains
-    Ref: whois.nic.ru
-    """
+    """Whois parser for .ru domains"""
     regex = {
         'domain_name':      r'domain: *(.+)',
         'registrar':        r'registrar: *(.+)',
@@ -567,8 +555,7 @@ class WhoisRu(WhoisEntry):
 
 
 class WhoisNl(WhoisEntry):
-    """Whois parser for .nl domains
-    """
+    """Whois parser for .nl domains"""
     regex = {
         'domain_name':           r'Domain Name: *(.+)',
         'expiration_date':       r'Date\sout\sof\squarantine:\s*(.+)',
@@ -600,8 +587,7 @@ class WhoisNl(WhoisEntry):
             
             
 class WhoisLt(WhoisEntry):
-    """Whois parser for .lt domains
-    """
+    """Whois parser for .lt domains"""
     regex = {
         'domain_name':         r'Domain:\s?(.+)',
         'expiration_date':     r'Expires:\s?(.+)',
@@ -626,8 +612,7 @@ class WhoisLt(WhoisEntry):
 
 
 class WhoisName(WhoisEntry):
-    """Whois parser for .name domains
-    """
+    """Whois parser for .name domains"""
     regex = {
         'domain_name_id':  r'Domain Name ID: *(.+)',
         'domain_name':     r'Domain Name: *(.+)',
@@ -653,8 +638,7 @@ class WhoisName(WhoisEntry):
 
 
 class WhoisUs(WhoisEntry):
-    """Whois parser for .us domains
-    """
+    """Whois parser for .us domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -725,8 +709,7 @@ class WhoisUs(WhoisEntry):
 
 
 class WhoisPl(WhoisEntry):
-    """Whois parser for .pl domains
-    """
+    """Whois parser for .pl domains"""
     regex = {
         'domain_name':                    r'DOMAIN NAME: *(.+)\n',
         'name_servers':                   r'nameservers:((?:\s+.+\n+)*)',
@@ -747,8 +730,7 @@ class WhoisPl(WhoisEntry):
 
 
 class WhoisGroup(WhoisEntry):
-    """Whois parser for .group domains
-    """
+    """Whois parser for .group domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID:(.+)',
@@ -771,8 +753,7 @@ class WhoisGroup(WhoisEntry):
 
 
 class WhoisCa(WhoisEntry):
-    """Whois parser for .ca domains
-    """
+    """Whois parser for .ca domains"""
     regex = {
         'domain_name':                    r'Domain name: *(.+)',
         'whois_server':                   r'Registrar WHOIS Server: *(.+)',
@@ -800,8 +781,7 @@ class WhoisCa(WhoisEntry):
 
 
 class WhoisMe(WhoisEntry):
-    """Whois parser for .me domains
-    """
+    """Whois parser for .me domains"""
     regex = {
         'domain_id':                   r'Registry Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -866,8 +846,7 @@ class WhoisMe(WhoisEntry):
 
 
 class WhoisUk(WhoisEntry):
-    """Whois parser for .uk domains
-    """
+    """Whois parser for .uk domains"""
     regex = {
         'domain_name':                    r'Domain name:\s*(.+)',
 
@@ -897,8 +876,7 @@ class WhoisUk(WhoisEntry):
 
 
 class WhoisFr(WhoisEntry):
-    """Whois parser for .fr domains
-    """
+    """Whois parser for .fr domains"""
     regex = {
         'domain_name':      r'domain: *(.+)',
         'registrar':        r'registrar: *(.+)',
@@ -918,8 +896,7 @@ class WhoisFr(WhoisEntry):
 
 
 class WhoisFi(WhoisEntry):
-    """Whois parser for .fi domains
-    """
+    """Whois parser for .fi domains"""
     regex = {
         'domain_name':                    r'domain\.*: *([\S]+)',
         'name':                           r'Holder\s*name\.*: (.+)',
@@ -948,8 +925,7 @@ class WhoisFi(WhoisEntry):
 
 
 class WhoisJp(WhoisEntry):
-    """Whois parser for .jp domains
-    """
+    """Whois parser for .jp domains"""
     regex = {
         'domain_name':      r'.*\[Domain Name\]\s*(.+)',
         'registrant_org':   r'.*\[(?:Organization|Registrant)\](.+)',
@@ -968,8 +944,7 @@ class WhoisJp(WhoisEntry):
 
 
 class WhoisAU(WhoisEntry):
-    """Whois parser for .au domains
-    """
+    """Whois parser for .au domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)\n',
         'updated_date':                   r'Last Modified: *(.+)\n',
@@ -988,8 +963,7 @@ class WhoisAU(WhoisEntry):
 
 
 class WhoisEu(WhoisEntry):
-    """Whois parser for .eu domains
-    """
+    """Whois parser for .eu domains"""
     regex = {
         'domain_name':      r'Domain: *([^\n\r]+)',
         'tech_name':        r'Technical: *Name: *([^\n\r]+)',
@@ -1013,8 +987,7 @@ class WhoisEu(WhoisEntry):
 
 
 class WhoisEe(WhoisEntry):
-    """Whois parser for .ee domains
-    """
+    """Whois parser for .ee domains"""
     regex = {
         'domain_name':      r'Domain: *[\n\r]+\s*name: *([^\n\r]+)',
         'status':           r'Domain: *[\n\r]+\s*name: *[^\n\r]+\sstatus: *([^\n\r]+)',
@@ -1044,8 +1017,7 @@ class WhoisEe(WhoisEntry):
 
 
 class WhoisBr(WhoisEntry):
-    """Whois parser for .br domains
-    """
+    """Whois parser for .br domains"""
     regex = {
         'domain_name':                   r'domain: *(.+)\n',
         'registrant_name':               r'owner: *([\S ]+)',
@@ -1088,8 +1060,8 @@ class WhoisBr(WhoisEntry):
         
 
 class WhoisKr(WhoisEntry):
-    """Whois parser for .kr domains
-    """
+    """Whois parser for .kr domains"""
+
     regex = {
         'domain_name':            r'Domain Name\s*: *(.+)',
         'registrant_name':        r'Registrant\s*: *(.+)',
@@ -1113,8 +1085,7 @@ class WhoisKr(WhoisEntry):
 
 
 class WhoisPt(WhoisEntry):
-    """Whois parser for .pt domains
-    """
+    """Whois parser for .pt domains"""
     regex = {
         'domain_name':              r'Domain: *(.+)',
         'creation_date':            r'Creation Date: *(.+)',
@@ -1143,8 +1114,7 @@ class WhoisPt(WhoisEntry):
 
 
 class WhoisBg(WhoisEntry):
-    """Whois parser for .bg domains
-    """
+    """Whois parser for .bg domains"""
     regex = {
         'domain_name':      r'DOMAIN NAME: *(.+)\n',
         'status':           r'registration status: s*(.+)',
@@ -1160,8 +1130,7 @@ class WhoisBg(WhoisEntry):
 
 
 class WhoisDe(WhoisEntry):
-    """Whois parser for .de domains
-    """
+    """Whois parser for .de domains"""
     regex = {
         'domain_name':            r'Domain: *(.+)',
         'status':                 r'Status: *(.+)',
@@ -1187,8 +1156,7 @@ class WhoisDe(WhoisEntry):
 
 
 class WhoisAt(WhoisEntry):
-    """Whois parser for .at domains
-    """
+    """Whois parser for .at domains"""
     regex = {
         'domain_name':            r'domain: *(.+)',
         'registrar':              r'registrar: *(.+)',
@@ -1212,8 +1180,7 @@ class WhoisAt(WhoisEntry):
 
 
 class WhoisBe(WhoisEntry):
-    """Whois parser for .be domains
-    """
+    """Whois parser for .be domains"""
     regex = {
         'name':     r'Name: *(.+)',
         'org':      r'Organisation: *(.+)',
@@ -1230,8 +1197,7 @@ class WhoisBe(WhoisEntry):
 
 
 class WhoisInfo(WhoisEntry):
-    """Whois parser for .info domains
-    """
+    """Whois parser for .info domains"""
     regex = {
         'domain_name':            r'Domain Name: *(.+)',
         'registrar':              r'Registrar: *(.+)',
@@ -1260,24 +1226,21 @@ class WhoisInfo(WhoisEntry):
 
 
 class WhoisRf(WhoisRu):
-    """Whois parser for .su domains
-    """
+    """Whois parser for .su domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisSu(WhoisRu):
-    """Whois parser for .su domains
-    """
+    """Whois parser for .su domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisBz(WhoisRu):
-    """Whois parser for .bz domains
-    """
+    """Whois parser for .bz domains"""
     regex = {
         'domain_name':                      r'Domain Name: *(.+)',
         'domain_id':                        r'Registry Domain ID: *(.+)',
@@ -1340,48 +1303,42 @@ class WhoisBz(WhoisRu):
 
 
 class WhoisCity(WhoisRu):
-    """Whois parser for .city domains
-    """
+    """Whois parser for .city domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisDesign(WhoisRu):
-    """Whois parser for .design domains
-    """
+    """Whois parser for .design domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisStudio(WhoisRu):
-    """Whois parser for .studio domains
-    """
+    """Whois parser for .studio domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisStyle(WhoisRu):
-    """Whois parser for .style domains
-    """
+    """Whois parser for .style domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisPyc(WhoisRu):
-    """Whois parser for .рус domains
-    """
+    """Whois parser for .рус domains"""
 
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
 
 
 class WhoisClub(WhoisEntry):
-    """Whois parser for .us domains
-    """
+    """Whois parser for .us domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -1459,8 +1416,7 @@ class WhoisClub(WhoisEntry):
 
 
 class WhoisIo(WhoisEntry):
-    """Whois parser for .io domains
-    """
+    """Whois parser for .io domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Registry Domain ID: *(.+)',
@@ -1485,8 +1441,7 @@ class WhoisIo(WhoisEntry):
 
 
 class WhoisBiz(WhoisEntry):
-    """Whois parser for .biz domains
-    """
+    """Whois parser for .biz domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -1540,8 +1495,7 @@ class WhoisBiz(WhoisEntry):
 
 
 class WhoisMobi(WhoisEntry):
-    """Whois parser for .mobi domains
-    """
+    """Whois parser for .mobi domains"""
     regex = {
         'domain_id':                   r'Registry Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -1606,8 +1560,7 @@ class WhoisMobi(WhoisEntry):
 
 
 class WhoisKg(WhoisEntry):
-    """Whois parser for .kg domains
-    """
+    """Whois parser for .kg domains"""
     regex = {
         'domain_name':                    r'Domain\s*([\w]+\.[\w]{2,5})',
         'registrar':                      r'Domain support: \s*(.+)',
@@ -1632,8 +1585,7 @@ class WhoisKg(WhoisEntry):
 
 
 class WhoisChLi(WhoisEntry):
-    """Whois Parser for .ch and .li domains
-    """
+    """Whois Parser for .ch and .li domains"""
     regex = {
         'domain_name':                      r'\nDomain name:\n*(.+)',
         'registrant_name':                  r'Holder of domain name:\s*(?:.*\n){1}\s*(.+)',
@@ -1653,8 +1605,7 @@ class WhoisChLi(WhoisEntry):
 
 
 class WhoisID(WhoisEntry):
-    """Whois parser for .id domains
-    """
+    """Whois parser for .id domains"""
     regex = {
         'domain_id':                   r'Domain ID:(.+)',
         'domain_name':                 r'Domain Name:(.+)',
@@ -1696,8 +1647,7 @@ class WhoisID(WhoisEntry):
 
 
 class WhoisSe(WhoisEntry):
-    """Whois parser for .se domains
-    """
+    """Whois parser for .se domains"""
     regex = {
         'domain_name':                    r'domain\.*: *(.+)',
         'registrant_name':                r'holder\.*: *(.+)',
@@ -1719,8 +1669,7 @@ class WhoisSe(WhoisEntry):
 
 
 class WhoisJobs(WhoisEntry):
-    """Whois parser for .jobs domains
-    """
+    """Whois parser for .jobs domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID: *(.+)',
@@ -1796,8 +1745,7 @@ class WhoisJobs(WhoisEntry):
 
 
 class WhoisIt(WhoisEntry):
-    """Whois parser for .it domains
-    """
+    """Whois parser for .it domains"""
     regex = {
         'domain_name':                    r'Domain: *(.+)',
         'creation_date':                  r'(?<! )Created: *(.+)',
@@ -1830,8 +1778,7 @@ class WhoisIt(WhoisEntry):
 
 
 class WhoisSa(WhoisEntry):
-    """Whois parser for .sa domains
-    """
+    """Whois parser for .sa domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Created on: *(.+)',
@@ -1856,8 +1803,7 @@ class WhoisSa(WhoisEntry):
 
 
 class WhoisSK(WhoisEntry):
-    """Whois parser for .sk domains
-    """
+    """Whois parser for .sk domains"""
     regex = {
         'domain_name':                    r'Domain: *(.+)',
         'creation_date':                  r'(?<=Domain:)[\s\w\W]*?Created: *(.+)',
@@ -1895,8 +1841,7 @@ class WhoisSK(WhoisEntry):
 
 
 class WhoisMx(WhoisEntry):
-    """Whois parser for .mx domains
-    """
+    """Whois parser for .mx domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Created On: *(.+)',
@@ -1937,8 +1882,7 @@ class WhoisMx(WhoisEntry):
 
 
 class WhoisTw(WhoisEntry):
-    """Whois parser for .tw domains
-    """
+    """Whois parser for .tw domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'creation_date':                  r'Record created on (.+) ',
@@ -1979,8 +1923,7 @@ class WhoisTw(WhoisEntry):
 
 
 class WhoisTr(WhoisEntry):
-    """Whois parser for .tr domains
-    """
+    """Whois parser for .tr domains"""
     regex = {
         'domain_name':                    r'[**] Domain Name: *(.+)',
 
@@ -2018,8 +1961,7 @@ class WhoisTr(WhoisEntry):
 
 
 class WhoisIs(WhoisEntry):
-    """Whois parser for .se domains
-    """
+    """Whois parser for .se domains"""
     regex = {
         'domain_name':      r'domain\.*: *(.+)',
         'registrant_name':  r'registrant: *(.+)',
@@ -2040,8 +1982,7 @@ class WhoisIs(WhoisEntry):
 
 
 class WhoisDk(WhoisEntry):
-    """Whois parser for .dk domains
-    """
+    """Whois parser for .dk domains"""
     regex = {
         'domain_name':            r'Domain: *(.+)',
         'creation_date':          r'Registered: *(.+)',
@@ -2074,8 +2015,7 @@ class WhoisDk(WhoisEntry):
 
 
 class WhoisAi(WhoisEntry):
-    """Whois parser for .ai domains
-    """
+    """Whois parser for .ai domains"""
     regex = {
         'domain_name':                      r'Domain Name\.*: *(.+)',
         'domain_id':                        r'Registry Domain ID\.*: *(.+)',
@@ -2130,8 +2070,7 @@ class WhoisAi(WhoisEntry):
 
 
 class WhoisIl(WhoisEntry):
-    """Whois parser for .il domains
-    """
+    """Whois parser for .il domains"""
     regex = {
         'domain_name':        r'domain: *(.+)',
         'expiration_date':    r'validity: *(.+)',
@@ -2160,8 +2099,7 @@ class WhoisIl(WhoisEntry):
 
 
 class WhoisIn(WhoisEntry):
-    """Whois parser for .in domains
-    """
+    """Whois parser for .in domains"""
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -2187,8 +2125,7 @@ class WhoisIn(WhoisEntry):
 
 
 class WhoisCat(WhoisEntry):
-    """Whois parser for .cat domains
-    """
+    """Whois parser for .cat domains"""
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
         'registrar':        r'Registrar: *(.+)',
@@ -2211,8 +2148,7 @@ class WhoisCat(WhoisEntry):
 
 
 class WhoisIe(WhoisEntry):
-    """Whois parser for .ie domains
-    """
+    """Whois parser for .ie domains"""
     regex = {
         'domain_name':       r'Domain Name: *(.+)',
         'creation_date':     r'Creation Date: *(.+)',
@@ -2233,8 +2169,7 @@ class WhoisIe(WhoisEntry):
 
 
 class WhoisNz(WhoisEntry):
-    """Whois parser for .nz domains
-    """
+    """Whois parser for .nz domains"""
     regex = {
         'domain_name':            r'domain_name:\s*([^\n\r]+)',
         'registrar':              r'registrar_name:\s*([^\n\r]+)',
@@ -2259,8 +2194,7 @@ class WhoisNz(WhoisEntry):
 
 
 class WhoisLu(WhoisEntry):
-    """Whois parser for .lu domains
-    """
+    """Whois parser for .lu domains"""
     regex = {
         'domain_name':              r'domainname: *(.+)',
         'creation_date':            r'registered: *(.+)',
@@ -2294,8 +2228,7 @@ class WhoisLu(WhoisEntry):
 
 
 class WhoisCz(WhoisEntry):
-    """Whois parser for .cz domains
-    """
+    """Whois parser for .cz domains"""
     regex = {
         'domain_name':              r'domain: *(.+)',
         'registrant_name':          r'registrant: *(.+)',
@@ -2314,8 +2247,7 @@ class WhoisCz(WhoisEntry):
 
 
 class WhoisOnline(WhoisEntry):
-    """Whois parser for .online domains
-    """
+    """Whois parser for .online domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain__id':                     r'Domain ID: *(.+)',
@@ -2343,8 +2275,7 @@ class WhoisOnline(WhoisEntry):
 
 
 class WhoisHr(WhoisEntry):
-    """Whois parser for .hr domains
-    """
+    """Whois parser for .hr domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'whois_server':                   r'Registrar WHOIS Server: *(.+)',
@@ -2365,8 +2296,7 @@ class WhoisHr(WhoisEntry):
 
 
 class WhoisHk(WhoisEntry):
-    """Whois parser for .hk domains
-    """
+    """Whois parser for .hk domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'status':                         r'Domain Status: *(.+)',
@@ -2417,8 +2347,7 @@ class WhoisHk(WhoisEntry):
 
 
 class WhoisUA(WhoisEntry):
-    """Whois parser for .ua domains
-    """
+    """Whois parser for .ua domains"""
     regex = {
         'domain_name':                    r'domain: *(.+)',
         'status':                         r'status: *(.+)',
@@ -2470,8 +2399,7 @@ class WhoisUA(WhoisEntry):
 
 
 class WhoisHn(WhoisEntry):
-    """Whois parser for .hn domains
-    """
+    """Whois parser for .hn domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Domain ID: *(.+)',
@@ -2544,8 +2472,7 @@ class WhoisHn(WhoisEntry):
 
 
 class WhoisLat(WhoisEntry):
-    """Whois parser for .lat domains
-    """
+    """Whois parser for .lat domains"""
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
         'domain_id':                      r'Registry Domain ID: *(.+)',
@@ -2607,8 +2534,7 @@ class WhoisLat(WhoisEntry):
 
 
 class WhoisCn(WhoisEntry):
-    """Whois parser for .cn domains
-    """
+    """Whois parser for .cn domains"""
     regex = {
         'domain_name':          r'Domain Name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2629,8 +2555,7 @@ class WhoisCn(WhoisEntry):
 
 
 class WhoisApp(WhoisEntry):
-    """Whois parser for .app domains
-    """
+    """Whois parser for .app domains"""
     regex = {
         'domain_name':            r'Domain Name: *(.+)',
         'registrar':              r'Registrar: *(.+)',
@@ -2661,8 +2586,7 @@ class WhoisApp(WhoisEntry):
 
 
 class WhoisMoney(WhoisEntry):
-    """Whois parser for .money domains
-    """
+    """Whois parser for .money domains"""
     regex = {
         'domain_name':            r'Domain Name: *(.+)',
         'registrar':              r'Registrar: *(.+)',
@@ -2693,8 +2617,7 @@ class WhoisMoney(WhoisEntry):
 
 
 class WhoisAr(WhoisEntry):
-    """Whois parser for .ar domains
-    """
+    """Whois parser for .ar domains"""
     regex = {
         'domain_name':          r'domain: *(.+)',
         'registrar':            r'registrar: *(.+)',
@@ -2716,8 +2639,7 @@ class WhoisAr(WhoisEntry):
 
 
 class WhoisBy(WhoisEntry):
-    """Whois parser for .by domains
-    """
+    """Whois parser for .by domains"""
     regex = {
         'domain_name':          r'Domain name: *(.+)',
         'registrar':            r'Registrar: *(.+)',
@@ -2741,8 +2663,7 @@ class WhoisBy(WhoisEntry):
 
 
 class WhoisCr(WhoisEntry):
-    """Whois parser for .cr domains
-    """
+    """Whois parser for .cr domains"""
     regex = {
         'domain_name':          r'domain: *(.+)',
         'registrant_name':      r'registrant: *(.+)',
@@ -2767,8 +2688,7 @@ class WhoisCr(WhoisEntry):
 
 
 class WhoisVe(WhoisEntry):
-    """Whois parser for .ve domains
-    """
+    """Whois parser for .ve domains"""
     regex = {
         'domain_name':                  r'Nombre de Dominio: *(.+)',
         'status':                       r'Estatus del dominio: *(.+)',
@@ -2828,8 +2748,7 @@ class WhoisVe(WhoisEntry):
 
 
 class WhoisDo(WhoisEntry):
-    """Whois parser for .do domains
-    """
+    """Whois parser for .do domains"""
     regex = {
         'domain_name':                  r'Domain Name: *(.+)',
         'whois_server':                 r'WHOIS Server: *(.+)',
@@ -2893,8 +2812,7 @@ class WhoisDo(WhoisEntry):
 
 
 class WhoisAe(WhoisEntry):
-    """Whois parser for .ae domains
-    """
+    """Whois parser for .ae domains"""
     regex = {
         'domain_name':     r'Domain Name: *(.+)',
         'status':          r'Status: *(.+)',
@@ -2910,8 +2828,7 @@ class WhoisAe(WhoisEntry):
 
 
 class WhoisSi(WhoisEntry):
-    """Whois parser for .si domains
-    """
+    """Whois parser for .si domains"""
     regex = {
         'domain_name':     r'domain: *(.+)',
         'registrar':       r'registrar: *(.+)',
@@ -2929,8 +2846,7 @@ class WhoisSi(WhoisEntry):
 
 
 class WhoisNo(WhoisEntry):
-    """Whois parser for .no domains
-    """
+    """Whois parser for .no domains"""
     regex = {
         'domain_name':     r'Domain Name.*:\s*(.+)',
         'creation_date':   r'Additional information:\nCreated:\s*(.+)',
@@ -2945,8 +2861,7 @@ class WhoisNo(WhoisEntry):
 
 
 class WhoisKZ(WhoisEntry):
-    """Whois parser for .kz domains
-    """
+    """Whois parser for .kz domains"""
     regex = {
         'domain_name':       r'Domain Name............: *(.+)',
         'registrar_created': r'Registrar Created: *(.+)',
@@ -2967,8 +2882,7 @@ class WhoisKZ(WhoisEntry):
             
             
 class WhoisIR(WhoisEntry):
-    """Whois parser for .ir domains.
-    """
+    """Whois parser for .ir domains"""
 
     regex = {
         'domain_name':              r'domain: *(.+)',
@@ -2988,8 +2902,7 @@ class WhoisIR(WhoisEntry):
 
 
 class WhoisZhongGuo(WhoisEntry):
-    """Whois parser for .中国 domains.
-    """
+    """Whois parser for .中国 domains"""
 
     regex = {
         'domain_name':      r'Domain Name: *(.+)',
@@ -3009,8 +2922,7 @@ class WhoisZhongGuo(WhoisEntry):
             
             
 class WhoisWebsite(WhoisEntry):
-    """Whois parser for .website domains
-    """
+    """Whois parser for .website domains"""
 
     def __init__(self, domain, text):
         if 'No match for "' in text:
@@ -3020,8 +2932,7 @@ class WhoisWebsite(WhoisEntry):
 
 
 class WhoisML(WhoisEntry):
-    """Whois parser for .ml domains.
-    """
+    """Whois parser for .ml domains"""
 
     regex = {
         'domain_name':      r'Domain name:\s*([^(i|\n)]+)',
@@ -3049,8 +2960,7 @@ class WhoisML(WhoisEntry):
 
       
 class WhoisOoo(WhoisEntry):
-    """Whois parser for .ooo domains
-    """
+    """Whois parser for .ooo domains"""
 
     def __init__(self, domain, text):
         if 'No entries found for the selected source(s).' in text:
@@ -3060,8 +2970,7 @@ class WhoisOoo(WhoisEntry):
             
             
 class WhoisMarket(WhoisEntry):
-    """Whois parser for .market domains
-    """
+    """Whois parser for .market domains"""
 
     def __init__(self, domain, text):
         if 'No entries found for the selected source(s).' in text:
@@ -3071,8 +2980,7 @@ class WhoisMarket(WhoisEntry):
 
 
 class WhoisZa(WhoisEntry):
-    """Whois parser for .za domains
-    """
+    """Whois parser for .za domains"""
 
     regex = {
         'domain_name':                    r'Domain Name: *(.+)',
