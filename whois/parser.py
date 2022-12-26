@@ -504,7 +504,7 @@ class WhoisOrg(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip().startswith('NOT FOUND'):
+        if text.strip().startswith('NOT FOUND') or text.strip().startswith('Domain not found'):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
