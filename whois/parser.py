@@ -1929,6 +1929,8 @@ class WhoisTr(WhoisEntry):
 
         'creation_date':                  r'Created on.*: *(.+)',
         'expiration_date':                r'Expires on.*: *(.+)',
+        'frozen_status':                  r'Frozen Status: *(.+)',
+        'status':                         r'Transfer Status: *(.+)',
 
         'name_servers':                   r'[**] Domain servers:((?:\s.+)*)',  # servers in one string sep by \n
 
