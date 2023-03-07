@@ -957,6 +957,8 @@ class WhoisAU(WhoisEntry):
         'registrant_name':                r'Registrant: *(.+)',
         'registrant_contact_name':        r'Registrant Contact Name: (.+)',
         'name_servers':                   r'Name Server: *(.+)',
+        'registrant_id':                  r'Registrant ID: *(.+)',
+        'eligibility_type':               r'Eligibility Type: *(.+)',
     }
 
     def __init__(self, domain, text):
