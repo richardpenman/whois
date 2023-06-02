@@ -705,5 +705,165 @@ Hostname:             p.nic.dk
         self._parse_and_compare('pipoline.sk', data, expected_results)
 
 
+    def test_bw_parse(self):
+        data = """
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.nic.net.bw
+
+domain:       BW
+
+organisation: Botswana Communications Regulatory Authority (BOCRA)
+address:      Plot 206/207 Independence Avenue
+address:      Private Bag 00495
+address:      Gaborone
+address:      Botswana
+
+contact:      administrative
+name:         Engineer - ccTLD
+organisation: BOCRA - Botswana Communications Regulatory Authority
+address:      Plot 206/207 Independence Avenue
+address:      Private Bag 00495
+address:      Gaborone
+address:      Botswana
+phone:        +2673685419
+fax-no:       +267 395 7976
+e-mail:       ramotsababa@bocra.org.bw
+
+contact:      technical
+name:         Engineer - ccTLD
+organisation: Botswana Communications Regulatory Authority (BOCRA)
+address:      Plot 206/207 Independence Avenue
+address:      Private Bag 00495
+address:      Gaborone
+address:      Botswana
+phone:        +267 368 5410
+fax-no:       +267 395 7976
+e-mail:       matlapeng@bocra.org.bw
+
+nserver:      DNS1.NIC.NET.BW 168.167.98.226 2c0f:ff00:1:3:0:0:0:226
+nserver:      MASTER.BTC.NET.BW 168.167.168.37 2c0f:ff00:0:6:0:0:0:3 2c0f:ff00:0:6:0:0:0:5
+nserver:      NS-BW.AFRINIC.NET 196.216.168.72 2001:43f8:120:0:0:0:0:72
+nserver:      PCH.NIC.NET.BW 2001:500:14:6070:ad:0:0:1 204.61.216.70
+
+whois:        whois.nic.net.bw
+
+status:       ACTIVE
+remarks:      Registration information: http://nic.net.bw
+
+created:      1993-03-19
+changed:      2022-07-27
+source:       IANA
+
+# whois.nic.net.bw
+
+Domain Name: google.co.bw
+Registry Domain ID: 3486-bwnic
+Registry WHOIS Server: whois.nic.net.bw
+Updated Date: 2022-11-29T09:33:04.665Z
+Creation Date: 2012-11-12T22:00:00.0Z
+Registry Expiry Date: 2023-12-31T05:00:00.0Z
+Registrar Registration Expiration Date: 2023-12-31T05:00:00.0Z
+Registrar: MarkMonitor Inc
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
+Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited
+Registry RegistrantID: GcIIG-Z2bWn
+RegistrantName: Google LLC
+RegistrantOrganization: Google LLC
+RegistrantStreet: 1600 Amphitheatre Parkway
+RegistrantCity: Mountain View
+RegistrantState/Province: CA
+RegistrantPostal Code: 94043
+RegistrantCountry: US
+RegistrantPhone: +1.6502530000
+RegistrantFax: +1.6502530001
+RegistrantEmail: dns-adminATgoogle.com
+Registry AdminID: fDojv-TYe2q
+AdminName: Google LLC
+AdminOrganization: Google LLC
+AdminStreet: 1600 Amphitheatre Parkway
+AdminCity: Mountain View
+AdminState/Province: CA
+AdminPostal Code: 94043
+AdminCountry: US
+AdminPhone: +1.6502530000
+AdminFax: +1.6502530001
+AdminEmail: dns-adminATgoogle.com
+Registry TechID: 2sYG1-BSVgz
+TechName: Google LLC
+TechOrganization: Google LLC
+TechStreet: 1600 Amphitheatre Parkway
+TechCity: Mountain View
+TechState/Province: CA
+TechPostal Code: 94043
+TechCountry: US
+TechPhone: +1.6502530000
+TechFax: +1.6502530001
+TechEmail: dns-adminATgoogle.com
+Registry BillingID: C2KQL-UUtMh
+BillingName: MarkMonitor Inc.
+BillingOrganization: CCOPS Billing
+BillingStreet: 3540 East Longwing Lane Suite 300
+BillingCity: Meridian
+BillingState/Province: ID
+BillingPostal Code: 83646
+BillingCountry: US
+BillingPhone: +1.2083895740
+BillingFax: +1.2083895771
+BillingEmail: ccopsbillingATmarkmonitor.com
+Name Server: ns1.google.com
+Name Server: ns2.google.com
+Name Server: ns3.google.com
+Name Server: ns4.google.com
+DNSSEC: unsigned
+"""
+
+        expected_results = {
+  "domain_name": "google.co.bw",
+  "domain_id": "3486-bwnic",
+  "creation_date": "2012-11-12 22:00:00",
+  "registrar": "MarkMonitor Inc",
+  "registrant_name": "Google LLC",
+  "registrant_org": "Google LLC",
+  "registrant_address": "1600 Amphitheatre Parkway",
+  "registrant_city": "Mountain View",
+  "registrant_country": "US",
+  "registrant_phone": "+1.6502530000",
+  "registrant_email": "dns-adminATgoogle.com",
+  "admin_name": "Google LLC",
+  "admin_org": "Google LLC",
+  "admin_address": "1600 Amphitheatre Parkway",
+  "admin_city": "Mountain View",
+  "admin_country": "US",
+  "admin_phone": "+1.6502530000",
+  "admin_email": "dns-adminATgoogle.com",
+  "tech_name": "Google LLC",
+  "tech_org": "Google LLC",
+  "tech_address": "1600 Amphitheatre Parkway",
+  "tech_city": "Mountain View",
+  "tech_country": "US",
+  "tech_phone": "+1.6502530000",
+  "tech_email": "dns-adminATgoogle.com",
+  "billing_name": "MarkMonitor Inc.",
+  "billing_org": "CCOPS Billing",
+  "billing_address": "3540 East Longwing Lane Suite 300",
+  "billing_city": "Meridian",
+  "billing_country": "US",
+  "billing_phone": "+1.2083895740",
+  "billing_email": "ccopsbillingATmarkmonitor.com",
+  "name_servers": [
+    "ns1.google.com",
+    "ns2.google.com",
+    "ns3.google.com",
+    "ns4.google.com"
+  ],
+  "dnssec": "unsigned"
+}
+
+        self._parse_and_compare('google.co.bw', data, expected_results)
+
 if __name__ == '__main__':
     unittest.main()
