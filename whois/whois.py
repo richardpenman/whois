@@ -53,6 +53,7 @@ class NICClient(object):
     APP_HOST = "whois.nic.google"
     AR_HOST = "whois.nic.ar"
     BNICHOST = "whois.registro.br"
+    BW_HOST = "whois.nic.net.bw"
     BY_HOST = "whois.cctld.by"
     CA_HOST = "whois.ca.fury.ca"
     CHAT_HOST = "whois.nic.chat"
@@ -246,6 +247,8 @@ class NICClient(object):
             return NICClient.APP_HOST
         elif tld == 'ar':
             return NICClient.AR_HOST
+        elif tld == 'bw':
+            return NICClient.BW_HOST
         elif tld == 'by':
             return NICClient.BY_HOST
         elif tld == 'ca':
