@@ -386,6 +386,8 @@ class WhoisEntry(dict):
             return WhoisStyle(domain, text)
         elif domain.endswith('.рус') or domain.endswith('.xn--p1acf'):
             return WhoisPyc(domain, text)
+        elif domain.endswith('.life'):
+            return WhoisLife(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3000,6 +3002,25 @@ class WhoisIR(WhoisEntry):
 
     def __init__(self, domain, text):
         if 'No match for "' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisLife(WhoisEntry):
+    """Whois parser for .ir domains"""
+
+    regex = {
+        'domain_name':              r'Domain Name:: *(.+)',
+        'registrant_name':          r'Registrar: *(.+)',
+        'updated_date':             r'Updated Date: *(.+)',
+        'creation_date':            r'Creation Date: *(.+)',
+        'expiration_date':          r'Registry Expiry Date: *(.+)',
+        'name_servers':             r'Name Server: *(.+)',  # list of name servers
+        'emails':                   EMAIL_REGEX,
+    }
+
+    def __init__(self, domain, text):
+        if 'Domain not found.' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
