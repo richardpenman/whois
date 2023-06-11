@@ -386,6 +386,8 @@ class WhoisEntry(dict):
             return WhoisStyle(domain, text)
         elif domain.endswith('.рус') or domain.endswith('.xn--p1acf'):
             return WhoisPyc(domain, text)
+        elif domain.endswith('.tn'):
+            return WhoisTN(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3152,6 +3154,61 @@ class WhoisZa(WhoisEntry):
         'creation_date':                  r'Creation Date: *(.+)',
         'expiration_date':                r'Registry Expiry Date: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if text.startswith('Available'):
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisTN(WhoisEntry):
+    """Whois parser for .tn domains"""
+
+    regex = {
+        'domain_name':                    r'Domain name.*: (.+)',
+        'registrar':                      r'Registrar.*: (.+)',
+        'creation_date':                  r'Creation date.*: (.+)',
+        'status':                         r'Domain status.*: (.+)',
+        
+        'registrant_name':                r'(?:Owner Contact\nName.*: )(.+)',
+        'registrant_address':             r'(?:Owner Contact\n.*:.*\n.*\n.*: )(.+)',
+        'registrant_address2':            r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'registrant_city':                r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'registrant_state':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'aregistrant_zip':                r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_country':             r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_phone':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_fax':                 r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_email':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'admin_name':                     r'(?:Administrativ contact\nName.*: )(.+)',
+        'admin_first_name':               r'(?:Administrativ contact\n.*:.*\n.*: )(.+)',
+        'admin_address':                  r'(?:Administrativ contact\n.*:.*\n.*\n.*: )(.+)',
+        'admin_address2':                 r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'admin_city':                     r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'admin_state':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_zip':                      r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_country':                  r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_phone':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_fax':                      r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_email':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'tech_name':                     r'(?:Technical contact\nName.*: )(.+)',
+        'tech_first_name':               r'(?:Technical contact\n.*:.*\n.*: )(.+)',
+        'tech_address':                  r'(?:Technical contact\n.*:.*\n.*\n.*: )(.+)',
+        'tech_address2':                 r'(?:Technical contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'tech_city':                     r'(?:Technical contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'tech_state':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_zip':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_country':                  r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_phone':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_fax':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_email':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers  
+
+
     }
 
     def __init__(self, domain, text):
