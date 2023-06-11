@@ -374,6 +374,8 @@ class WhoisEntry(dict):
             return WhoisMarket(domain, text)
         elif domain.endswith('.za'):
             return WhoisZa(domain, text)
+        elif domain.endswith('.bw'):
+            return WhoisBw(domain, text)
         elif domain.endswith('.bz'):
             return WhoisBz(domain, text)
         elif domain.endswith('.city'):
@@ -3162,6 +3164,52 @@ class WhoisZa(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
+class WhoisBw(WhoisEntry):
+    """Whois parser for .bw domains"""
+    regex = {
+        'domain_name':                      r'Domain Name\.*: *(.+)',
+        'domain_id':                        r'Registry Domain ID\.*: *(.+)',
+        'creation_date':                    r'Creation Date: (.+)',
+        'registrar':                        r'Registrar: (.+)',
+        'registrant_name':                  r'RegistrantName: *(.+)',
+        'registrant_org':                   r'RegistrantOrganization: (.+)',
+        'registrant_address':               r'RegistrantStreet: *(.+)',
+        'registrant_city':                  r'RegistrantCity: *(.+)',
+        'registrant_country':               r'RegistrantCountry\.*: *(.+)',
+        'registrant_phone':                 r'RegistrantPhone\.*: *(.+)',
+        'registrant_email':                 r'RegistrantEmail\.*: *(.+)',
+        'admin_name':                       r'AdminName: *(.+)',
+        'admin_org':                        r'AdminOrganization: (.+)',
+        'admin_address':                    r'AdminStreet: *(.+)',
+        'admin_city':                       r'AdminCity: *(.+)',
+        'admin_country':                    r'AdminCountry\.*: *(.+)',
+        'admin_phone':                      r'AdminPhone\.*: *(.+)',
+        'admin_email':                      r'AdminEmail\.*: *(.+)',
+        'tech_name':                        r'TechName: *(.+)',
+        'tech_org':                         r'TechOrganization: (.+)',
+        'tech_address':                     r'TechStreet: *(.+)',
+        'tech_city':                        r'TechCity: *(.+)',
+        'tech_country':                     r'TechCountry\.*: *(.+)',
+        'tech_phone':                       r'TechPhone\.*: *(.+)',
+        'tech_email':                       r'TechEmail\.*: *(.+)',
+        'billing_name':                     r'BillingName: *(.+)',
+        'billing_org':                      r'BillingOrganization: (.+)',
+        'billing_address':                  r'BillingStreet: *(.+)',
+        'billing_city':                     r'BillingCity: *(.+)',
+        'billing_country':                  r'BillingCountry\.*: *(.+)',
+        'billing_phone':                    r'BillingPhone\.*: *(.+)',
+        'billing_email':                    r'BillingEmail\.*: *(.+)',
+        'name_servers':                     r'Name Server\.*: *(.+)',
+        'dnssec':                           r'dnssec\.*: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'not registered' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
 class WhoisTN(WhoisEntry):
     """Whois parser for .tn domains"""
 
@@ -3206,9 +3254,7 @@ class WhoisTN(WhoisEntry):
         'tech_fax':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'tech_email':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
         
-        'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers  
-
-
+        'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
