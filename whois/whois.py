@@ -53,6 +53,7 @@ class NICClient(object):
     APP_HOST = "whois.nic.google"
     AR_HOST = "whois.nic.ar"
     BNICHOST = "whois.registro.br"
+    BW_HOST = "whois.nic.net.bw"
     BY_HOST = "whois.cctld.by"
     CA_HOST = "whois.ca.fury.ca"
     CHAT_HOST = "whois.nic.chat"
@@ -113,7 +114,8 @@ class NICClient(object):
     NG_HOST = "whois.nic.net.ng"
     PPUA_HOST = "whois.pp.ua"
     UKR_HOST = "whois.dotukr.com"
-
+    TN_HOST = "whois.ati.tn"
+    
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
@@ -246,6 +248,8 @@ class NICClient(object):
             return NICClient.APP_HOST
         elif tld == 'ar':
             return NICClient.AR_HOST
+        elif tld == 'bw':
+            return NICClient.BW_HOST
         elif tld == 'by':
             return NICClient.BY_HOST
         elif tld == 'ca':
@@ -350,6 +354,8 @@ class NICClient(object):
             return NICClient.NG_HOST
         elif tld == 'укр' or tld == 'xn--j1amh':
             return NICClient.UKR_HOST
+        elif tld == 'tn':
+            return NICClient.TN_HOST
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:
