@@ -349,7 +349,11 @@ class WhoisEntry(dict):
         elif domain.endswith('.ve'):
             return WhoisVe(domain, text)
         elif domain.endswith('.ua'):
+            if domain.endswith('.pp.ua'):
+                return WhoisPpUa(domain, text)
             return WhoisUA(domain, text)
+        elif domain.endswith('.укр') or domain.endswith('.xn--j1amh'):
+            return WhoisUkr(domain, text)
         elif domain.endswith('.kz'):
             return WhoisKZ(domain, text)
         elif domain.endswith('.ir'):
@@ -370,6 +374,8 @@ class WhoisEntry(dict):
             return WhoisMarket(domain, text)
         elif domain.endswith('.za'):
             return WhoisZa(domain, text)
+        elif domain.endswith('.bw'):
+            return WhoisBw(domain, text)
         elif domain.endswith('.bz'):
             return WhoisBz(domain, text)
         elif domain.endswith('.city'):
@@ -382,6 +388,10 @@ class WhoisEntry(dict):
             return WhoisStyle(domain, text)
         elif domain.endswith('.рус') or domain.endswith('.xn--p1acf'):
             return WhoisPyc(domain, text)
+        elif domain.endswith('.life'):
+            return WhoisLife(domain, text)
+        elif domain.endswith('.tn'):
+            return WhoisTN(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -504,7 +514,7 @@ class WhoisOrg(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip().startswith('NOT FOUND'):
+        if text.strip().startswith('NOT FOUND') or text.strip().startswith('Domain not found'):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
@@ -953,6 +963,8 @@ class WhoisAU(WhoisEntry):
         'registrant_name':                r'Registrant: *(.+)',
         'registrant_contact_name':        r'Registrant Contact Name: (.+)',
         'name_servers':                   r'Name Server: *(.+)',
+        'registrant_id':                  r'Registrant ID: *(.+)',
+        'eligibility_type':               r'Eligibility Type: *(.+)',
     }
 
     def __init__(self, domain, text):
@@ -1929,6 +1941,8 @@ class WhoisTr(WhoisEntry):
 
         'creation_date':                  r'Created on.*: *(.+)',
         'expiration_date':                r'Expires on.*: *(.+)',
+        'frozen_status':                  r'Frozen Status: *(.+)',
+        'status':                         r'Transfer Status: *(.+)',
 
         'name_servers':                   r'[**] Domain servers:((?:\s.+)*)',  # servers in one string sep by \n
 
@@ -2393,6 +2407,106 @@ class WhoisUA(WhoisEntry):
 
     def __init__(self, domain, text):
         if 'ERROR: No entries found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisUkr(WhoisEntry):
+    """Whois parser for .укр domains"""
+    regex = {
+        'domain_name':                  r'Domain name \(UTF8\): *(.+)',
+        'domain_id':                    r'Registry Domain ID: *(.+)',
+        'status':                       r'Registry Status: *(.+)',
+
+        'registrar':                    r'Registrar: *(.+)',
+        'registrar_id':                 r'Registrar ID: *(.+)',
+        'registrar_url':                r'Registrar URL: *(.+)',
+        'registrar_email':              r'Registrar Abuse Contact Email: *(.+)',
+        'registrar_phone':              r'Registrar Abuse Contact Phone: *(.+)',
+
+        'registrant_name':              r'Registrant Name \(Organization\): *(.+)',
+        'registrant_address':           r'Registrant Street:(.+)',
+        'registrant_city':              r'Registrant City:(.+)',
+        'registrant_country':           r'Registrant Country:(.+)',
+        'registrant_postal_code':       r'Registrant Postal Code:(.+)',
+        'registrant_phone':             r'Registrant Phone:(.+)',
+        'registrant_fax':               r'Registrant Fax:(.+)',
+        'registrant_email':             r'Registrant Email:(.+)',
+
+        'admin':                        r'Admin Name: *(.+)',
+        'admin_organization':           r'Admin Organization: *(.+)',
+        'admin_address':                r'Admin Street:(.+)',
+        'admin_city':                   r'Admin City:(.+)',
+        'admin_country':                r'Admin Country:(.+)',
+        'admin_postal_code':            r'Admin Postal Code:(.+)',
+        'admin_phone':                  r'Admin Phone:(.+)',
+        'admin_fax':                    r'Admin Fax:(.+)',
+        'admin_email':                  r'Admin Email:(.+)',
+
+        'updated_date':                 r'Updated Date: *(.+)',
+        'creation_date':                r'Creation Date: (.+)',
+        'expiration_date':              r'Expiration Date: (.+)',
+        'name_servers':                 r'Domain servers in listed order:\s+((?:.+\n)*)',
+    }
+
+    def __init__(self, domain, text):
+        if 'No match for domain' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+    def _preprocess(self, attr, value):
+        if attr == 'name_servers':
+            return [
+                line.strip()
+                for line in value.split("\n")
+                if line != ""
+            ]
+        return super(WhoisUkr, self)._preprocess(attr, value)
+
+
+class WhoisPpUa(WhoisEntry):
+    """Whois parser for .pp.ua domains"""
+    regex = {
+        'domain_name':                  r'Domain Name: *(.+)',
+        'domain_id':                    r'Domain ID: *(.+)',
+        'status':                       r'status: *(.+)',
+
+        'registrar':                    r'Sponsoring Registrar: *(.+)',
+
+        'registrant_name':              r'Registrant Name: *(.+)',
+        'registrant_organization':      r'Registrant Organization: *(.+)',
+        'registrant_address':           r'Registrant Street1:(.+)',
+        'registrant_address2':          r'Registrant Street2:(.+)',
+        'registrant_address3':          r'Registrant Street3:(.+)',
+        'registrant_city':              r'Registrant City:(.+)',
+        'registrant_country':           r'Registrant Country:(.+)',
+        'registrant_postal_code':       r'Registrant Postal Code:(.+)',
+        'registrant_phone':             r'Registrant Phone:(.+)',
+        'registrant_fax':               r'Registrant Fax:(.+)',
+        'registrant_email':             r'Registrant Email:(.+)',
+
+        'admin':                        r'Admin Name: *(.+)',
+        'admin_organization':           r'Admin Organization: *(.+)',
+        'admin_address':                r'Admin Street1:(.+)',
+        'admin_address2':               r'Admin Street2:(.+)',
+        'admin_address3':               r'Admin Street3:(.+)',
+        'admin_city':                   r'Admin City:(.+)',
+        'admin_country':                r'Admin Country:(.+)',
+        'admin_postal_code':            r'Admin Postal Code:(.+)',
+        'admin_phone':                  r'Admin Phone:(.+)',
+        'admin_fax':                    r'Admin Fax:(.+)',
+        'admin_email':                  r'Admin Email:(.+)',
+
+        'updated_date':                 r'Last Updated On: *(.+)',
+        'creation_date':                r'Created On: (.+)',
+        'expiration_date':              r'Expiration Date: (.+)',
+        'name_servers':                 r'Name Server: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if 'No entries found.' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2900,6 +3014,25 @@ class WhoisIR(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisLife(WhoisEntry):
+    """Whois parser for .ir domains"""
+
+    regex = {
+        'domain_name':              r'Domain Name:: *(.+)',
+        'registrant_name':          r'Registrar: *(.+)',
+        'updated_date':             r'Updated Date: *(.+)',
+        'creation_date':            r'Creation Date: *(.+)',
+        'expiration_date':          r'Registry Expiry Date: *(.+)',
+        'name_servers':             r'Name Server: *(.+)',  # list of name servers
+        'emails':                   EMAIL_REGEX,
+    }
+
+    def __init__(self, domain, text):
+        if 'Domain not found.' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisZhongGuo(WhoisEntry):
     """Whois parser for .中国 domains"""
@@ -3044,6 +3177,105 @@ class WhoisZa(WhoisEntry):
         'creation_date':                  r'Creation Date: *(.+)',
         'expiration_date':                r'Registry Expiry Date: *(.+)',
         'updated_date':                   r'Updated Date: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if text.startswith('Available'):
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisBw(WhoisEntry):
+    """Whois parser for .bw domains"""
+    regex = {
+        'domain_name':                      r'Domain Name\.*: *(.+)',
+        'domain_id':                        r'Registry Domain ID\.*: *(.+)',
+        'creation_date':                    r'Creation Date: (.+)',
+        'registrar':                        r'Registrar: (.+)',
+        'registrant_name':                  r'RegistrantName: *(.+)',
+        'registrant_org':                   r'RegistrantOrganization: (.+)',
+        'registrant_address':               r'RegistrantStreet: *(.+)',
+        'registrant_city':                  r'RegistrantCity: *(.+)',
+        'registrant_country':               r'RegistrantCountry\.*: *(.+)',
+        'registrant_phone':                 r'RegistrantPhone\.*: *(.+)',
+        'registrant_email':                 r'RegistrantEmail\.*: *(.+)',
+        'admin_name':                       r'AdminName: *(.+)',
+        'admin_org':                        r'AdminOrganization: (.+)',
+        'admin_address':                    r'AdminStreet: *(.+)',
+        'admin_city':                       r'AdminCity: *(.+)',
+        'admin_country':                    r'AdminCountry\.*: *(.+)',
+        'admin_phone':                      r'AdminPhone\.*: *(.+)',
+        'admin_email':                      r'AdminEmail\.*: *(.+)',
+        'tech_name':                        r'TechName: *(.+)',
+        'tech_org':                         r'TechOrganization: (.+)',
+        'tech_address':                     r'TechStreet: *(.+)',
+        'tech_city':                        r'TechCity: *(.+)',
+        'tech_country':                     r'TechCountry\.*: *(.+)',
+        'tech_phone':                       r'TechPhone\.*: *(.+)',
+        'tech_email':                       r'TechEmail\.*: *(.+)',
+        'billing_name':                     r'BillingName: *(.+)',
+        'billing_org':                      r'BillingOrganization: (.+)',
+        'billing_address':                  r'BillingStreet: *(.+)',
+        'billing_city':                     r'BillingCity: *(.+)',
+        'billing_country':                  r'BillingCountry\.*: *(.+)',
+        'billing_phone':                    r'BillingPhone\.*: *(.+)',
+        'billing_email':                    r'BillingEmail\.*: *(.+)',
+        'name_servers':                     r'Name Server\.*: *(.+)',
+        'dnssec':                           r'dnssec\.*: *(.+)',
+    }
+    def __init__(self, domain, text):
+        if 'not registered' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisTN(WhoisEntry):
+    """Whois parser for .tn domains"""
+
+    regex = {
+        'domain_name':                    r'Domain name.*: (.+)',
+        'registrar':                      r'Registrar.*: (.+)',
+        'creation_date':                  r'Creation date.*: (.+)',
+        'status':                         r'Domain status.*: (.+)',
+        
+        'registrant_name':                r'(?:Owner Contact\nName.*: )(.+)',
+        'registrant_address':             r'(?:Owner Contact\n.*:.*\n.*\n.*: )(.+)',
+        'registrant_address2':            r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'registrant_city':                r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'registrant_state':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'aregistrant_zip':                r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_country':             r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_phone':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_fax':                 r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'registrant_email':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'admin_name':                     r'(?:Administrativ contact\nName.*: )(.+)',
+        'admin_first_name':               r'(?:Administrativ contact\n.*:.*\n.*: )(.+)',
+        'admin_address':                  r'(?:Administrativ contact\n.*:.*\n.*\n.*: )(.+)',
+        'admin_address2':                 r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'admin_city':                     r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'admin_state':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_zip':                      r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_country':                  r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_phone':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_fax':                      r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'admin_email':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'tech_name':                     r'(?:Technical contact\nName.*: )(.+)',
+        'tech_first_name':               r'(?:Technical contact\n.*:.*\n.*: )(.+)',
+        'tech_address':                  r'(?:Technical contact\n.*:.*\n.*\n.*: )(.+)',
+        'tech_address2':                 r'(?:Technical contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'tech_city':                     r'(?:Technical contact\n.*:.*\n.*\n.*\n.*: )(.+)',
+        'tech_state':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_zip':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_country':                  r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_phone':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_fax':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
+        'tech_email':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
+        
+        'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers
     }
 
     def __init__(self, domain, text):
