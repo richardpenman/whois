@@ -1195,11 +1195,15 @@ class WhoisAt(WhoisEntry):
 class WhoisBe(WhoisEntry):
     """Whois parser for .be domains"""
     regex = {
-        'name':     r'Name: *(.+)',
-        'org':      r'Organisation: *(.+)',
-        'phone':    r'Phone: *(.+)',
-        'fax':      r'Fax: *(.+)',
-        'email':    r'Email: *(.+)',
+        'domain_name':      r'Domain: *(.+)',
+        'status':           r'Status: *(.+)',
+        'name':             r'Name: *(.+)',
+        'org':              r'Organisation: *(.+)',
+        'phone':            r'Phone: *(.+)',
+        'fax':              r'Fax: *(.+)',
+        'email':            r'Email: *(.+)',
+        'creation_date':    r'Registered: *(.+)',
+        'name_servers':     r'Nameservers:\s((?:\s+?[\w.]+\s)*)'  # list of name servers
     }
 
     def __init__(self, domain, text):
