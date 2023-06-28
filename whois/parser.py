@@ -1172,6 +1172,7 @@ class WhoisAt(WhoisEntry):
     regex = {
         'domain_name':            r'domain: *(.+)',
         'registrar':              r'registrar: *(.+)',
+        'name_servers':           r'nserver: *(.+)',
         'name':                   r'personname: *(.+)',
         'org':                    r'organization: *(.+)',
         'address':                r'street address: *(.+)',
