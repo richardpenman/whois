@@ -44,9 +44,4 @@ _tz_string = '''-12 Y
 -4.5 HLV VET
 -9.5 MART MIT'''
 
-tz_data = {}
-
-for tz_descr in (tz_spec.split() for tz_spec in _tz_string.split('\n')):
-    tz_offset = int(float(tz_descr[0]) * 3600)
-    for tz_code in tz_descr[1:]:
-        tz_data[tz_code] = tz_offset
+tz_data = {tz_code: int(float(tz_descr[0]) * 3600) for tz_descr in (tz_spec.split() for tz_spec in _tz_string.split('\n')) for tz_code in tz_descr[1:]}
