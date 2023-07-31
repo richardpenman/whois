@@ -106,6 +106,7 @@ class NICClient(object):
     IDS_HOST = "whois.identitydigital.services"
     GDD_HOST = "whois.dnrs.godaddy"
     SHOP_HOST = "whois.nic.shop"
+    SG_HOST = "whois.sgnic.sg"
     STORE_HOST = "whois.centralnic.com"
     DETI_HOST = "whois.nic.xn--d1acj3b"
     MOSKVA_HOST = "whois.registry.nic.xn--80adxhks"
@@ -356,6 +357,8 @@ class NICClient(object):
             return NICClient.UKR_HOST
         elif tld == 'tn':
             return NICClient.TN_HOST
+        elif tld == 'sg':
+            return NICClient.SG_HOST
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:
