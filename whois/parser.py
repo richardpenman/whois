@@ -594,8 +594,8 @@ class WhoisNl(WhoisEntry):
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
             self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
-            
-            
+
+
 class WhoisLt(WhoisEntry):
     """Whois parser for .lt domains"""
     regex = {
@@ -618,7 +618,7 @@ class WhoisLt(WhoisEntry):
                                              for line in match.groups()[0].strip().splitlines()]
             duplicate_nameservers_without_ip = [nameserver.split(' ')[0]
                                                 for nameserver in duplicate_nameservers_with_ip]
-            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))            
+            self['name_servers'] = sorted(list(set(duplicate_nameservers_without_ip)))
 
 
 class WhoisName(WhoisEntry):
@@ -1069,7 +1069,7 @@ class WhoisBr(WhoisEntry):
                 dayfirst=self.dayfirst,
                 yearfirst=self.yearfirst)
         return value
-        
+
 
 class WhoisKr(WhoisEntry):
     """Whois parser for .kr domains"""
@@ -1260,9 +1260,9 @@ class WhoisBz(WhoisRu):
         'registrar':                        r'Registrar: *(.+)',
         'registrar_id':                     r'Registrar IANA ID: *(.+)',
         'registrar_url':                    r'Registrar URL: *(.+)',
-        
+
         'status':                           r'Domain Status: *(.+)',  # list of statuses
-        
+
         'registrant_id':                    r'Registry Registrant ID: *(.+)',
         'registrant_name':                  r'Registrant Name: *(.+)',
         'registrant_organization':          r'Registrant Organization: *(.+)',
@@ -2253,6 +2253,9 @@ class WhoisCz(WhoisEntry):
         'name_servers':             r'nserver: *(.+)',
     }
 
+    dayfirst = True
+
+
     def __init__(self, domain, text):
         if '% No entries found.' in text or 'Your connection limit exceeded' in text:
             raise PywhoisError(text)
@@ -2993,8 +2996,8 @@ class WhoisKZ(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisIR(WhoisEntry):
     """Whois parser for .ir domains"""
 
@@ -3052,8 +3055,8 @@ class WhoisZhongGuo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisWebsite(WhoisEntry):
     """Whois parser for .website domains"""
 
@@ -3081,7 +3084,7 @@ class WhoisML(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-    
+
     def _preprocess(self, attr, value):
         if attr == 'name_servers':
             return [
@@ -3091,7 +3094,7 @@ class WhoisML(WhoisEntry):
             ]
         return super(WhoisML, self)._preprocess(attr, value)
 
-      
+
 class WhoisOoo(WhoisEntry):
     """Whois parser for .ooo domains"""
 
@@ -3100,8 +3103,8 @@ class WhoisOoo(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
-            
-            
+
+
 class WhoisMarket(WhoisEntry):
     """Whois parser for .market domains"""
 
@@ -3239,7 +3242,7 @@ class WhoisTN(WhoisEntry):
         'registrar':                      r'Registrar.*: (.+)',
         'creation_date':                  r'Creation date.*: (.+)',
         'status':                         r'Domain status.*: (.+)',
-        
+
         'registrant_name':                r'(?:Owner Contact\nName.*: )(.+)',
         'registrant_address':             r'(?:Owner Contact\n.*:.*\n.*\n.*: )(.+)',
         'registrant_address2':            r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*: )(.+)',
@@ -3250,7 +3253,7 @@ class WhoisTN(WhoisEntry):
         'registrant_phone':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'registrant_fax':                 r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'registrant_email':               r'(?:Owner Contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
-        
+
         'admin_name':                     r'(?:Administrativ contact\nName.*: )(.+)',
         'admin_first_name':               r'(?:Administrativ contact\n.*:.*\n.*: )(.+)',
         'admin_address':                  r'(?:Administrativ contact\n.*:.*\n.*\n.*: )(.+)',
@@ -3262,7 +3265,7 @@ class WhoisTN(WhoisEntry):
         'admin_phone':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'admin_fax':                      r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'admin_email':                    r'(?:Administrativ contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
-        
+
         'tech_name':                     r'(?:Technical contact\nName.*: )(.+)',
         'tech_first_name':               r'(?:Technical contact\n.*:.*\n.*: )(.+)',
         'tech_address':                  r'(?:Technical contact\n.*:.*\n.*\n.*: )(.+)',
@@ -3274,7 +3277,7 @@ class WhoisTN(WhoisEntry):
         'tech_phone':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'tech_fax':                      r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*: )(.+)',
         'tech_email':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
-        
+
         'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers
     }
 
