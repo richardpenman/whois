@@ -2251,6 +2251,8 @@ class WhoisCz(WhoisEntry):
         'updated_date':             r'changed: *(.+)',
         'expiration_date':          r'expire: *(.+)',
         'name_servers':             r'nserver: *(.+)',
+        'status':                   r'status: *(.+)',
+        
     }
 
     dayfirst = True
