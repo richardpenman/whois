@@ -378,6 +378,8 @@ class WhoisEntry(dict):
             return WhoisBw(domain, text)
         elif domain.endswith('.bz'):
             return WhoisBz(domain, text)
+        elif domain.endswith('.gg'):
+            return WhoisGg(domain, text)
         elif domain.endswith('.city'):
             return WhoisCity(domain, text)
         elif domain.endswith('.design'):
@@ -3181,6 +3183,21 @@ class WhoisZa(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.startswith('Available'):
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisGg(WhoisEntry):
+    """Whois parser for .gg domains"""
+    regex = {
+        'domain_name':            r'Domain:\n +(.+)',
+        'registrar':              r'Registrar:\n\s+(.+)',
+        'creation_date':          r'Relevant dates:\n\s+Registered on (.+)',
+    }
+
+    def __init__(self, domain, text):
+        if 'NOT FOUND' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
