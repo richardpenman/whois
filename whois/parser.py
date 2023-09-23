@@ -3311,7 +3311,7 @@ class WhoisSite(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.startswith('Available'):
+        if "DOMAIN NOT FOUND" in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
