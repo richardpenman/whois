@@ -392,6 +392,8 @@ class WhoisEntry(dict):
             return WhoisLife(domain, text)
         elif domain.endswith('.tn'):
             return WhoisTN(domain, text)
+        elif domain.endswith('.site'):
+            return WhoisSite(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3276,6 +3278,36 @@ class WhoisTN(WhoisEntry):
         'tech_email':                    r'(?:Technical contact\n.*:.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*:)(.+)',
         
         'name_servers':                   r'(?:servers\nName.*:) (.+)(?:\nName.*:) (.+)',  # list of name servers
+    }
+
+    def __init__(self, domain, text):
+        if text.startswith('Available'):
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisSite(WhoisEntry):
+    """Whois parser for .site domains"""
+
+    _regex = {
+        'domain_name':            r'Domain Name: *(.+)',
+        'registrar':              r'Registrar: *(.+)',
+        'whois_server':           r'Whois Server: *(.+)',
+        'updated_date':           r'Updated Date: *(.+)',
+        'creation_date':          r'Creation Date: *(.+)',
+        'expiration_date':        r'Registrar Registration Expiration Date: *(.+)',
+        'name_servers':           r'Name Server: *(.+)',  # list of name servers
+        'status':                 r'Domain Status: *(.+)',  # list of statuses
+        'emails':                 EMAIL_REGEX,  # list of email s
+        'dnssec':                 r'DNSSEC: *([\S]+)',
+        'name':                   r'Registrant Name: *(.+)',
+        'org':                    r'Registrant\s*Organization: *(.+)',
+        'address':                r'Registrant Street: *(.+)',
+        'city':                   r'Registrant City: *(.+)',
+        'state':                  r'Registrant State/Province: *(.+)',
+        'registrant_postal_code': r'Registrant Postal Code: *(.+)',
+        'country':                r'Registrant Country: *(.+)',
     }
 
     def __init__(self, domain, text):
