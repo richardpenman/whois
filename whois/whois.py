@@ -211,7 +211,7 @@ class NICClient(object):
                 return self.whois(query, hostname, flags, True)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response, hostname, query)
-            if nhost is not None:
+            if nhost is not None and nhost != "":
                 response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc:  # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
