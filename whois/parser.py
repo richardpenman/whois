@@ -71,6 +71,7 @@ KNOWN_FORMATS = [
     '%B %d %Y',                 # August 14 2017
     '%d.%m.%Y %H:%M:%S',        # 08.03.2014 10:28:24
     'before %b-%Y',             # before aug-1996
+    'before %Y%m%d',            # before 19960821
     '%Y-%m-%d %H:%M:%S (%Z%z)'  # 2017-09-26 11:38:29 (GMT+00:00)
 ]
 
@@ -394,6 +395,8 @@ class WhoisEntry(dict):
             return WhoisTN(domain, text)
         elif domain.endswith('.site'):
             return WhoisSite(domain, text)
+        elif domain.endswith('.edu'):
+            return WhoisEdu(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3286,7 +3289,7 @@ class WhoisTN(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
-
+            
 class WhoisSite(WhoisEntry):
     """Whois parser for .site domains"""
 
@@ -3312,6 +3315,19 @@ class WhoisSite(WhoisEntry):
 
     def __init__(self, domain, text):
         if "DOMAIN NOT FOUND" in text:
+
+          
+class WhoisEdu(WhoisEntry):
+    """Whois parser for .edu domains"""
+    regex = {
+        'domain_name':      'Domain name: *(.+)',
+        'creation_date':    'Domain record activated: *(.+)',
+        'lats_modified':    'Domain record last updated: *(.+)',
+        'expiration_date':  'Domain expires: *(.+)'
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No entries found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
