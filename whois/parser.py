@@ -395,6 +395,8 @@ class WhoisEntry(dict):
             return WhoisLife(domain, text)
         elif domain.endswith('.tn'):
             return WhoisTN(domain, text)
+        elif domain.endswith('.rs'):
+            return WhoisRs(domain, text)
         elif domain.endswith('.site'):
             return WhoisSite(domain, text)
         elif domain.endswith('.edu'):
@@ -976,6 +978,32 @@ class WhoisAU(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'No Data Found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisRs(WhoisEntry):
+    """Whois parser for .rs domains"""
+    _regex = {
+        'domain_name':            r'Domain name: *(.+)',
+        'status':                 r'Domain status: *(.+)',  # list of statuses
+        'creation_date':          r'Registration date: *(.+)',
+        'updated_date':           r'Modification date: *(.+)',
+        'expiration_date':        r'Expiration date: *(.+)',
+        'registrar':              r'Registrar: *(.+)',
+        'name':                   r'Registrant: *(.+)',
+        'address':                r'Registrant: *.+\nAddress: *(.+)',
+        'admin_name':             r'Administrative contact: *(.+)',
+        'admin_address':          r'Administrative contact: *.+\nAddress: *(.+)',
+        'tech_name':              r'Technical contact: *(.+)',
+        'tech_address':           r'Technical contact: *.+\nAddress: *(.+)',
+        'name_servers':           r'DNS: *(\S+)',  # list of name servers
+        'dnssec':                 r'DNSSEC signed: *(\S+)',
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == '%ERROR:103: Domain is not registered':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
