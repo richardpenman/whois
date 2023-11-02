@@ -116,6 +116,7 @@ class NICClient(object):
     PPUA_HOST = "whois.pp.ua"
     UKR_HOST = "whois.dotukr.com"
     TN_HOST = "whois.ati.tn"
+    SITE_HOST = "whois.nic.site"
     
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -359,6 +360,8 @@ class NICClient(object):
             return NICClient.TN_HOST
         elif tld == 'sg':
             return NICClient.SG_HOST
+        elif tld == 'site':
+            return NICClient.SITE_HOST
         else:
             server = tld + NICClient.QNICHOST_TAIL
             try:
