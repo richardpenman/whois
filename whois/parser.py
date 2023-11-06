@@ -1362,11 +1362,11 @@ class WhoisCity(WhoisRu):
         WhoisRu.__init__(self, domain, text)
 
 
-class WhoisDesign(WhoisRu):
-    """Whois parser for .design domains"""
-
-    def __init__(self, domain, text):
-        WhoisRu.__init__(self, domain, text)
+#class WhoisDesign(WhoisRu):
+#    """Whois parser for .design domains"""
+#
+#    def __init__(self, domain, text):
+#        WhoisRu.__init__(self, domain, text)
 
 
 class WhoisStudio(WhoisRu):
@@ -3372,6 +3372,36 @@ class WhoisSite(WhoisEntry):
     def __init__(self, domain, text):
         if "DOMAIN NOT FOUND" in text:
             raise PywhoisError(text)
+
+class WhoisDesign(WhoisEntry):
+    """Whois parser for .design domains"""
+
+    _regex = {
+        'domain_name':            r'Domain Name: *(.+)',
+        'registrar':              r'Registrar URL: *(.+)',
+        'whois_server':           r'Registrar WHOIS Server: *(.+)',
+        'updated_date':           r'Updated Date: *(.+)',
+        'creation_date':          r'Creation Date: *(.+)',
+        'expiration_date':        r'Registrar Registration Expiration Date: *(.+)',
+        'name_servers':           r'Name Server: *(.+)',  # list of name servers
+        'status':                 r'Domain Status: *(.+)',  # list of statuses
+        'emails':                 EMAIL_REGEX,  # list of email s
+        'dnssec':                 r'DNSSEC: *([\S]+)',
+        'name':                   r'Registrant Name: *(.+)',
+        'phone':                  r'Registrant Phone: *(.+)',
+        'org':                    r'Registrant\s*Organization: *(.+)',
+        'address':                r'Registrant Street: *(.+)',
+        'city':                   r'Registrant City: *(.+)',
+        'state':                  r'Registrant State/Province: *(.+)',
+        'registrant_postal_code': r'Registrant Postal Code: *(.+)',
+        'country':                r'Registrant Country: *(.+)',
+    }
+
+    def __init__(self, domain, text):
+        if "No Data Found" in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
           
 class WhoisEdu(WhoisEntry):
