@@ -53,7 +53,6 @@ class NICClient(object):
     APP_HOST = "whois.nic.google"
     AR_HOST = "whois.nic.ar"
     BNICHOST = "whois.registro.br"
-    BW_HOST = "whois.nic.net.bw"
     BY_HOST = "whois.cctld.by"
     CA_HOST = "whois.ca.fury.ca"
     CHAT_HOST = "whois.nic.chat"
@@ -106,7 +105,6 @@ class NICClient(object):
     IDS_HOST = "whois.identitydigital.services"
     GDD_HOST = "whois.dnrs.godaddy"
     SHOP_HOST = "whois.nic.shop"
-    SG_HOST = "whois.sgnic.sg"
     STORE_HOST = "whois.centralnic.com"
     DETI_HOST = "whois.nic.xn--d1acj3b"
     MOSKVA_HOST = "whois.registry.nic.xn--80adxhks"
@@ -115,11 +113,7 @@ class NICClient(object):
     NG_HOST = "whois.nic.net.ng"
     PPUA_HOST = "whois.pp.ua"
     UKR_HOST = "whois.dotukr.com"
-    TN_HOST = "whois.ati.tn"
-    SBS_HOST = "whois.nic.sbs"
 
-    SITE_HOST = "whois.nic.site"
-    
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
@@ -227,7 +221,7 @@ class NICClient(object):
                 return self.whois(query, hostname, flags, True)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response, hostname, query)
-            if nhost is not None and nhost != "":
+            if nhost is not None:
                 response += self.whois(query, nhost, 0, quiet=True)
         except socket.error as exc:  # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
@@ -265,8 +259,6 @@ class NICClient(object):
             return NICClient.APP_HOST
         elif tld == 'ar':
             return NICClient.AR_HOST
-        elif tld == 'bw':
-            return NICClient.BW_HOST
         elif tld == 'by':
             return NICClient.BY_HOST
         elif tld == 'ca':
@@ -371,14 +363,6 @@ class NICClient(object):
             return NICClient.NG_HOST
         elif tld == 'укр' or tld == 'xn--j1amh':
             return NICClient.UKR_HOST
-        elif tld == 'tn':
-            return NICClient.TN_HOST
-        elif tld == 'sbs':
-            return NICClient.SBS_HOST
-        elif tld == 'sg':
-            return NICClient.SG_HOST
-        elif tld == 'site':
-            return NICClient.SITE_HOST
         else:
             return self.findwhois_iana(tld)
             #server = tld + NICClient.QNICHOST_TAIL
