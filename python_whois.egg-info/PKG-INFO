@@ -1,13 +1,12 @@
 Metadata-Version: 2.1
 Name: python-whois
-Version: 0.8.2
+Version: 0.9.0
 Summary: Whois querying and parsing of domain registration information.
 Home-page: https://github.com/richardpenman/whois
 Author: Richard Penman
 Author-email: richard.penman@gmail.com
 License: MIT
 Keywords: whois,python
-Platform: UNKNOWN
 Classifier: Environment :: Web Environment
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
@@ -135,5 +134,3 @@ Basically each TLD has a similar format to the following:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
-
-
