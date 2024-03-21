@@ -1362,13 +1362,6 @@ class WhoisCity(WhoisRu):
         WhoisRu.__init__(self, domain, text)
 
 
-#class WhoisDesign(WhoisRu):
-#    """Whois parser for .design domains"""
-#
-#    def __init__(self, domain, text):
-#        WhoisRu.__init__(self, domain, text)
-
-
 class WhoisStudio(WhoisRu):
     """Whois parser for .studio domains"""
 
