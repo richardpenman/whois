@@ -116,7 +116,10 @@ class NICClient(object):
     PPUA_HOST = "whois.pp.ua"
     UKR_HOST = "whois.dotukr.com"
     TN_HOST = "whois.ati.tn"
+    SBS_HOST = "whois.nic.sbs"
+
     SITE_HOST = "whois.nic.site"
+    DESIGN_HOST = "whois.nic.design"
     
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -279,6 +282,8 @@ class NICClient(object):
             return NICClient.DE_HOST
         elif tld == 'dev':
             return NICClient.DEV_HOST
+        elif tld == 'dk':
+            return NICClient.DK_HOST
         elif tld == 'do':
             return NICClient.DO_HOST
         elif tld == 'games':
@@ -332,7 +337,7 @@ class NICClient(object):
         elif tld == 'city':
             return NICClient.RU_HOST
         elif tld == 'design':
-            return NICClient.RU_HOST
+            return NICClient.DESIGN_HOST
         elif tld == 'studio':
             return NICClient.RU_HOST
         elif tld == 'style':
@@ -371,6 +376,8 @@ class NICClient(object):
             return NICClient.UKR_HOST
         elif tld == 'tn':
             return NICClient.TN_HOST
+        elif tld == 'sbs':
+            return NICClient.SBS_HOST
         elif tld == 'sg':
             return NICClient.SG_HOST
         elif tld == 'site':
