@@ -119,6 +119,7 @@ class NICClient(object):
     SBS_HOST = "whois.nic.sbs"
 
     SITE_HOST = "whois.nic.site"
+    DESIGN_HOST = "whois.nic.design"
     
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
@@ -336,7 +337,7 @@ class NICClient(object):
         elif tld == 'city':
             return NICClient.RU_HOST
         elif tld == 'design':
-            return NICClient.RU_HOST
+            return NICClient.DESIGN_HOST
         elif tld == 'studio':
             return NICClient.RU_HOST
         elif tld == 'style':
