@@ -885,7 +885,7 @@ class WhoisUk(WhoisEntry):
         'expiration_date':                r'Expiry date:\s*(.+)',
         'updated_date':                   r'Last updated:\s*(.+)',
 
-        'name_servers':                   r'Name servers:\s*(.+)',
+        'name_servers':                   r'([\w.-]+\.(?:[\w-]+\.){1,2}[a-zA-Z]{2,}(?!\s+Relevant|\s+Data))\s+',
     }
 
     def __init__(self, domain, text):
@@ -2042,6 +2042,7 @@ class WhoisDk(WhoisEntry):
         'domain_name':            r'Domain: *(.+)',
         'creation_date':          r'Registered: *(.+)',
         'expiration_date':        r'Expires: *(.+)',
+        'registrar':              r'Registrar: *(.+)',
         'dnssec':                 r'Dnssec: *(.+)',
         'status':                 r'Status: *(.+)',
         'registrant_handle':      r'Registrant\s*(?:.*\n){1}\s*Handle: *(.+)',

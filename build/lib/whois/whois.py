@@ -273,6 +273,8 @@ class NICClient(object):
             return NICClient.DE_HOST
         elif tld == 'dev':
             return NICClient.DEV_HOST
+        elif tld == 'dk':
+            return NICClient.DK_HOST
         elif tld == 'do':
             return NICClient.DO_HOST
         elif tld == 'games':
