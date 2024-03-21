@@ -2042,6 +2042,7 @@ class WhoisDk(WhoisEntry):
         'domain_name':            r'Domain: *(.+)',
         'creation_date':          r'Registered: *(.+)',
         'expiration_date':        r'Expires: *(.+)',
+        'registrar':              r'Registrar: *(.+)',
         'dnssec':                 r'Dnssec: *(.+)',
         'status':                 r'Status: *(.+)',
         'registrant_handle':      r'Registrant\s*(?:.*\n){1}\s*Handle: *(.+)',
