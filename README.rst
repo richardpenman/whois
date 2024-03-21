@@ -24,7 +24,7 @@ Example
     Registry Domain ID: 2336799_DOMAIN_COM-VRSN
     ...'
 
-    >>> print w  # print values of all found attributes    
+    >>> print(w)  # print values of all found attributes    
     {
         "creation_date": "1995-08-14 04:00:00",
         "expiration_date": "2022-08-13 04:00:00",
@@ -63,7 +63,7 @@ Run test cases for python 2 & 3:
 
 .. sourcecode:: bash
 
-    $ python -m unittest discover test
+    $ python2 -m unittest discover test
     .............
     ----------------------------------------------------------------------
     Ran 13 tests in 0.812s
