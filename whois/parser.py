@@ -3018,8 +3018,8 @@ class WhoisKZ(WhoisEntry):
     """Whois parser for .kz domains"""
     regex = {
         'domain_name':       r'Domain Name............: *(.+)',
-        'registrar_created': r'Registrar Created: *(.+)',
-        'current_registrar': r'Current Registrar: *(.+)',
+        'registrar_created': r'Registr?ar Created: *(.+)',
+        'registrar':         r'Current Registr?ar: *(.+)',
         'creation_date':     r'Domain created: *(.+)',
         'last_modified':     r'Last modified : *(.+)',
         'name_servers':      r'server.*: *(.+)',  # list of name servers
@@ -3029,7 +3029,7 @@ class WhoisKZ(WhoisEntry):
     }
 
     def __init__(self, domain, text):
-        if text.strip() == 'No entries found':
+        if '*** Nothing found for this query.' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
