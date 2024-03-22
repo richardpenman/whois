@@ -8,7 +8,7 @@ def read(filename):
 
 setuptools.setup(
     name="python-whois",
-    version="0.9.1",
+    version="0.9.2",
     description="Whois querying and parsing of domain registration information.",
     long_description=read("README.rst"),
     classifiers=[
