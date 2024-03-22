@@ -40,13 +40,13 @@ import sys
 import re
 from builtins import *
 import logging
+
 standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
 
 
 class NICClient(object):
-
     ABUSEHOST = "whois.abuse.net"
     AI_HOST = "whois.nic.ai"
     ANICHOST = "whois.arin.net"
@@ -69,7 +69,7 @@ class NICClient(object):
     GAMES_HOST = "whois.nic.games"
     GNICHOST = "whois.nic.gov"
     GOOGLE_HOST = "whois.nic.google"
-    GROUP_HOST = 'whois.namecheap.com'
+    GROUP_HOST = "whois.namecheap.com"
     HK_HOST = "whois.hkirc.hk"
     HN_HOST = "whois.nic.hn"
     HR_HOST = "whois.dns.hr"
@@ -77,18 +77,18 @@ class NICClient(object):
     INICHOST = "whois.networksolutions.com"
     IST_HOST = "whois.afilias-srs.net"
     JOBS_HOST = "whois.nic.jobs"
-    JP_HOST = 'whois.jprs.jp'
+    JP_HOST = "whois.jprs.jp"
     KZ_HOST = "whois.nic.kz"
     LAT_HOST = "whois.nic.lat"
     LI_HOST = "whois.nic.li"
     LNICHOST = "whois.lacnic.net"
-    LT_HOST = 'whois.domreg.lt'
+    LT_HOST = "whois.domreg.lt"
     MARKET_HOST = "whois.nic.market"
     MNICHOST = "whois.ra.net"
     MONEY_HOST = "whois.nic.money"
     MX_HOST = "whois.mx"
     NICHOST = "whois.crsnic.net"
-    NL_HOST = 'whois.domain-registry.nl'
+    NL_HOST = "whois.domain-registry.nl"
     NORIDHOST = "whois.norid.no"
     ONLINE_HOST = "whois.nic.online"
     OOO_HOST = "whois.nic.ooo"
@@ -120,7 +120,7 @@ class NICClient(object):
 
     SITE_HOST = "whois.nic.site"
     DESIGN_HOST = "whois.nic.design"
-    
+
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
@@ -135,13 +135,15 @@ class NICClient(object):
         whois server for getting contact details.
         """
         nhost = None
-        match = re.compile(r'Domain Name: {}\s*.*?Whois Server: (.*?)\s'.format(query),
-                           flags=re.IGNORECASE | re.DOTALL).search(buf)
+        match = re.compile(
+            r"Domain Name: {}\s*.*?Whois Server: (.*?)\s".format(query),
+            flags=re.IGNORECASE | re.DOTALL,
+        ).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
             # s.connect((hostname, 43)) does not work
-            if nhost.count('/') > 0:
+            if nhost.count("/") > 0:
                 nhost = None
         elif hostname == NICClient.ANICHOST:
             for nichost in NICClient.ip_whois:
@@ -149,20 +151,21 @@ class NICClient(object):
                     nhost = nichost
                     break
         return nhost
-    
+
     @staticmethod
     def findwhois_iana(tld):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
-        s.connect(("whois.iana.org",43))
-        s.send(bytes(tld, 'utf-8') + b"\r\n")
+        s.connect(("whois.iana.org", 43))
+        s.send(bytes(tld, "utf-8") + b"\r\n")
         response = b""
         while True:
             d = s.recv(4096)
             response += d
-            if not d: break
+            if not d:
+                break
         s.close()
-        return re.search(r"whois:\s+(.*?)\n",response.decode('utf-8')).group(1)
+        return re.search(r"whois:\s+(.*?)\n", response.decode("utf-8")).group(1)
 
     def whois(self, query, hostname, flags, many_results=False, quiet=False):
         """Perform initial lookup with TLD whois server
@@ -172,13 +175,15 @@ class NICClient(object):
         not send a message to logger when a socket error
         is encountered.
         """
-        response = b''
+        response = b""
         if "SOCKS" in os.environ:
             try:
                 import socks
             except ImportError as e:
-                logger.error("You need to install the Python socks module. Install PIP "
-                             "(https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'")
+                logger.error(
+                    "You need to install the Python socks module. Install PIP "
+                    "(https://bootstrap.pypa.io/get-pip.py) and then 'pip install PySocks'"
+                )
                 raise e
             socks_user, socks_password = None, None
             if "@" in os.environ["SOCKS"]:
@@ -188,10 +193,14 @@ class NICClient(object):
                 proxy = os.environ["SOCKS"]
             socksproxy, port = proxy.split(":")
             socks_proto = socket.AF_INET
-            if socket.AF_INET6 in [sock[0] for sock in socket.getaddrinfo(socksproxy, port)]:
+            if socket.AF_INET6 in [
+                sock[0] for sock in socket.getaddrinfo(socksproxy, port)
+            ]:
                 socks_proto = socket.AF_INET6
             s = socks.socksocket(socks_proto)
-            s.set_proxy(socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password)
+            s.set_proxy(
+                socks.SOCKS5, socksproxy, int(port), True, socks_user, socks_password
+            )
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(10)
@@ -199,7 +208,7 @@ class NICClient(object):
             # stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
             s.connect((hostname, 43))
             try:
-                query = query.decode('utf-8')
+                query = query.decode("utf-8")
             except UnicodeEncodeError:
                 pass  # Already Unicode (python2's error)
             except AttributeError:
@@ -210,10 +219,10 @@ class NICClient(object):
             elif hostname == NICClient.DK_HOST:
                 query_bytes = " --show-handles " + query
             elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
-                query_bytes = '=' + query
+                query_bytes = "=" + query
             else:
                 query_bytes = query
-            s.send(bytes(query_bytes, 'utf-8') + b"\r\n")
+            s.send(bytes(query_bytes, "utf-8") + b"\r\n")
             # recv returns bytes
             while True:
                 d = s.recv(4096)
@@ -223,174 +232,178 @@ class NICClient(object):
             s.close()
 
             nhost = None
-            response = response.decode('utf-8', 'replace')
+            response = response.decode("utf-8", "replace")
             if 'with "=xxx"' in response:
                 return self.whois(query, hostname, flags, True)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response, hostname, query)
             if nhost is not None and nhost != "":
                 response += self.whois(query, nhost, 0, quiet=True)
-        except socket.error as exc:  # 'response' is assigned a value (also a str) even on socket timeout
+        except (
+            socket.error
+        ) as exc:  # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
-                logger.error("Error trying to connect to socket: closing socket - {}".format(exc))
+                logger.error(
+                    "Error trying to connect to socket: closing socket - {}".format(exc)
+                )
             s.close()
             response = "Socket not responding: {}".format(exc)
         return response
 
-    def choose_server(self,domain):
+    def choose_server(self, domain):
         """Choose initial lookup NIC host"""
         try:
-            domain = domain.encode('idna').decode('utf-8')
+            domain = domain.encode("idna").decode("utf-8")
         except TypeError:
-            domain = domain.decode('utf-8').encode('idna').decode('utf-8')
+            domain = domain.decode("utf-8").encode("idna").decode("utf-8")
         except AttributeError:
-            domain = domain.decode('utf-8').encode('idna').decode('utf-8')
+            domain = domain.decode("utf-8").encode("idna").decode("utf-8")
         if domain.endswith("-NORID"):
             return NICClient.NORIDHOST
         if domain.endswith("id"):
             return NICClient.PANDIHOST
         if domain.endswith("hr"):
             return NICClient.HR_HOST
-        if domain.endswith('.pp.ua'):
+        if domain.endswith(".pp.ua"):
             return NICClient.PPUA_HOST
 
-        domain = domain.split('.')
+        domain = domain.split(".")
         if len(domain) < 2:
             return None
         tld = domain[-1]
         if tld[0].isdigit():
             return NICClient.ANICHOST
-        elif tld == 'ai':
+        elif tld == "ai":
             return NICClient.AI_HOST
-        elif tld == 'app':
+        elif tld == "app":
             return NICClient.APP_HOST
-        elif tld == 'ar':
+        elif tld == "ar":
             return NICClient.AR_HOST
-        elif tld == 'bw':
+        elif tld == "bw":
             return NICClient.BW_HOST
-        elif tld == 'by':
+        elif tld == "by":
             return NICClient.BY_HOST
-        elif tld == 'ca':
+        elif tld == "ca":
             return NICClient.CA_HOST
-        elif tld == 'chat':
+        elif tld == "chat":
             return NICClient.CHAT_HOST
-        elif tld == 'cl':
+        elif tld == "cl":
             return NICClient.CL_HOST
-        elif tld == 'cr':
+        elif tld == "cr":
             return NICClient.CR_HOST
-        elif tld == 'de':
+        elif tld == "de":
             return NICClient.DE_HOST
-        elif tld == 'dev':
+        elif tld == "dev":
             return NICClient.DEV_HOST
-        elif tld == 'dk':
+        elif tld == "dk":
             return NICClient.DK_HOST
-        elif tld == 'do':
+        elif tld == "do":
             return NICClient.DO_HOST
-        elif tld == 'games':
+        elif tld == "games":
             return NICClient.GAMES_HOST
-        elif tld == 'goog' or tld == 'google':
+        elif tld == "goog" or tld == "google":
             return NICClient.GOOGLE_HOST
-        elif tld == 'group':
+        elif tld == "group":
             return NICClient.GROUP_HOST
-        elif tld == 'hk':
+        elif tld == "hk":
             return NICClient.HK_HOST
-        elif tld == 'hn':
+        elif tld == "hn":
             return NICClient.HN_HOST
-        elif tld == 'ist':
+        elif tld == "ist":
             return NICClient.IST_HOST
-        elif tld == 'jobs':
+        elif tld == "jobs":
             return NICClient.JOBS_HOST
-        elif tld == 'jp':
+        elif tld == "jp":
             return NICClient.JP_HOST
-        elif tld == 'kz':
+        elif tld == "kz":
             return NICClient.KZ_HOST
-        elif tld == 'lat':
+        elif tld == "lat":
             return NICClient.LAT_HOST
-        elif tld == 'li':
+        elif tld == "li":
             return NICClient.LI_HOST
-        elif tld == 'lt':
+        elif tld == "lt":
             return NICClient.LT_HOST
-        elif tld == 'market':
+        elif tld == "market":
             return NICClient.MARKET_HOST
-        elif tld == 'money':
+        elif tld == "money":
             return NICClient.MONEY_HOST
-        elif tld == 'mx':
+        elif tld == "mx":
             return NICClient.MX_HOST
-        elif tld == 'nl':
+        elif tld == "nl":
             return NICClient.NL_HOST
-        elif tld == 'online':
+        elif tld == "online":
             return NICClient.ONLINE_HOST
-        elif tld == 'ooo':
+        elif tld == "ooo":
             return NICClient.OOO_HOST
-        elif tld == 'page':
+        elif tld == "page":
             return NICClient.PAGE_HOST
-        elif tld == 'pe':
+        elif tld == "pe":
             return NICClient.PE_HOST
-        elif tld == 'website':
+        elif tld == "website":
             return NICClient.WEBSITE_HOST
-        elif tld == 'za':
+        elif tld == "za":
             return NICClient.ZA_HOST
-        elif tld == 'ru':
+        elif tld == "ru":
             return NICClient.RU_HOST
-        elif tld == 'bz':
+        elif tld == "bz":
             return NICClient.RU_HOST
-        elif tld == 'city':
+        elif tld == "city":
             return NICClient.RU_HOST
-        elif tld == 'design':
+        elif tld == "design":
             return NICClient.DESIGN_HOST
-        elif tld == 'studio':
+        elif tld == "studio":
             return NICClient.RU_HOST
-        elif tld == 'style':
+        elif tld == "style":
             return NICClient.RU_HOST
-        elif tld == 'su':
+        elif tld == "su":
             return NICClient.RU_HOST
-        elif tld == 'рус' or tld == 'xn--p1acf':
+        elif tld == "рус" or tld == "xn--p1acf":
             return NICClient.RU_HOST
-        elif tld == 'direct':
+        elif tld == "direct":
             return NICClient.IDS_HOST
-        elif tld == 'group':
+        elif tld == "group":
             return NICClient.IDS_HOST
-        elif tld == 'immo':
+        elif tld == "immo":
             return NICClient.IDS_HOST
-        elif tld == 'life':
+        elif tld == "life":
             return NICClient.IDS_HOST
-        elif tld == 'fashion':
+        elif tld == "fashion":
             return NICClient.GDD_HOST
-        elif tld == 'vip':
+        elif tld == "vip":
             return NICClient.GDD_HOST
-        elif tld == 'shop':
+        elif tld == "shop":
             return NICClient.SHOP_HOST
-        elif tld == 'store':
+        elif tld == "store":
             return NICClient.STORE_HOST
-        elif tld == 'дети' or tld == 'xn--d1acj3b':
+        elif tld == "дети" or tld == "xn--d1acj3b":
             return NICClient.DETI_HOST
-        elif tld == 'москва' or tld == 'xn--80adxhks':
+        elif tld == "москва" or tld == "xn--80adxhks":
             return NICClient.MOSKVA_HOST
-        elif tld == 'рф' or tld == 'xn--p1ai':
+        elif tld == "рф" or tld == "xn--p1ai":
             return NICClient.RF_HOST
-        elif tld == 'орг' or tld == 'xn--c1avg':
+        elif tld == "орг" or tld == "xn--c1avg":
             return NICClient.PIR_HOST
-        elif tld == 'ng':
+        elif tld == "ng":
             return NICClient.NG_HOST
-        elif tld == 'укр' or tld == 'xn--j1amh':
+        elif tld == "укр" or tld == "xn--j1amh":
             return NICClient.UKR_HOST
-        elif tld == 'tn':
+        elif tld == "tn":
             return NICClient.TN_HOST
-        elif tld == 'sbs':
+        elif tld == "sbs":
             return NICClient.SBS_HOST
-        elif tld == 'sg':
+        elif tld == "sg":
             return NICClient.SG_HOST
-        elif tld == 'site':
+        elif tld == "site":
             return NICClient.SITE_HOST
         else:
             return self.findwhois_iana(tld)
-            #server = tld + NICClient.QNICHOST_TAIL
-            #try:
+            # server = tld + NICClient.QNICHOST_TAIL
+            # try:
             #    socket.gethostbyname(server)
-            #except socket.gaierror:
+            # except socket.gaierror:
             #    server = NICClient.QNICHOST_HEAD + tld
-            #return server
-        
+            # return server
+
     def whois_lookup(self, options, query_arg, flags, quiet=False):
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
@@ -402,18 +415,18 @@ class NICClient(object):
         if options is None:
             options = {}
 
-        if ('whoishost' not in options or options['whoishost'] is None) \
-                and ('country' not in options or options['country'] is None):
+        if ("whoishost" not in options or options["whoishost"] is None) and (
+            "country" not in options or options["country"] is None
+        ):
             self.use_qnichost = True
-            options['whoishost'] = NICClient.NICHOST
+            options["whoishost"] = NICClient.NICHOST
             if not (flags & NICClient.WHOIS_QUICK):
                 flags |= NICClient.WHOIS_RECURSE
 
-        if 'country' in options and options['country'] is not None:
-
+        if "country" in options and options["country"] is not None:
             result = self.whois(
                 query_arg,
-                options['country'] + NICClient.QNICHOST_TAIL,
+                options["country"] + NICClient.QNICHOST_TAIL,
                 flags,
                 quiet=quiet,
             )
@@ -422,9 +435,9 @@ class NICClient(object):
             if nichost is not None:
                 result = self.whois(query_arg, nichost, flags, quiet=quiet)
             else:
-                result = ''
+                result = ""
         else:
-            result = self.whois(query_arg, options['whoishost'], flags, quiet=quiet)
+            result = self.whois(query_arg, options["whoishost"], flags, quiet=quiet)
         return result
 
 
@@ -437,57 +450,141 @@ def parse_command_line(argv):
     usage = "usage: %prog [options] name"
 
     parser = optparse.OptionParser(add_help_option=False, usage=usage)
-    parser.add_option("-a", "--arin", action="store_const",
-                      const=NICClient.ANICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.ANICHOST)
-    parser.add_option("-A", "--apnic", action="store_const",
-                      const=NICClient.PNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.PNICHOST)
-    parser.add_option("-b", "--abuse", action="store_const",
-                      const=NICClient.ABUSEHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.ABUSEHOST)
-    parser.add_option("-c", "--country", action="store",
-                      type="string", dest="country",
-                      help="Lookup using country-specific NIC")
-    parser.add_option("-d", "--mil", action="store_const",
-                      const=NICClient.DNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.DNICHOST)
-    parser.add_option("-g", "--gov", action="store_const",
-                      const=NICClient.GNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.GNICHOST)
-    parser.add_option("-h", "--host", action="store",
-                      type="string", dest="whoishost",
-                      help="Lookup using specified whois host")
-    parser.add_option("-i", "--nws", action="store_const",
-                      const=NICClient.INICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.INICHOST)
-    parser.add_option("-I", "--iana", action="store_const",
-                      const=NICClient.IANAHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.IANAHOST)
-    parser.add_option("-l", "--lcanic", action="store_const",
-                      const=NICClient.LNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.LNICHOST)
-    parser.add_option("-m", "--ra", action="store_const",
-                      const=NICClient.MNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.MNICHOST)
-    parser.add_option("-p", "--port", action="store",
-                      type="int", dest="port",
-                      help="Lookup using specified tcp port")
-    parser.add_option("-Q", "--quick", action="store_true",
-                      dest="b_quicklookup",
-                      help="Perform quick lookup")
-    parser.add_option("-r", "--ripe", action="store_const",
-                      const=NICClient.RNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.RNICHOST)
-    parser.add_option("-R", "--ru", action="store_const",
-                      const="ru", dest="country",
-                      help="Lookup Russian NIC")
-    parser.add_option("-6", "--6bone", action="store_const",
-                      const=NICClient.SNICHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.SNICHOST)
-    parser.add_option("-n", "--ina", action="store_const",
-                      const=NICClient.PANDIHOST, dest="whoishost",
-                      help="Lookup using host " + NICClient.PANDIHOST)
+    parser.add_option(
+        "-a",
+        "--arin",
+        action="store_const",
+        const=NICClient.ANICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.ANICHOST,
+    )
+    parser.add_option(
+        "-A",
+        "--apnic",
+        action="store_const",
+        const=NICClient.PNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.PNICHOST,
+    )
+    parser.add_option(
+        "-b",
+        "--abuse",
+        action="store_const",
+        const=NICClient.ABUSEHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.ABUSEHOST,
+    )
+    parser.add_option(
+        "-c",
+        "--country",
+        action="store",
+        type="string",
+        dest="country",
+        help="Lookup using country-specific NIC",
+    )
+    parser.add_option(
+        "-d",
+        "--mil",
+        action="store_const",
+        const=NICClient.DNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.DNICHOST,
+    )
+    parser.add_option(
+        "-g",
+        "--gov",
+        action="store_const",
+        const=NICClient.GNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.GNICHOST,
+    )
+    parser.add_option(
+        "-h",
+        "--host",
+        action="store",
+        type="string",
+        dest="whoishost",
+        help="Lookup using specified whois host",
+    )
+    parser.add_option(
+        "-i",
+        "--nws",
+        action="store_const",
+        const=NICClient.INICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.INICHOST,
+    )
+    parser.add_option(
+        "-I",
+        "--iana",
+        action="store_const",
+        const=NICClient.IANAHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.IANAHOST,
+    )
+    parser.add_option(
+        "-l",
+        "--lcanic",
+        action="store_const",
+        const=NICClient.LNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.LNICHOST,
+    )
+    parser.add_option(
+        "-m",
+        "--ra",
+        action="store_const",
+        const=NICClient.MNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.MNICHOST,
+    )
+    parser.add_option(
+        "-p",
+        "--port",
+        action="store",
+        type="int",
+        dest="port",
+        help="Lookup using specified tcp port",
+    )
+    parser.add_option(
+        "-Q",
+        "--quick",
+        action="store_true",
+        dest="b_quicklookup",
+        help="Perform quick lookup",
+    )
+    parser.add_option(
+        "-r",
+        "--ripe",
+        action="store_const",
+        const=NICClient.RNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.RNICHOST,
+    )
+    parser.add_option(
+        "-R",
+        "--ru",
+        action="store_const",
+        const="ru",
+        dest="country",
+        help="Lookup Russian NIC",
+    )
+    parser.add_option(
+        "-6",
+        "--6bone",
+        action="store_const",
+        const=NICClient.SNICHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.SNICHOST,
+    )
+    parser.add_option(
+        "-n",
+        "--ina",
+        action="store_const",
+        const=NICClient.PANDIHOST,
+        dest="whoishost",
+        help="Lookup using host " + NICClient.PANDIHOST,
+    )
     parser.add_option("-?", "--help", action="help")
 
     return parser.parse_args(argv)

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import *
 import re
@@ -20,12 +21,14 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # thanks to https://www.regextester.com/104038
-IPV4_OR_V6 = re.compile(r"((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))")
+IPV4_OR_V6 = re.compile(
+    r"((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))"
+)
 
 
 def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=False):
@@ -48,14 +51,16 @@ def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=
     else:
         # try builtin client
         nic_client = NICClient()
-        text = nic_client.whois_lookup(None, domain.encode('idna'), flags, quiet=quiet)
+        text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
-        entry['raw'] = text
+        entry["raw"] = text
     return entry
 
 
 suffixes = None
+
+
 def extract_domain(url):
     """Extract the domain from the given URL
 
@@ -90,39 +95,45 @@ def extract_domain(url):
     global suffixes
     if not suffixes:
         # downloaded from https://publicsuffix.org/list/public_suffix_list.dat
-        tlds_path = os.path.join(os.getcwd(), os.path.dirname(__file__), 'data', 'public_suffix_list.dat')
-        with open(tlds_path, encoding='utf-8') as tlds_fp:
-            suffixes = set(line.encode('utf-8') for line in tlds_fp.read().splitlines() if line and not line.startswith('//'))
+        tlds_path = os.path.join(
+            os.getcwd(), os.path.dirname(__file__), "data", "public_suffix_list.dat"
+        )
+        with open(tlds_path, encoding="utf-8") as tlds_fp:
+            suffixes = set(
+                line.encode("utf-8")
+                for line in tlds_fp.read().splitlines()
+                if line and not line.startswith("//")
+            )
 
     if not isinstance(url, str):
-        url = url.decode('utf-8')
-    url = re.sub('^.*://', '', url)
-    url = url.split('/')[0].lower()
+        url = url.decode("utf-8")
+    url = re.sub("^.*://", "", url)
+    url = url.split("/")[0].lower()
 
     # find the longest suffix match
-    domain = b''
-    split_url = url.split('.')
+    domain = b""
+    split_url = url.split(".")
     for section in reversed(split_url):
         if domain:
-            domain = b'.' + domain
-        domain = section.encode('utf-8') + domain
+            domain = b"." + domain
+        domain = section.encode("utf-8") + domain
         if domain not in suffixes:
-            if not b'.' in domain and len(split_url) >= 2:
+            if not b"." in domain and len(split_url) >= 2:
                 # If this is the first section and there wasn't a match, try to
                 # match the first two sections - if that works, keep going
                 # See https://github.com/richardpenman/whois/issues/50
-                second_order_tld = '.'.join([split_url[-2], split_url[-1]])
-                if not second_order_tld.encode('utf-8') in suffixes:
+                second_order_tld = ".".join([split_url[-2], split_url[-1]])
+                if not second_order_tld.encode("utf-8") in suffixes:
                     break
             else:
                 break
-    return domain.decode('utf-8')
+    return domain.decode("utf-8")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         url = sys.argv[1]
     except IndexError:
-        logger.error('Usage: %s url' % sys.argv[0])
+        logger.error("Usage: %s url" % sys.argv[0])
     else:
         logger.info(whois(url))

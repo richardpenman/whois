@@ -3,9 +3,11 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import *
-_tz_string = '''-12 Y
+
+_tz_string = """-12 Y
 -11 X NUT SST
 -10 W CKT HAST HST TAHT TKT
 -9 V AKST GAMT GIT HADT HNY
@@ -42,11 +44,11 @@ _tz_string = '''-12 Y
 -2.5 HAT NDT
 -3.5 HNT NST NT
 -4.5 HLV VET
--9.5 MART MIT'''
+-9.5 MART MIT"""
 
 tz_data = {}
 
-for tz_descr in (tz_spec.split() for tz_spec in _tz_string.split('\n')):
+for tz_descr in (tz_spec.split() for tz_spec in _tz_string.split("\n")):
     tz_offset = int(float(tz_descr[0]) * 3600)
     for tz_code in tz_descr[1:]:
         tz_data[tz_code] = tz_offset
