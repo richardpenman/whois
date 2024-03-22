@@ -27,21 +27,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-
 import os
 import optparse
 import socket
 import sys
 import re
-from builtins import *
 import logging
-
-standard_library.install_aliases()
 
 logger = logging.getLogger(__name__)
 
@@ -445,8 +436,6 @@ def parse_command_line(argv):
     """Options handling mostly follows the UNIX whois(1) man page, except
     long-form options can also be used.
     """
-    flags = 0
-
     usage = "usage: %prog [options] name"
 
     parser = optparse.OptionParser(add_help_option=False, usage=usage)

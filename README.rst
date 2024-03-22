@@ -6,8 +6,6 @@ Goal
 -  Able to extract data for all the popular TLDs (com, org, net, ...)
 -  Query a WHOIS server directly instead of going through an
    intermediate web service like many others do.
--  Works with Python 2 & 3
-
 
 
 Example
@@ -57,19 +55,12 @@ Note that then you will need to manually install the futures module, which allow
 
 .. sourcecode:: bash
 
-    $ pip install futures
+    $ pip install -r requirements.txt
 
-Run test cases for python 2 & 3:
+Run test cases:
 
 .. sourcecode:: bash
 
-    $ python2 -m unittest discover test
-    .............
-    ----------------------------------------------------------------------
-    Ran 13 tests in 0.812s
-    
-    OK
-    
     $ python3 -m unittest discover test
     .............
     ----------------------------------------------------------------------

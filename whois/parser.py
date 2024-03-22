@@ -6,28 +6,11 @@
 # This module is part of python-whois and is released under
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from future import standard_library
-
 import re
 from datetime import datetime
 import json
-from past.builtins import basestring
-from builtins import str
-from builtins import *
-
-standard_library.install_aliases()
-
-try:
-    import dateutil.parser as dp
-    from .time_zones import tz_data
-
-    DATEUTIL = True
-except ImportError:
-    DATEUTIL = False
+import dateutil.parser as dp
+from .time_zones import tz_data
 
 EMAIL_REGEX = (
     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*["
@@ -96,14 +79,11 @@ def datetime_parse(s):
 
 def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object."""
-    if DATEUTIL:
-        try:
-            return dp.parse(
-                s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
-            ).replace(tzinfo=None)
-        except Exception:
-            return datetime_parse(s)
-    else:
+    try:
+        return dp.parse(
+            s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
+        ).replace(tzinfo=None)
+    except Exception:
         return datetime_parse(s)
 
 
@@ -173,12 +153,7 @@ class WhoisEntry(dict):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if (
-            value
-            and isinstance(value, basestring)
-            and not value.isdigit()
-            and "_date" in attr
-        ):
+        if value and isinstance(value, str) and not value.isdigit() and "_date" in attr:
             # try casting to date format
             value = cast_date(value, dayfirst=self.dayfirst, yearfirst=self.yearfirst)
         return value
@@ -1122,7 +1097,7 @@ class WhoisBr(WhoisEntry):
 
     def _preprocess(self, attr, value):
         value = value.strip()
-        if value and isinstance(value, basestring) and "_date" in attr:
+        if value and isinstance(value, str) and "_date" in attr:
             # try casting to date format
             value = re.findall(r"[\w\s:.-\\/]+", value)[0].strip()
             value = cast_date(value, dayfirst=self.dayfirst, yearfirst=self.yearfirst)

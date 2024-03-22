@@ -1,38 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import *
-import unittest
 
 import os
-import sys
-
-sys.path.append("../")
-
 import datetime
-
-try:
-    import json
-except:
-    import simplejson as json
+import json
 from glob import glob
-
+import unittest
 from whois.parser import (
     WhoisEntry,
     cast_date,
-    WhoisCl,
-    WhoisAr,
-    WhoisBy,
     WhoisCa,
-    WhoisBiz,
-    WhoisCr,
-    WhoisDe,
-    WhoisNl,
 )
 
 
@@ -644,7 +620,7 @@ Hostname:             p.nic.dk
     def test_sk_parse(self):
         data = """
         # whois.sk-nic.sk
-        
+
         Domain:                       pipoline.sk
         Registrant:                   H410977
         Admin Contact:                H410977
@@ -656,7 +632,7 @@ Hostname:             p.nic.dk
         Nameserver:                   ns1.cloudlikeaboss.com
         Nameserver:                   ns2.cloudlikeaboss.com
         EPP Status:                   ok
-        
+
         Registrar:                    PIPO-0002
         Name:                         Pipoline s.r.o.
         Organization:                 Pipoline s.r.o.
@@ -669,7 +645,7 @@ Hostname:             p.nic.dk
         Country Code:                 SK
         Created:                      2017-09-01
         Updated:                      2020-07-02
-        
+
         Contact:                      H410977
         Name:                         Ing. Peter Gonda
         Organization:                 Pipoline s.r.o
