@@ -4,13 +4,15 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import *
 import unittest
 
 import os
 import sys
-sys.path.append('../')
+
+sys.path.append("../")
 
 import datetime
 
@@ -20,12 +22,21 @@ except:
     import simplejson as json
 from glob import glob
 
-from whois.parser import WhoisEntry, cast_date, WhoisCl, WhoisAr, WhoisBy, \
-    WhoisCa, WhoisBiz, WhoisCr, WhoisDe, WhoisNl
+from whois.parser import (
+    WhoisEntry,
+    cast_date,
+    WhoisCl,
+    WhoisAr,
+    WhoisBy,
+    WhoisCa,
+    WhoisBiz,
+    WhoisCr,
+    WhoisDe,
+    WhoisNl,
+)
 
 
 class TestParser(unittest.TestCase):
-
     def test_com_expiration(self):
         data = """
         Status: ok
@@ -35,15 +46,15 @@ class TestParser(unittest.TestCase):
 
         >>> Last update of whois database: Sun, 31 Aug 2008 00:18:23 UTC <<<
         """
-        w = WhoisEntry.load('urlowl.com', data)
-        expires = w.expiration_date.strftime('%Y-%m-%d')
-        self.assertEqual(expires, '2018-02-21')
+        w = WhoisEntry.load("urlowl.com", data)
+        expires = w.expiration_date.strftime("%Y-%m-%d")
+        self.assertEqual(expires, "2018-02-21")
 
     def test_cast_date(self):
-        dates = ['14-apr-2008', '2008-04-14']
+        dates = ["14-apr-2008", "2008-04-14"]
         for d in dates:
-            r = cast_date(d).strftime('%Y-%m-%d')
-            self.assertEqual(r, '2008-04-14')
+            r = cast_date(d).strftime("%Y-%m-%d")
+            self.assertEqual(r, "2008-04-14")
 
     def test_com_allsamples(self):
         """
@@ -53,12 +64,23 @@ class TestParser(unittest.TestCase):
 
         To generate fresh expected value dumps, see NOTE below.
         """
-        keys_to_test = ['domain_name', 'expiration_date', 'updated_date',
-                        'registrar', 'registrar_url', 'creation_date', 'status']
+        keys_to_test = [
+            "domain_name",
+            "expiration_date",
+            "updated_date",
+            "registrar",
+            "registrar_url",
+            "creation_date",
+            "status",
+        ]
         fail = 0
         total = 0
-        whois_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'samples','whois','*')
-        expect_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'samples','expected')
+        whois_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "samples", "whois", "*"
+        )
+        expect_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "samples", "expected"
+        )
         for path in glob(whois_path):
             # Parse whois data
             domain = os.path.basename(path)
@@ -73,19 +95,19 @@ class TestParser(unittest.TestCase):
             # Only do this if you've manually confirmed that the parser is
             # generating correct values at its current state.
             if False:
+
                 def date2str4json(obj):
                     if isinstance(obj, datetime.datetime):
                         return str(obj)
-                    raise TypeError(
-                            '{} is not JSON serializable'.format(repr(obj)))
+                    raise TypeError("{} is not JSON serializable".format(repr(obj)))
+
                 outfile_name = os.path.join(expect_path, domain)
-                with open(outfile_name, 'w') as outfil:
-                    expected_results = json.dump(results, outfil,
-                                                       default=date2str4json)
+                with open(outfile_name, "w") as outfil:
+                    expected_results = json.dump(results, outfil, default=date2str4json)
                 continue
 
             # Load expected result
-            with open(os.path.join(expect_path, domain)) as infil:    
+            with open(os.path.join(expect_path, domain)) as infil:
                 expected_results = json.load(infil)
 
             # Compare each key
@@ -95,7 +117,13 @@ class TestParser(unittest.TestCase):
             for key in compare_keys:
                 total += 1
                 if key not in results:
-                    print("%s \t(%s):\t Missing in results" % (domain, key,))
+                    print(
+                        "%s \t(%s):\t Missing in results"
+                        % (
+                            domain,
+                            key,
+                        )
+                    )
                     fail += 1
                     continue
 
@@ -110,8 +138,10 @@ class TestParser(unittest.TestCase):
                     fail += 1
 
         if fail:
-            self.fail("%d/%d sample whois attributes were not parsed properly!"
-                      % (fail, total))
+            self.fail(
+                "%d/%d sample whois attributes were not parsed properly!"
+                % (fail, total)
+            )
 
     def test_ca_parse(self):
         data = """
@@ -149,27 +179,19 @@ class TestParser(unittest.TestCase):
         expected_results = {
             "updated_date": "2016-04-29 00:00:00",
             "registrant_name": "Test Industries",
-            "fax": [
-                "+1.123434123",
-                "+1.12312993873"
-            ],
+            "fax": ["+1.123434123", "+1.12312993873"],
             "dnssec": "Unsigned",
             "registrant_number": "70",
             "expiration_date": "2020-03-08 00:00:00",
             "domain_name": "testdomain.ca",
             "creation_date": "2000-11-20 00:00:00",
-            "phone": [
-                "+1.1235434123x123",
-                "+1.09876545123"
-            ],
+            "phone": ["+1.1235434123x123", "+1.09876545123"],
             "status": "registered",
-            "emails": [
-                "testperson1@testcompany.ca",
-                "testpersion2@testcompany.ca"
-            ]
+            "emails": ["testperson1@testcompany.ca", "testpersion2@testcompany.ca"],
         }
-        self._parse_and_compare('testcompany.ca', data, expected_results,
-                                whois_entry=WhoisCa)
+        self._parse_and_compare(
+            "testcompany.ca", data, expected_results, whois_entry=WhoisCa
+        )
 
     def test_ai_parse(self):
         data = """
@@ -233,54 +255,56 @@ DNSSEC: unsigned
         """
 
         expected_results = {
-             'admin_address': '1600 Amphitheatre Parkway',
-             'admin_city': 'Mountain View',
-             'admin_country': 'US',
-             'admin_email': 'dns-admin@google.com',
-             'admin_name': 'Domain Administrator',
-             'admin_org': 'Google LLC',
-             'admin_phone': '+1.6502530000',
-             'admin_postal_code': '94043',
-             'admin_state': 'CA',
-             'billing_address': ['3540 East Longwing Lane', 'Suite 300'],
-             'billing_city': 'Meridian',
-             'billing_country': 'US',
-             'billing_email': 'ccopsbilling@markmonitor.com',
-             'billing_name': 'CCOPS Billing',
-             'billing_org': 'MarkMonitor Inc.',
-             'billing_phone': '+1.2083895740',
-             'billing_postal_code': '83646',
-             'billing_state': 'Idaho',
-             'creation_date': datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
-             'domain_id': '325702_nic_ai',
-             'domain_name': 'google.ai',
-             'name_servers': ['ns3.zdns.google',
-                              'ns4.zdns.google',
-                              'ns1.zdns.google',
-                              'ns2.zdns.google'],
-             'registrant_address': '1600 Amphitheatre Parkway',
-             'registrant_city': 'Mountain View',
-             'registrant_country': 'US',
-             'registrant_email': 'dns-admin@google.com',
-             'registrant_name': 'Domain Administrator',
-             'registrant_org': 'Google LLC',
-             'registrant_phone': '+1.6502530000',
-             'registrant_postal_code': '94043',
-             'registrant_state': 'CA',
-             'registrar': 'Markmonitor',
-             'registrar_email': 'ccops@markmonitor.com',
-             'registrar_phone': '+1.2083895740',
-             'tech_address': '1600 Amphitheatre Parkway',
-             'tech_city': 'Mountain View',
-             'tech_country': 'US',
-             'tech_email': 'dns-admin@google.com',
-             'tech_name': 'Domain Administrator',
-             'tech_org': 'Google LLC',
-             'tech_phone': '+1.6502530000',
-             'tech_postal_code': '94043',
-             'tech_state': 'CA'}
-        self._parse_and_compare('google.ai', data, expected_results)
-
+            "admin_address": "1600 Amphitheatre Parkway",
+            "admin_city": "Mountain View",
+            "admin_country": "US",
+            "admin_email": "dns-admin@google.com",
+            "admin_name": "Domain Administrator",
+            "admin_org": "Google LLC",
+            "admin_phone": "+1.6502530000",
+            "admin_postal_code": "94043",
+            "admin_state": "CA",
+            "billing_address": ["3540 East Longwing Lane", "Suite 300"],
+            "billing_city": "Meridian",
+            "billing_country": "US",
+            "billing_email": "ccopsbilling@markmonitor.com",
+            "billing_name": "CCOPS Billing",
+            "billing_org": "MarkMonitor Inc.",
+            "billing_phone": "+1.2083895740",
+            "billing_postal_code": "83646",
+            "billing_state": "Idaho",
+            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
+            "domain_id": "325702_nic_ai",
+            "domain_name": "google.ai",
+            "name_servers": [
+                "ns3.zdns.google",
+                "ns4.zdns.google",
+                "ns1.zdns.google",
+                "ns2.zdns.google",
+            ],
+            "registrant_address": "1600 Amphitheatre Parkway",
+            "registrant_city": "Mountain View",
+            "registrant_country": "US",
+            "registrant_email": "dns-admin@google.com",
+            "registrant_name": "Domain Administrator",
+            "registrant_org": "Google LLC",
+            "registrant_phone": "+1.6502530000",
+            "registrant_postal_code": "94043",
+            "registrant_state": "CA",
+            "registrar": "Markmonitor",
+            "registrar_email": "ccops@markmonitor.com",
+            "registrar_phone": "+1.2083895740",
+            "tech_address": "1600 Amphitheatre Parkway",
+            "tech_city": "Mountain View",
+            "tech_country": "US",
+            "tech_email": "dns-admin@google.com",
+            "tech_name": "Domain Administrator",
+            "tech_org": "Google LLC",
+            "tech_phone": "+1.6502530000",
+            "tech_postal_code": "94043",
+            "tech_state": "CA",
+        }
+        self._parse_and_compare("google.ai", data, expected_results)
 
     def test_cn_parse(self):
         data = """
@@ -307,13 +331,23 @@ DNSSEC: unsigned
             "registrar": "北京新网数码信息技术有限公司",
             "creation_date": "2000-09-14 00:00:00",
             "expiration_date": "2023-08-16 16:26:39",
-            "name_servers": ["a.cnnic.cn", "b.cnnic.cn", "c.cnnic.cn", "d.cnnic.cn", "e.cnnic.cn"],
-            "status": ["serverDeleteProhibited", "serverUpdateProhibited", "serverTransferProhibited"],
+            "name_servers": [
+                "a.cnnic.cn",
+                "b.cnnic.cn",
+                "c.cnnic.cn",
+                "d.cnnic.cn",
+                "e.cnnic.cn",
+            ],
+            "status": [
+                "serverDeleteProhibited",
+                "serverUpdateProhibited",
+                "serverTransferProhibited",
+            ],
             "emails": "servicei@cnnic.cn",
             "dnssec": "unsigned",
-            "name": "中国互联网络信息中心"
+            "name": "中国互联网络信息中心",
         }
-        self._parse_and_compare('cnnic.com.cn', data, expected_results)
+        self._parse_and_compare("cnnic.com.cn", data, expected_results)
 
     def test_il_parse(self):
         data = """
@@ -375,14 +409,18 @@ DNSSEC: unsigned
             "expiration_date": "2018-05-10 00:00:00",
             "domain_name": "python.org.il",
             "creation_date": None,
-            "phone": ['+1 650 6441973', '+1 650 9635533'],
+            "phone": ["+1 650 6441973", "+1 650 9635533"],
             "status": "Transfer Locked",
             "emails": "hostmaster@arik.baratz.org",
-            "name_servers": ["dns1.zoneedit.com", "dns2.zoneedit.com", "dns3.zoneedit.com"],
+            "name_servers": [
+                "dns1.zoneedit.com",
+                "dns2.zoneedit.com",
+                "dns3.zoneedit.com",
+            ],
             "registrar": "LiveDns Ltd",
-            "referral_url": "http://domains.livedns.co.il"
+            "referral_url": "http://domains.livedns.co.il",
         }
-        self._parse_and_compare('python.org.il', data, expected_results)
+        self._parse_and_compare("python.org.il", data, expected_results)
 
     def test_ie_parse(self):
         data = """
@@ -467,7 +505,7 @@ DNSSEC: signedDelegation
             "description": [
                 "RTE Commercial Enterprises Limited",
                 "Body Corporate (Ltd,PLC,Company)",
-                "Corporate Name"
+                "Corporate Name",
             ],
             "source": "IEDR",
             "creation_date": "2000-02-11 00:00:00",
@@ -476,32 +514,24 @@ DNSSEC: signedDelegation
                 "ns1.rte.ie 162.159.0.73 2400:cb00:2049:1::a29f:49",
                 "ns2.rte.ie 162.159.1.73 2400:cb00:2049:1::a29f:149",
                 "ns3.rte.ie 162.159.2.27 2400:cb00:2049:1::a29f:21b",
-                "ns4.rte.ie 162.159.3.18 2400:cb00:2049:1::a29f:312"
+                "ns4.rte.ie 162.159.3.18 2400:cb00:2049:1::a29f:312",
             ],
             "status": "Active",
-            "admin_id": [
-                "AWB910-IEDR",
-                "JM474-IEDR"
-            ],
-            "tech_id": "JM474-IEDR"
+            "admin_id": ["AWB910-IEDR", "JM474-IEDR"],
+            "tech_id": "JM474-IEDR",
         }
         expected_results = {
-          "status": "ok https://icann.org/epp#ok",
-          "expiration_date": "2025-03-31 13:20:07",
-          "creation_date": "2000-02-11 00:00:00",
-          "domain_name": "rte.ie",
-          "tech_id": "3159-IEDR",
-          "registrar": "Blacknight Solutions",
-          "name_servers": [
-            "ns1.rte.ie",
-            "ns2.rte.ie",
-            "ns3.rte.ie",
-            "ns4.rte.ie"
-          ],
-          "admin_id": "202753-IEDR",
-          "registrar_contact": "abuse@blacknight.com"
+            "status": "ok https://icann.org/epp#ok",
+            "expiration_date": "2025-03-31 13:20:07",
+            "creation_date": "2000-02-11 00:00:00",
+            "domain_name": "rte.ie",
+            "tech_id": "3159-IEDR",
+            "registrar": "Blacknight Solutions",
+            "name_servers": ["ns1.rte.ie", "ns2.rte.ie", "ns3.rte.ie", "ns4.rte.ie"],
+            "admin_id": "202753-IEDR",
+            "registrar_contact": "abuse@blacknight.com",
         }
-        self._parse_and_compare('rte.ie', data, expected_results)
+        self._parse_and_compare("rte.ie", data, expected_results)
 
     def test_nl_parse(self):
         data = """
@@ -536,14 +566,14 @@ DNSSEC: signedDelegation
                 "ns3.utwente.nl",
             ],
             "status": "active",
-            'registrar_address': 'Drienerlolaan 5',
-            'registrar': 'Universiteit Twente',
-            'registrar_postal_code': '7522NB',
-            'registrar_city': 'ENSCHEDE',
-            'registrar_country': 'Netherlands',
-            'dnssec': 'yes'
+            "registrar_address": "Drienerlolaan 5",
+            "registrar": "Universiteit Twente",
+            "registrar_postal_code": "7522NB",
+            "registrar_city": "ENSCHEDE",
+            "registrar_country": "Netherlands",
+            "dnssec": "yes",
         }
-        self._parse_and_compare('utwente.nl', data, expected_results)
+        self._parse_and_compare("utwente.nl", data, expected_results)
 
     def test_nl_expiration(self):
         data = """
@@ -554,9 +584,9 @@ DNSSEC: signedDelegation
         Date out of quarantine: 2020-12-06T20:31:25
         """
 
-        w = WhoisEntry.load('randomtest.nl', data)
-        expires = w.expiration_date.strftime('%Y-%m-%d')
-        self.assertEqual(expires, '2020-12-06')
+        w = WhoisEntry.load("randomtest.nl", data)
+        expires = w.expiration_date.strftime("%Y-%m-%d")
+        self.assertEqual(expires, "2020-12-06")
 
     def test_dk_parse(self):
         data = """
@@ -601,23 +631,25 @@ Hostname:             p.nic.dk
         expected_results = {
             "domain_name": "dk-hostmaster.dk",
             "name_servers": [
-                'auth01.ns.dk-hostmaster.dk',
-                'auth02.ns.dk-hostmaster.dk',
-                'p.nic.dk'
+                "auth01.ns.dk-hostmaster.dk",
+                "auth02.ns.dk-hostmaster.dk",
+                "p.nic.dk",
             ],
             "status": "Active",
-            'registrant_name': 'DK HOSTMASTER A/S',
-            'registrant_address': 'Ørestads Boulevard 108, 11.',
-            'registrant_postal_code': '2300',
-            'registrant_city': 'København S',
-            'registrant_country': 'DK',
-            'dnssec': 'Signed delegation'
+            "registrant_name": "DK HOSTMASTER A/S",
+            "registrant_address": "Ørestads Boulevard 108, 11.",
+            "registrant_postal_code": "2300",
+            "registrant_city": "København S",
+            "registrant_country": "DK",
+            "dnssec": "Signed delegation",
         }
-        self._parse_and_compare('dk-hostmaster.dk', data, expected_results)
+        self._parse_and_compare("dk-hostmaster.dk", data, expected_results)
 
-    def _parse_and_compare(self, domain_name, data, expected_results, whois_entry=WhoisEntry):
+    def _parse_and_compare(
+        self, domain_name, data, expected_results, whois_entry=WhoisEntry
+    ):
         results = whois_entry.load(domain_name, data)
-        if domain_name=='google.ai':
+        if domain_name == "google.ai":
             print(results)
         fail = 0
         total = 0
@@ -632,8 +664,10 @@ Hostname:             p.nic.dk
                 print("%s \t(%s):\t %s != %s" % (domain_name, key, result, expected))
                 fail += 1
         if fail:
-            self.fail("%d/%d sample whois attributes were not parsed properly!"
-                      % (fail, total))
+            self.fail(
+                "%d/%d sample whois attributes were not parsed properly!"
+                % (fail, total)
+            )
 
     def test_sk_parse(self):
         data = """
@@ -678,32 +712,32 @@ Hostname:             p.nic.dk
         Updated:                      2017-11-22"""
 
         expected_results = {
-            'admin': 'H410977',
-            'admin_city': 'Kosice',
-            'admin_country_code': 'SK',
-            'admin_email': 'info@pipoline.com',
-            'admin_organization': 'Pipoline s.r.o',
-            'admin_postal_code': '04012',
-            'admin_street': 'Ladozska 8',
-            'creation_date': '2012-07-23 00:00:00',
-            'domain_name': 'pipoline.sk',
-            'expiration_date': '2021-07-13 00:00:00',
-            'name_servers': ['ns1.cloudlikeaboss.com', 'ns2.cloudlikeaboss.com'],
-            'registrar': 'Pipoline s.r.o.',
-            'registrar_city': 'Košice',
-            'registrar_country_code': 'SK',
-            'registrar_created': '2012-07-23',
-            'registrar_email': 'peter.gonda@pipoline.com',
-            'registrar_name': 'Pipoline s.r.o.',
-            'registrar_organization_id': '48273317',
-            'registrar_phone': '+421.949347169',
-            'registrar_postal_code': '040 12',
-            'registrar_street': 'Ladožská 8',
-            'registrar_updated': '2020-07-02',
-            'updated_date': '2020-07-02 00:00:00'}
+            "admin": "H410977",
+            "admin_city": "Kosice",
+            "admin_country_code": "SK",
+            "admin_email": "info@pipoline.com",
+            "admin_organization": "Pipoline s.r.o",
+            "admin_postal_code": "04012",
+            "admin_street": "Ladozska 8",
+            "creation_date": "2012-07-23 00:00:00",
+            "domain_name": "pipoline.sk",
+            "expiration_date": "2021-07-13 00:00:00",
+            "name_servers": ["ns1.cloudlikeaboss.com", "ns2.cloudlikeaboss.com"],
+            "registrar": "Pipoline s.r.o.",
+            "registrar_city": "Košice",
+            "registrar_country_code": "SK",
+            "registrar_created": "2012-07-23",
+            "registrar_email": "peter.gonda@pipoline.com",
+            "registrar_name": "Pipoline s.r.o.",
+            "registrar_organization_id": "48273317",
+            "registrar_phone": "+421.949347169",
+            "registrar_postal_code": "040 12",
+            "registrar_street": "Ladožská 8",
+            "registrar_updated": "2020-07-02",
+            "updated_date": "2020-07-02 00:00:00",
+        }
 
-        self._parse_and_compare('pipoline.sk', data, expected_results)
-
+        self._parse_and_compare("pipoline.sk", data, expected_results)
 
     def test_bw_parse(self):
         data = """
@@ -822,48 +856,49 @@ DNSSEC: unsigned
 """
 
         expected_results = {
-  "domain_name": "google.co.bw",
-  "domain_id": "3486-bwnic",
-  "creation_date": "2012-11-12 22:00:00",
-  "registrar": "MarkMonitor Inc",
-  "registrant_name": "Google LLC",
-  "registrant_org": "Google LLC",
-  "registrant_address": "1600 Amphitheatre Parkway",
-  "registrant_city": "Mountain View",
-  "registrant_country": "US",
-  "registrant_phone": "+1.6502530000",
-  "registrant_email": "dns-adminATgoogle.com",
-  "admin_name": "Google LLC",
-  "admin_org": "Google LLC",
-  "admin_address": "1600 Amphitheatre Parkway",
-  "admin_city": "Mountain View",
-  "admin_country": "US",
-  "admin_phone": "+1.6502530000",
-  "admin_email": "dns-adminATgoogle.com",
-  "tech_name": "Google LLC",
-  "tech_org": "Google LLC",
-  "tech_address": "1600 Amphitheatre Parkway",
-  "tech_city": "Mountain View",
-  "tech_country": "US",
-  "tech_phone": "+1.6502530000",
-  "tech_email": "dns-adminATgoogle.com",
-  "billing_name": "MarkMonitor Inc.",
-  "billing_org": "CCOPS Billing",
-  "billing_address": "3540 East Longwing Lane Suite 300",
-  "billing_city": "Meridian",
-  "billing_country": "US",
-  "billing_phone": "+1.2083895740",
-  "billing_email": "ccopsbillingATmarkmonitor.com",
-  "name_servers": [
-    "ns1.google.com",
-    "ns2.google.com",
-    "ns3.google.com",
-    "ns4.google.com"
-  ],
-  "dnssec": "unsigned"
-}
+            "domain_name": "google.co.bw",
+            "domain_id": "3486-bwnic",
+            "creation_date": "2012-11-12 22:00:00",
+            "registrar": "MarkMonitor Inc",
+            "registrant_name": "Google LLC",
+            "registrant_org": "Google LLC",
+            "registrant_address": "1600 Amphitheatre Parkway",
+            "registrant_city": "Mountain View",
+            "registrant_country": "US",
+            "registrant_phone": "+1.6502530000",
+            "registrant_email": "dns-adminATgoogle.com",
+            "admin_name": "Google LLC",
+            "admin_org": "Google LLC",
+            "admin_address": "1600 Amphitheatre Parkway",
+            "admin_city": "Mountain View",
+            "admin_country": "US",
+            "admin_phone": "+1.6502530000",
+            "admin_email": "dns-adminATgoogle.com",
+            "tech_name": "Google LLC",
+            "tech_org": "Google LLC",
+            "tech_address": "1600 Amphitheatre Parkway",
+            "tech_city": "Mountain View",
+            "tech_country": "US",
+            "tech_phone": "+1.6502530000",
+            "tech_email": "dns-adminATgoogle.com",
+            "billing_name": "MarkMonitor Inc.",
+            "billing_org": "CCOPS Billing",
+            "billing_address": "3540 East Longwing Lane Suite 300",
+            "billing_city": "Meridian",
+            "billing_country": "US",
+            "billing_phone": "+1.2083895740",
+            "billing_email": "ccopsbillingATmarkmonitor.com",
+            "name_servers": [
+                "ns1.google.com",
+                "ns2.google.com",
+                "ns3.google.com",
+                "ns4.google.com",
+            ],
+            "dnssec": "unsigned",
+        }
 
-        self._parse_and_compare('google.co.bw', data, expected_results)
+        self._parse_and_compare("google.co.bw", data, expected_results)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
