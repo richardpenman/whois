@@ -311,7 +311,7 @@ DNSSEC: unsigned
             "creation_date": datetime.datetime(2000, 9, 14, 0, 0),
             "dnssec": "unsigned",
             "domain_name": "cnnic.com.cn",
-            "emails": None,
+            "emails": "servicei@cnnic.cn",
             "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39),
             "name": "中国互联网络信息中心",
             "name_servers": [
