@@ -177,17 +177,22 @@ class TestParser(unittest.TestCase):
         Name server:           a3-3.akam.net
         """
         expected_results = {
-            "updated_date": "2016-04-29 00:00:00",
-            "registrant_name": "Test Industries",
-            "fax": ["+1.123434123", "+1.12312993873"],
+            "admin_name": "Test Person1",
+            "creation_date": datetime.datetime(2000, 11, 20, 0, 0),
             "dnssec": "Unsigned",
-            "registrant_number": "70",
-            "expiration_date": "2020-03-08 00:00:00",
             "domain_name": "testdomain.ca",
-            "creation_date": "2000-11-20 00:00:00",
-            "phone": ["+1.1235434123x123", "+1.09876545123"],
-            "status": "registered",
             "emails": ["testperson1@testcompany.ca", "testpersion2@testcompany.ca"],
+            "expiration_date": datetime.datetime(2020, 3, 8, 0, 0),
+            "fax": ["+1.123434123", "+1.12312993873"],
+            "name_servers": ["a1-1.akam.net", "a2-2.akam.net", "a3-3.akam.net"],
+            "phone": ["+1.1235434123x123", "+1.09876545123"],
+            "registrant_name": "Test Industries",
+            "registrant_number": "70",
+            "registrar": "Webnames.ca Inc.",
+            "registrar_url": None,
+            "status": "registered",
+            "updated_date": datetime.datetime(2016, 4, 29, 0, 0),
+            "whois_server": None,
         }
         self._parse_and_compare(
             "testcompany.ca", data, expected_results, whois_entry=WhoisCa
@@ -327,10 +332,12 @@ DNSSEC: unsigned
             DNSSEC: unsigned
         """
         expected_results = {
+            "creation_date": datetime.datetime(2000, 9, 14, 0, 0),
+            "dnssec": "unsigned",
             "domain_name": "cnnic.com.cn",
-            "registrar": "北京新网数码信息技术有限公司",
-            "creation_date": "2000-09-14 00:00:00",
-            "expiration_date": "2023-08-16 16:26:39",
+            "emails": None,
+            "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39),
+            "name": "中国互联网络信息中心",
             "name_servers": [
                 "a.cnnic.cn",
                 "b.cnnic.cn",
@@ -338,14 +345,12 @@ DNSSEC: unsigned
                 "d.cnnic.cn",
                 "e.cnnic.cn",
             ],
+            "registrar": "北京新网数码信息技术有限公司",
             "status": [
                 "serverDeleteProhibited",
                 "serverUpdateProhibited",
                 "serverTransferProhibited",
             ],
-            "emails": "servicei@cnnic.cn",
-            "dnssec": "unsigned",
-            "name": "中国互联网络信息中心",
         }
         self._parse_and_compare("cnnic.com.cn", data, expected_results)
 
@@ -402,23 +407,26 @@ DNSSEC: unsigned
             registrar info: http://domains.livedns.co.il
         """
         expected_results = {
-            "updated_date": None,
-            "registrant_name": "Arik Baratz",
-            "fax": None,
             "dnssec": "unsigned",
-            "expiration_date": "2018-05-10 00:00:00",
             "domain_name": "python.org.il",
-            "creation_date": None,
-            "phone": ["+1 650 6441973", "+1 650 9635533"],
-            "status": "Transfer Locked",
             "emails": "hostmaster@arik.baratz.org",
+            "expiration_date": datetime.datetime(2018, 5, 10, 0, 0),
             "name_servers": [
                 "dns1.zoneedit.com",
                 "dns2.zoneedit.com",
                 "dns3.zoneedit.com",
             ],
-            "registrar": "LiveDns Ltd",
+            "phone": ["+1 650 6441973", "+1 650 9635533"],
             "referral_url": "http://domains.livedns.co.il",
+            "registrant_address": [
+                ":      PO Box 7775 PMB 8452",
+                ":      San Francisco, CA",
+                ":      94120",
+                ":      USA",
+            ],
+            "registrant_name": "Arik Baratz",
+            "registrar": "LiveDns Ltd",
+            "status": "Transfer Locked",
         }
         self._parse_and_compare("python.org.il", data, expected_results)
 
@@ -499,37 +507,16 @@ Name Server: ns3.rte.ie
 Name Server: ns4.rte.ie
 DNSSEC: signedDelegation
         """
-
-        aexpected_results = {
-            "domain_name": "rte.ie",
-            "description": [
-                "RTE Commercial Enterprises Limited",
-                "Body Corporate (Ltd,PLC,Company)",
-                "Corporate Name",
-            ],
-            "source": "IEDR",
-            "creation_date": "2000-02-11 00:00:00",
-            "expiration_date": "2024-03-31 00:00:00",
-            "name_servers": [
-                "ns1.rte.ie 162.159.0.73 2400:cb00:2049:1::a29f:49",
-                "ns2.rte.ie 162.159.1.73 2400:cb00:2049:1::a29f:149",
-                "ns3.rte.ie 162.159.2.27 2400:cb00:2049:1::a29f:21b",
-                "ns4.rte.ie 162.159.3.18 2400:cb00:2049:1::a29f:312",
-            ],
-            "status": "Active",
-            "admin_id": ["AWB910-IEDR", "JM474-IEDR"],
-            "tech_id": "JM474-IEDR",
-        }
         expected_results = {
-            "status": "ok https://icann.org/epp#ok",
-            "expiration_date": "2025-03-31 13:20:07",
-            "creation_date": "2000-02-11 00:00:00",
-            "domain_name": "rte.ie",
-            "tech_id": "3159-IEDR",
-            "registrar": "Blacknight Solutions",
-            "name_servers": ["ns1.rte.ie", "ns2.rte.ie", "ns3.rte.ie", "ns4.rte.ie"],
             "admin_id": "202753-IEDR",
+            "creation_date": datetime.datetime(2000, 2, 11, 0, 0),
+            "domain_name": "rte.ie",
+            "expiration_date": datetime.datetime(2025, 3, 31, 13, 20, 7),
+            "name_servers": ["ns1.rte.ie", "ns2.rte.ie", "ns3.rte.ie", "ns4.rte.ie"],
+            "registrar": "Blacknight Solutions",
             "registrar_contact": "abuse@blacknight.com",
+            "status": "ok https://icann.org/epp#ok",
+            "tech_id": "3159-IEDR",
         }
         self._parse_and_compare("rte.ie", data, expected_results)
 
@@ -557,21 +544,19 @@ DNSSEC: signedDelegation
 
         Record maintained by: NL Domain Registry
         """
-
         expected_results = {
+            "creation_date": None,
+            "dnssec": "yes",
             "domain_name": "utwente.nl",
-            "name_servers": [
-                "ns1.utwente.nl",
-                "ns2.utwente.nl",
-                "ns3.utwente.nl",
-            ],
-            "status": "active",
-            "registrar_address": "Drienerlolaan 5",
+            "expiration_date": None,
+            "name_servers": ["ns1.utwente.nl", "ns2.utwente.nl", "ns3.utwente.nl"],
             "registrar": "Universiteit Twente",
-            "registrar_postal_code": "7522NB",
+            "registrar_address": "Drienerlolaan 5",
             "registrar_city": "ENSCHEDE",
             "registrar_country": "Netherlands",
-            "dnssec": "yes",
+            "registrar_postal_code": "7522NB",
+            "status": "active",
+            "updated_date": None,
         }
         self._parse_and_compare("utwente.nl", data, expected_results)
 
@@ -629,45 +614,32 @@ Hostname:             p.nic.dk
 """
 
         expected_results = {
+            "creation_date": datetime.datetime(1998, 1, 19, 0, 0),
+            "dnssec": "Signed delegation",
             "domain_name": "dk-hostmaster.dk",
+            "expiration_date": datetime.datetime(2022, 3, 31, 0, 0),
             "name_servers": [
                 "auth01.ns.dk-hostmaster.dk",
                 "auth02.ns.dk-hostmaster.dk",
                 "p.nic.dk",
             ],
-            "status": "Active",
-            "registrant_name": "DK HOSTMASTER A/S",
             "registrant_address": "Ørestads Boulevard 108, 11.",
-            "registrant_postal_code": "2300",
             "registrant_city": "København S",
             "registrant_country": "DK",
-            "dnssec": "Signed delegation",
+            "registrant_handle": "DKHM1-DK",
+            "registrant_name": "DK HOSTMASTER A/S",
+            "registrant_postal_code": "2300",
+            "registrar": None,
+            "status": "Active",
         }
         self._parse_and_compare("dk-hostmaster.dk", data, expected_results)
 
     def _parse_and_compare(
         self, domain_name, data, expected_results, whois_entry=WhoisEntry
     ):
-        results = whois_entry.load(domain_name, data)
-        if domain_name == "google.ai":
-            print(results)
-        fail = 0
-        total = 0
-        # Compare each key
-        for key in expected_results:
-            total += 1
-            result = results.get(key)
-            if isinstance(result, datetime.datetime):
-                result = str(result)
-            expected = expected_results.get(key)
-            if expected != result:
-                print("%s \t(%s):\t %s != %s" % (domain_name, key, result, expected))
-                fail += 1
-        if fail:
-            self.fail(
-                "%d/%d sample whois attributes were not parsed properly!"
-                % (fail, total)
-            )
+        actual_results = whois_entry.load(domain_name, data)
+        # import pprint; pprint.pprint(actual_results)
+        self.assertEqual(actual_results, expected_results)
 
     def test_sk_parse(self):
         data = """
@@ -719,9 +691,9 @@ Hostname:             p.nic.dk
             "admin_organization": "Pipoline s.r.o",
             "admin_postal_code": "04012",
             "admin_street": "Ladozska 8",
-            "creation_date": "2012-07-23 00:00:00",
+            "creation_date": datetime.datetime(2012, 7, 23, 0, 0),
             "domain_name": "pipoline.sk",
-            "expiration_date": "2021-07-13 00:00:00",
+            "expiration_date": datetime.datetime(2021, 7, 13, 0, 0),
             "name_servers": ["ns1.cloudlikeaboss.com", "ns2.cloudlikeaboss.com"],
             "registrar": "Pipoline s.r.o.",
             "registrar_city": "Košice",
@@ -734,9 +706,8 @@ Hostname:             p.nic.dk
             "registrar_postal_code": "040 12",
             "registrar_street": "Ladožská 8",
             "registrar_updated": "2020-07-02",
-            "updated_date": "2020-07-02 00:00:00",
+            "updated_date": datetime.datetime(2020, 7, 2, 0, 0),
         }
-
         self._parse_and_compare("pipoline.sk", data, expected_results)
 
     def test_bw_parse(self):
@@ -856,47 +827,46 @@ DNSSEC: unsigned
 """
 
         expected_results = {
-            "domain_name": "google.co.bw",
-            "domain_id": "3486-bwnic",
-            "creation_date": "2012-11-12 22:00:00",
-            "registrar": "MarkMonitor Inc",
-            "registrant_name": "Google LLC",
-            "registrant_org": "Google LLC",
-            "registrant_address": "1600 Amphitheatre Parkway",
-            "registrant_city": "Mountain View",
-            "registrant_country": "US",
-            "registrant_phone": "+1.6502530000",
-            "registrant_email": "dns-adminATgoogle.com",
-            "admin_name": "Google LLC",
-            "admin_org": "Google LLC",
             "admin_address": "1600 Amphitheatre Parkway",
             "admin_city": "Mountain View",
             "admin_country": "US",
-            "admin_phone": "+1.6502530000",
             "admin_email": "dns-adminATgoogle.com",
-            "tech_name": "Google LLC",
-            "tech_org": "Google LLC",
-            "tech_address": "1600 Amphitheatre Parkway",
-            "tech_city": "Mountain View",
-            "tech_country": "US",
-            "tech_phone": "+1.6502530000",
-            "tech_email": "dns-adminATgoogle.com",
-            "billing_name": "MarkMonitor Inc.",
-            "billing_org": "CCOPS Billing",
+            "admin_name": "Google LLC",
+            "admin_org": "Google LLC",
+            "admin_phone": "+1.6502530000",
             "billing_address": "3540 East Longwing Lane Suite 300",
             "billing_city": "Meridian",
             "billing_country": "US",
-            "billing_phone": "+1.2083895740",
             "billing_email": "ccopsbillingATmarkmonitor.com",
+            "billing_name": "MarkMonitor Inc.",
+            "billing_org": "CCOPS Billing",
+            "billing_phone": "+1.2083895740",
+            "creation_date": datetime.datetime(2012, 11, 12, 22, 0),
+            "dnssec": "unsigned",
+            "domain_id": "3486-bwnic",
+            "domain_name": "google.co.bw",
             "name_servers": [
                 "ns1.google.com",
                 "ns2.google.com",
                 "ns3.google.com",
                 "ns4.google.com",
             ],
-            "dnssec": "unsigned",
+            "registrant_address": "1600 Amphitheatre Parkway",
+            "registrant_city": "Mountain View",
+            "registrant_country": "US",
+            "registrant_email": "dns-adminATgoogle.com",
+            "registrant_name": "Google LLC",
+            "registrant_org": "Google LLC",
+            "registrant_phone": "+1.6502530000",
+            "registrar": "MarkMonitor Inc",
+            "tech_address": "1600 Amphitheatre Parkway",
+            "tech_city": "Mountain View",
+            "tech_country": "US",
+            "tech_email": "dns-adminATgoogle.com",
+            "tech_name": "Google LLC",
+            "tech_org": "Google LLC",
+            "tech_phone": "+1.6502530000",
         }
-
         self._parse_and_compare("google.co.bw", data, expected_results)
 
 
