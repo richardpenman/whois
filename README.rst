@@ -50,9 +50,6 @@ Or checkout latest version from repository:
 
     $ git clone git@github.com:richardpenman/whois.git
 
-Note that then you will need to manually install the futures module, which allows supporting both Python 2 & 3:
-
-
 .. sourcecode:: bash
 
     $ pip install -r requirements.txt
@@ -61,7 +58,7 @@ Run test cases:
 
 .. sourcecode:: bash
 
-    $ python3 -m unittest discover test
+    $ python -m unittest discover test
     .............
     ----------------------------------------------------------------------
     Ran 13 tests in 1.431s
