@@ -27,7 +27,7 @@ setuptools.setup(
     license="MIT",
     packages=["whois"],
     package_dir={"whois": "whois"},
-    extras_require={"better date conversion": ["python-dateutil"]},
+    install_requires=["python-dateutil"],
     test_suite="nose.collector",
     tests_require=["nose", "simplejson"],
     include_package_data=True,
