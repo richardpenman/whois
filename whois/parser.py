@@ -10,7 +10,6 @@ import re
 from datetime import datetime
 import json
 import dateutil.parser as dp
-from dateutil.tz import tzoffset
 from dateutil.utils import default_tzinfo
 from .time_zones import tz_data
 
@@ -62,7 +61,7 @@ KNOWN_FORMATS = [
     "before %Y-%m-%d",  # before 1996-01-01
     "before %Y%m%d",  # before 19960821
     "%Y-%m-%d %H:%M:%S (%Z%z)",  # 2017-09-26 11:38:29 (GMT+00:00)
-    "%Y-%b-%d.", # 2024-Apr-02.
+    "%Y-%b-%d.",  # 2024-Apr-02.
 ]
 
 
