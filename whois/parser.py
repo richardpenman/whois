@@ -10,6 +10,8 @@ import re
 from datetime import datetime
 import json
 import dateutil.parser as dp
+from dateutil.tz import tzoffset
+from dateutil.utils import default_tzinfo
 from .time_zones import tz_data
 
 EMAIL_REGEX = (
@@ -80,9 +82,9 @@ def datetime_parse(s):
 def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object."""
     try:
-        return dp.parse(
+        return default_tzinfo(dp.parse(
             s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
-        ).replace(tzinfo=None)
+        ), datetime.UTC)
     except Exception:
         return datetime_parse(s)
 
