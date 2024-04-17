@@ -948,11 +948,11 @@ class WhoisJp(WhoisEntry):
     regex = {
         "domain_name": r".*\[Domain Name\]\s*(.+)",
         "registrant_org": r".*\[(?:Organization|Registrant)\](.+)",
-        "creation_date": r"\[(?:Registered Date|Created on)\]\s*(.+)",
-        "expiration_date": r"\[Expires on\]\s*(.+)",
+        "creation_date": r"\[(?:Registered Date|Created on|登録年月日)\]\s*(.+)",
+        "expiration_date": r"\[(?:Expires on|有効期限)\]\s*(.+)",
         "name_servers": r".*\[Name Server\]\s*(.+)",  # list of name servers
-        "updated_date": r"\[Last Updated?\]\s?(.+)",
-        "status": r"\[(?:State|Status)\]\s*(.+)",  # list of statuses
+        "updated_date": r"\[(?:Last Updated|最終更新)?\]\s?(.+)",
+        "status": r"\[(?:State|Status|状態)\]\s*(.+)",  # list of statuses
     }
 
     def __init__(self, domain, text):
