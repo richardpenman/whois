@@ -730,7 +730,7 @@ class WhoisPl(WhoisEntry):
 
     regex = {
         "domain_name": r"DOMAIN NAME: *(.+)\n",
-        "name_servers": r"nameservers:((?:\s+.+\n+)*)",
+        "name_servers": r"nameservers:(?:\s+(\S+)\.[^\n]*\n)(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?", # up to 4
         "registrar": r"REGISTRAR:\s*(.+)",
         "registrar_url": r"URL: *(.+)",  # not available
         "status": r"Registration status:\n\s*(.+)",  # not available
