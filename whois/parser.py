@@ -7,7 +7,8 @@
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
+from typing import Union, Dict
 import json
 import dateutil.parser as dp
 from dateutil.utils import default_tzinfo
@@ -82,9 +83,8 @@ def datetime_parse(s):
 def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object."""
     try:
-        return default_tzinfo(dp.parse(
-            s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
-        ), datetime.UTC)
+        parsed_datetime = dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst)
+        return default_tzinfo(parsed_datetime, timezone.utc)
     except Exception:
         return datetime_parse(s)
 
@@ -117,7 +117,7 @@ class WhoisEntry(dict):
     dayfirst = False
     yearfirst = False
 
-    def __init__(self, domain, text, regex=None):
+    def __init__(self, domain, text, regex: Union[Dict, None]=None):
         if (
             "This TLD has no whois server, but you can access the whois database at"
             in text
@@ -946,12 +946,12 @@ class WhoisJp(WhoisEntry):
     """Whois parser for .jp domains"""
 
     regex = {
-        "domain_name": r".*\[Domain Name\]\s*(.+)",
+        "domain_name": r".*\[(?:Domain Name|ドメイン名)\]\s*(.+)",
         "registrant_org": r".*\[(?:Organization|Registrant)\](.+)",
         "creation_date": r"\[(?:Registered Date|Created on|登録年月日)\]\s*(.+)",
         "expiration_date": r"\[(?:Expires on|有効期限)\]\s*(.+)",
-        "name_servers": r".*\[Name Server\]\s*(.+)",  # list of name servers
-        "updated_date": r"\[(?:Last Updated|最終更新)?\]\s?(.+)",
+        "name_servers": r".*\[(?:Name Server|ネームサーバ)\]\s*(.+)",  # list of name servers
+        "updated_date": r"\[(?:Last Updated|最終更新)?\]\s*(.+)",
         "status": r"\[(?:State|Status|状態)\]\s*(.+)",  # list of statuses
     }
 
@@ -960,6 +960,16 @@ class WhoisJp(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+    def _preprocess(self, attr, value):
+        value = value.strip()
+        # (JST) -> JST
+        if "JST" in value:
+            value = value.replace(")", "").replace("(", "")
+        if value and isinstance(value, str) and not value.isdigit() and "_date" in attr:
+            # try casting to date format
+            value = cast_date(value, dayfirst=self.dayfirst, yearfirst=self.yearfirst)
+        return value
 
 
 class WhoisAU(WhoisEntry):
