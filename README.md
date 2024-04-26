@@ -40,17 +40,14 @@ Install
 Install from pypi:
 
 ```bash
-$ pip install python-whois
+pip install python-whois
 ```
 
 Or checkout latest version from repository:
 
 ```bash
-$ git clone git@github.com:richardpenman/whois.git
-```
-
-```
-$ pip install -r requirements.txt
+git clone git@github.com:richardpenman/whois.git
+pip install -r requirements.txt
 ```
 
 Run test cases:
