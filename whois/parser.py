@@ -10,9 +10,9 @@ import json
 import re
 from datetime import datetime, timezone
 from typing import Dict, Union
+from zoneinfo import ZoneInfo
 
 import dateutil.parser as dp
-import pytz
 from dateutil.utils import default_tzinfo
 
 from .time_zones import tz_data
@@ -89,7 +89,7 @@ def cast_date(s, dayfirst=False, yearfirst=False):
         parsed_datetime = dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst)
         # trancribe the timezone to UTC
         original_datetime = default_tzinfo(parsed_datetime, timezone.utc)
-        return original_datetime.astimezone(pytz.utc).replace(tzinfo=None)
+        return original_datetime.astimezone(ZoneInfo("UTC")).replace(tzinfo=None)
     except Exception:
         return datetime_parse(s)
 
