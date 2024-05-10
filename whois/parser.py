@@ -6,12 +6,15 @@
 # This module is part of python-whois and is released under
 # the MIT license: http://www.opensource.org/licenses/mit-license.php
 
+import json
 import re
 from datetime import datetime, timezone
-from typing import Union, Dict
-import json
+from typing import Dict, Union
+
 import dateutil.parser as dp
+import pytz
 from dateutil.utils import default_tzinfo
+
 from .time_zones import tz_data
 
 EMAIL_REGEX = (
@@ -84,7 +87,9 @@ def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object."""
     try:
         parsed_datetime = dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst)
-        return default_tzinfo(parsed_datetime, timezone.utc)
+        # trancribe the timezone to UTC
+        original_datetime = default_tzinfo(parsed_datetime, timezone.utc)
+        return original_datetime.astimezone(pytz.utc).replace(tzinfo=None)
     except Exception:
         return datetime_parse(s)
 
