@@ -1362,12 +1362,14 @@ class WhoisCity(WhoisRu):
         WhoisRu.__init__(self, domain, text)
 
 
-class WhoisStudio(WhoisRu):
+class WhoisStudio(WhoisBz):
     """Whois parser for .studio domains"""
 
     def __init__(self, domain, text):
-        WhoisRu.__init__(self, domain, text)
-
+        if "Domain not found." in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisStyle(WhoisRu):
     """Whois parser for .style domains"""
