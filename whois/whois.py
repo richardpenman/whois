@@ -99,6 +99,7 @@ class NICClient(object):
     SHOP_HOST = "whois.nic.shop"
     SG_HOST = "whois.sgnic.sg"
     STORE_HOST = "whois.centralnic.com"
+    STUDIO_HOST = "whois.nic.studio"
     DETI_HOST = "whois.nic.xn--d1acj3b"
     MOSKVA_HOST = "whois.registry.nic.xn--80adxhks"
     RF_HOST = "whois.registry.tcinet.ru"
@@ -343,7 +344,7 @@ class NICClient(object):
         elif tld == "design":
             return NICClient.DESIGN_HOST
         elif tld == "studio":
-            return NICClient.RU_HOST
+            return NICClient.STUDIO_HOST
         elif tld == "style":
             return NICClient.RU_HOST
         elif tld == "su":
