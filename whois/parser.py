@@ -97,6 +97,7 @@ class WhoisEntry(dict):
     _regex = {
         "domain_name": r"Domain Name: *(.+)",
         "registrar": r"Registrar: *(.+)",
+        "registrar_url": r"Registrar URL: *(.+)",
         "whois_server": r"Whois Server: *(.+)",
         "referral_url": r"Referral URL: *(.+)",  # http url of whois_server
         "updated_date": r"Updated Date: *(.+)",
