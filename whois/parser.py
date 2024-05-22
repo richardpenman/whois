@@ -141,7 +141,7 @@ class WhoisEntry(dict):
                     matches = data if isinstance(data, tuple) else [data]
                     for value in matches:
                         value = self._preprocess(attr, value)
-                        if value and value not in values:
+                        if value and str(value).lower() not in [str(v).lower() for v in values]:
                             # avoid duplicates
                             values.append(value)
                 if values and attr in ("registrar", "whois_server", "referral_url"):
