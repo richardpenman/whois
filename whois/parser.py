@@ -421,7 +421,7 @@ class WhoisSG(WhoisEntry):
         "registrant_name": r"Registrant:\n\s+Name:(.+)",
         "registrar": r"Registrar: *(.+)",
         "creation_date": r"Creation date: *(.+)",
-        "expiration_date": r"Expiration date: *(.+)",
+        "expiration_date": r"Registry Expiry Date: *(.+)",
         "dnssec": r"DNSSEC:\n(.*)",
     }
 
