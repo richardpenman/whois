@@ -975,7 +975,7 @@ class WhoisJp(WhoisEntry):
 
     def __init__(self, domain: str, text: str):
         if self.not_found in text:
-            raise DomainNotFound("No data available", domain=domain, text=text)
+            raise PywhoisError(text)
 
         super().__init__(domain, text, self.regex)
 
