@@ -210,6 +210,8 @@ class NICClient(object):
                 query_bytes = "-T dn,ace -C UTF-8 " + query
             elif hostname == NICClient.DK_HOST:
                 query_bytes = " --show-handles " + query
+            elif hostname.endswith(".jp"):
+                query_bytes = query + '/e'
             elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
                 query_bytes = "=" + query
             else:

@@ -944,23 +944,40 @@ class WhoisFi(WhoisEntry):
 
 
 class WhoisJp(WhoisEntry):
-    """Whois parser for .jp domains"""
+    """Parser for .jp domains
 
+    For testing, try *both* of:
+        nintendo.jp
+        nintendo.co.jp
+
+    """
+    not_found = "No match!!"
     regex = {
-        "domain_name": r".*\[Domain Name\]\s*(.+)",
-        "registrant_org": r".*\[(?:Organization|Registrant)\](.+)",
-        "creation_date": r"\[(?:Registered Date|Created on|登録年月日)\]\s*(.+)",
-        "expiration_date": r"\[(?:Expires on|有効期限)\]\s*(.+)",
-        "name_servers": r".*\[Name Server\]\s*(.+)",  # list of name servers
-        "updated_date": r"\[(?:Last Updated|最終更新)?\]\s?(.+)",
-        "status": r"\[(?:State|Status|状態)\]\s*(.+)",  # list of statuses
+        "domain_name": r"^(?:a\. )?\[Domain Name\]\s*(.+)",
+        "registrant_org": r"^(?:g\. )?\[(?:Organization|Registrant)\](.+)",
+        # 'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
+        "organization_type": r"^(?:l\. )?\[Organization Type\]\s*(.+)$",
+        "creation_date": r"\[(?:Created on)\]\s*(.+)",
+        "technical_contact_name": r"^(?:n. )?\[(?:Technical Contact)\]\s*(.+)",
+        "administrative_contact_name": r"^(?:m. )?(?:\[Administrative Contact\]\s*(.+)|Contact Information:\s+^\[Name\](.*))",
+        # These don't need the X. at the beginning, I just was too lazy to split the pattern off
+        "administrative_contact_email": r"^(?:X. )?(?:\[Administrative Contact\]\s*(?:.+)|Contact Information:\s+)(?:^\s*.*\s+)*(?:^\[Email\]\s*(.*))",
+        "administrative_contact_phone": r"^(?:X. )?(?:\[Administrative Contact\]\s*(?:.+)|Contact Information:\s+)(?:^\s*.*\s+)*(?:^\[Phone\]\s*(.*))",
+        "administrative_contact_fax": r"^(?:X. )?(?:\[Administrative Contact\]\s*(?:.+)|Contact Information:\s+)(?:^\s*.*\s+)*(?:^\[Fax\]\s*(.*))",
+        "administrative_contact_post_code": r"^(?:X. )?(?:\[Administrative Contact\]\s*(?:.+)|Contact Information:\s+)(?:^\s*.*\s+)*(?:^\[Postal code\]\s*(.*))",
+        "administrative_contact_postal_address": r"^(?:X. )?(?:\[Administrative Contact\]\s*(?:.+)|Contact Information:\s+)(?:^\s*.*\s+)*(?:^\[Postal Address\]\s*(.*))",
+        "expiration_date": r"\[Expires on\]\s*(.+)",
+        "name_servers": r"^(?:p\. )?\[Name Server\]\s*(.+)",  # list
+        "updated_date": r"^\[Last Updated?\]\s?(.+)",
+        "signing_key": r"^(?:s\. )?\[Signing Key\](.+)$",
+        "status": r"\[(?:State|Status)\]\s*(.+)",  # list
     }
 
-    def __init__(self, domain, text):
-        if "No match!!" in text:
-            raise PywhoisError(text)
-        else:
-            WhoisEntry.__init__(self, domain, text, self.regex)
+    def __init__(self, domain: str, text: str):
+        if self.not_found in text:
+            raise DomainNotFound("No data available", domain=domain, text=text)
+
+        super().__init__(domain, text, self.regex)
 
 
 class WhoisAU(WhoisEntry):
