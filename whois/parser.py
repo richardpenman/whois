@@ -82,9 +82,10 @@ def datetime_parse(s):
 def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object."""
     try:
+        # Use datetime.timezone.utc to support < Python3.9
         return default_tzinfo(dp.parse(
             s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
-        ), datetime.UTC)
+        ), datetime.timezone.utc)
     except Exception:
         return datetime_parse(s)
 
