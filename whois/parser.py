@@ -419,11 +419,14 @@ class WhoisSG(WhoisEntry):
 
     regex = {
         "domain_name": r"Domain name: *(.+)",
+        "status": r"Domain Status: *(.+)",
         "registrant_name": r"Registrant:\n\s+Name:(.+)",
         "registrar": r"Registrar: *(.+)",
         "creation_date": r"Creation date: *(.+)",
+        "updated_date": r"Updated Date: *(.+)",
         "expiration_date": r"Registry Expiry Date: *(.+)",
-        "dnssec": r"DNSSEC:\n(.*)",
+        "dnssec": r"DNSSEC: *(.+)",
+        "name_servers": r"Name server: *(.+)",  # list of name servers
     }
 
     def __init__(self, domain, text):
