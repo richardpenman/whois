@@ -49,7 +49,6 @@ class TestParser(unittest.TestCase):
             "creation_date",
             "status",
         ]
-        fail = 0
         total = 0
         whois_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "samples", "whois", "*"
@@ -92,16 +91,7 @@ class TestParser(unittest.TestCase):
                 compare_keys = compare_keys.intersection(set(keys_to_test))
             for key in compare_keys:
                 total += 1
-                if key not in results:
-                    print(
-                        "%s \t(%s):\t Missing in results"
-                        % (
-                            domain,
-                            key,
-                        )
-                    )
-                    fail += 1
-                    continue
+                self.assertIn(key, results)
 
                 result = results.get(key)
                 if isinstance(result, list):
@@ -109,15 +99,7 @@ class TestParser(unittest.TestCase):
                 if isinstance(result, datetime.datetime):
                     result = str(result)
                 expected = expected_results.get(key)
-                if expected != result:
-                    print("%s \t(%s):\t %s != %s" % (domain, key, result, expected))
-                    fail += 1
-
-        if fail:
-            self.fail(
-                "%d/%d sample whois attributes were not parsed properly!"
-                % (fail, total)
-            )
+                self.assertEqual(expected, result)
 
     def test_ca_parse(self):
         data = """
