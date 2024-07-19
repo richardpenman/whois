@@ -1,0 +1,177 @@
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.nic.live
+
+domain:       LIVE
+
+organisation: Dog Beach, LLC
+address:      c/o Identity Digital Limited
+address:      10500 NE 8th Street, Suite 750
+address:      Bellevue WA 98004
+address:      United States of America (the)
+
+contact:      administrative
+name:         Vice President, Engineering
+organisation: Identity Digital Limited
+address:      10500 NE 8th Street, Suite 750
+address:      Bellevue WA 98004
+address:      United States of America (the)
+phone:        +1.425.298.2200
+fax-no:       +1.425.671.0020
+e-mail:       tldadmin@identity.digital
+
+contact:      technical
+name:         Senior Director, DNS Infrastructure Group
+organisation: Identity Digital Limited
+address:      10500 NE 8th Street, Suite 750
+address:      Bellevue WA 98004
+address:      United States of America (the)
+phone:        +1.425.298.2200
+fax-no:       +1.425.671.0020
+e-mail:       tldtech@identity.digital
+
+nserver:      V0N0.NIC.LIVE 2a01:8840:16:0:0:0:0:1 65.22.20.1
+nserver:      V0N1.NIC.LIVE 2a01:8840:17:0:0:0:0:1 65.22.21.1
+nserver:      V0N2.NIC.LIVE 2a01:8840:18:0:0:0:0:1 65.22.22.1
+nserver:      V0N3.NIC.LIVE 161.232.10.1 2a01:8840:f4:0:0:0:0:1
+nserver:      V2N0.NIC.LIVE 2a01:8840:19:0:0:0:0:1 65.22.23.1
+nserver:      V2N1.NIC.LIVE 161.232.11.1 2a01:8840:f5:0:0:0:0:1
+ds-rdata:     36322 8 2 201df9a9af6766d9cdbc8355756728f2db40ba93f9724f93aeeb1bddd7d564a0
+
+whois:        whois.nic.live
+
+status:       ACTIVE
+remarks:      Registration information: https://www.identity.digital/
+
+created:      2015-06-25
+changed:      2023-09-12
+source:       IANA
+
+# whois.nic.live
+
+Domain Name: nic.live
+Registry Domain ID: 4ddd5c8266194b0488fab6a4d20df35d-DONUTS
+Registrar WHOIS Server: whois.identitydigital.services
+Registrar URL: https://identity.digital
+Updated Date: 2024-06-11T22:04:34Z
+Creation Date: 2015-04-27T22:04:24Z
+Registry Expiry Date: 2025-04-27T22:04:24Z
+Registrar: Registry Operator acts as Registrar (9999)
+Registrar IANA ID: 9999
+Registrar Abuse Contact Email: abuse@identity.digital
+Registrar Abuse Contact Phone: +1.6664447777
+Domain Status: serverTransferProhibited https://icann.org/epp#serverTransferProhibited
+Registry Registrant ID: REDACTED FOR PRIVACY
+Registrant Name: REDACTED FOR PRIVACY
+Registrant Organization: United TLD Holdco Ltd.
+Registrant Street: REDACTED FOR PRIVACY
+Registrant City: REDACTED FOR PRIVACY
+Registrant State/Province: Dublin 2
+Registrant Postal Code: REDACTED FOR PRIVACY
+Registrant Country: IE
+Registrant Phone: REDACTED FOR PRIVACY
+Registrant Phone Ext: REDACTED FOR PRIVACY
+Registrant Fax: REDACTED FOR PRIVACY
+Registrant Fax Ext: REDACTED FOR PRIVACY
+Registrant Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Registry Admin ID: REDACTED FOR PRIVACY
+Admin Name: REDACTED FOR PRIVACY
+Admin Organization: REDACTED FOR PRIVACY
+Admin Street: REDACTED FOR PRIVACY
+Admin City: REDACTED FOR PRIVACY
+Admin State/Province: REDACTED FOR PRIVACY
+Admin Postal Code: REDACTED FOR PRIVACY
+Admin Country: REDACTED FOR PRIVACY
+Admin Phone: REDACTED FOR PRIVACY
+Admin Phone Ext: REDACTED FOR PRIVACY
+Admin Fax: REDACTED FOR PRIVACY
+Admin Fax Ext: REDACTED FOR PRIVACY
+Admin Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Registry Tech ID: REDACTED FOR PRIVACY
+Tech Name: REDACTED FOR PRIVACY
+Tech Organization: REDACTED FOR PRIVACY
+Tech Street: REDACTED FOR PRIVACY
+Tech City: REDACTED FOR PRIVACY
+Tech State/Province: REDACTED FOR PRIVACY
+Tech Postal Code: REDACTED FOR PRIVACY
+Tech Country: REDACTED FOR PRIVACY
+Tech Phone: REDACTED FOR PRIVACY
+Tech Phone Ext: REDACTED FOR PRIVACY
+Tech Fax: REDACTED FOR PRIVACY
+Tech Fax Ext: REDACTED FOR PRIVACY
+Tech Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Name Server: v0n0.nic.live
+Name Server: v0n1.nic.live
+Name Server: v0n2.nic.live
+Name Server: v0n3.nic.live
+Name Server: v2n0.nic.live
+Name Server: v2n1.nic.live
+DNSSEC: unsigned
+URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+>>> Last update of WHOIS database: 2024-07-09T23:49:59Z <<<
+
+# whois.identitydigital.services
+
+Domain Name: nic.live
+Registry Domain ID: 4ddd5c8266194b0488fab6a4d20df35d-DONUTS
+Registrar WHOIS Server: whois.identitydigital.services
+Registrar URL: https://identity.digital
+Updated Date: 2024-06-11T22:04:34Z
+Creation Date: 2015-04-27T22:04:24Z
+Registry Expiry Date: 2025-04-27T22:04:24Z
+Registrar: Registry Operator acts as Registrar (9999)
+Registrar IANA ID: 9999
+Registrar Abuse Contact Email: abuse@identity.digital
+Registrar Abuse Contact Phone: +1.6664447777
+Domain Status: serverTransferProhibited https://icann.org/epp#serverTransferProhibited
+Registry Registrant ID: REDACTED FOR PRIVACY
+Registrant Name: REDACTED FOR PRIVACY
+Registrant Organization: United TLD Holdco Ltd.
+Registrant Street: REDACTED FOR PRIVACY
+Registrant City: REDACTED FOR PRIVACY
+Registrant State/Province: Dublin 2
+Registrant Postal Code: REDACTED FOR PRIVACY
+Registrant Country: IE
+Registrant Phone: REDACTED FOR PRIVACY
+Registrant Phone Ext: REDACTED FOR PRIVACY
+Registrant Fax: REDACTED FOR PRIVACY
+Registrant Fax Ext: REDACTED FOR PRIVACY
+Registrant Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Registry Admin ID: REDACTED FOR PRIVACY
+Admin Name: REDACTED FOR PRIVACY
+Admin Organization: REDACTED FOR PRIVACY
+Admin Street: REDACTED FOR PRIVACY
+Admin City: REDACTED FOR PRIVACY
+Admin State/Province: REDACTED FOR PRIVACY
+Admin Postal Code: REDACTED FOR PRIVACY
+Admin Country: REDACTED FOR PRIVACY
+Admin Phone: REDACTED FOR PRIVACY
+Admin Phone Ext: REDACTED FOR PRIVACY
+Admin Fax: REDACTED FOR PRIVACY
+Admin Fax Ext: REDACTED FOR PRIVACY
+Admin Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Registry Tech ID: REDACTED FOR PRIVACY
+Tech Name: REDACTED FOR PRIVACY
+Tech Organization: REDACTED FOR PRIVACY
+Tech Street: REDACTED FOR PRIVACY
+Tech City: REDACTED FOR PRIVACY
+Tech State/Province: REDACTED FOR PRIVACY
+Tech Postal Code: REDACTED FOR PRIVACY
+Tech Country: REDACTED FOR PRIVACY
+Tech Phone: REDACTED FOR PRIVACY
+Tech Phone Ext: REDACTED FOR PRIVACY
+Tech Fax: REDACTED FOR PRIVACY
+Tech Fax Ext: REDACTED FOR PRIVACY
+Tech Email: Please query the RDDS service of the Registrar of Record identified in this output for information on how to contact the Registrant, Admin, or Tech contact of the queried domain name.
+Name Server: v0n0.nic.live
+Name Server: v0n1.nic.live
+Name Server: v0n2.nic.live
+Name Server: v0n3.nic.live
+Name Server: v2n0.nic.live
+Name Server: v2n1.nic.live
+DNSSEC: unsigned
+URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+>>> Last update of WHOIS database: 2024-07-09T23:49:59Z <<<
+
