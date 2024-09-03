@@ -389,6 +389,8 @@ class WhoisEntry(dict):
             return WhoisSite(domain, text)
         elif domain.endswith(".edu"):
             return WhoisEdu(domain, text)
+        elif domain.endswith(".lv"):
+            return WhoisLv(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3400,6 +3402,27 @@ class WhoisEdu(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == "No entries found":
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisLv(WhoisEntry):
+    """Whois parser for .lv domains"""
+
+    regex = {
+        "domain_name": r"\[Domain\]\nDomain: *(.+)",
+        "registrant_name": r"\[Holder\]\n\s+Type: .*\n\s+Name: *(.+)",
+        "registrant_address": r"\[Holder\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
+        "tech_name": r"\[Tech\]\n\s+Type: .*\n\s+Name: *(.+)",
+        "tech_address": r"\[Tech\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
+        "registrar_name": r"\[Registrar\]\n\s+Type: .*\n\s+Name: *(.+)",
+        "registrar_address": r"\[Registrar\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
+        "name_servers": r"Nserver: *(.+)",
+        "updated_date": r"\[Whois\]\nUpdated: (.+)",
+    }
+
+    def __init__(self, domain, text):
+        if "Status: free" in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
