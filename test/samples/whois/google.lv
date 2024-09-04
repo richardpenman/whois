@@ -1,0 +1,46 @@
+[Domain]
+Domain: google.lv
+Status: active
+
+[Holder]
+    Type: Legal person
+    Name: Google LLC
+    Address: 1600 Amphitheatre Parkway, Mountain View, CA, 94043, USA
+    RegNr: None
+Visit: https://www.nic.lv/whois/contact/google.lv to contact.
+
+[Tech]
+Type: Natural person
+Visit: https://www.nic.lv/whois/contact/google.lv to contact.
+
+[Registrar]
+    Type: Legal person
+    Name: MarkMonitor Inc.
+    Address: 1120 S. Rackham Way, Suite 300, Meridian, ID, 83642, USA
+    RegNr: 82-0513468
+Visit: https://www.nic.lv/whois/contact/google.lv to contact.
+
+[Nservers]
+Nserver: ns1.google.com
+Nserver: ns2.google.com
+Nserver: ns3.google.com
+Nserver: ns4.google.com
+
+[Whois]
+Updated: 2024-09-03T17:12:28.647770+00:00
+
+[Disclaimer]
+% The WHOIS service is provided solely for informational purposes.
+%
+% It is permitted to use the WHOIS service only for technical or administrative
+% needs associated with the operation of the Internet or in order to contact
+% the domain name holder over legal problems.
+%
+% Requestor will not use information obtained using WHOIS:
+% * To allow, enable or in any other way to support sending of unsolicited mails (spam)
+% * for any kind of advertising
+% * to disrupt Internet stability and security
+%
+% It is not permitted to obtain (including copying) or re-use in any form or
+% by any means all or quantitatively or qualitatively significant part
+% of the WHOIS without NIC's express permission.
