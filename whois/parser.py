@@ -100,6 +100,7 @@ class WhoisEntry(dict):
         "domain_name": r"Domain Name: *(.+)",
         "registrar": r"Registrar: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
+        "reseller": r"Reseller: *(.+)",
         "whois_server": r"Whois Server: *(.+)",
         "referral_url": r"Referral URL: *(.+)",  # http url of whois_server
         "updated_date": r"Updated Date: *(.+)",
