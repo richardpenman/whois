@@ -43,7 +43,10 @@ def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=
     else:
         # try builtin client
         nic_client = NICClient()
-        text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
+        if domain.endswith(".tr"):
+            text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
+        else:
+            text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
