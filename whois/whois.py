@@ -254,9 +254,8 @@ class NICClient(object):
     def choose_server(self, domain):
         """Choose initial lookup NIC host"""
         try:
-            domain = domain.encode("idna").decode("utf-8")
-            if domain.endswith(".tr"):
-                domain = domain
+            if not domain.endswith(".tr"):
+                domain = domain.encode("idna").decode("utf-8")
         except TypeError:
             domain = domain.decode("utf-8").encode("idna").decode("utf-8")
         except AttributeError:
