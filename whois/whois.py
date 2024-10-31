@@ -563,14 +563,6 @@ def parse_command_line(argv):
         help="Lookup using host " + NICClient.RNICHOST,
     )
     parser.add_option(
-        "-P",
-        "--no-punycode",
-        action="store_false",
-        dest="nopunycode",
-        help="No convert punycode",
-        default = True,
-    )
-    parser.add_option(
         "-R",
         "--ru",
         action="store_const",
@@ -605,4 +597,4 @@ if __name__ == "__main__":
     options, args = parse_command_line(sys.argv)
     if options.b_quicklookup:
         flags = flags | NICClient.WHOIS_QUICK
-    logger.debug(nic_client.whois_lookup(options.__dict__, args[1], flags, options.nopunycode))
+    logger.debug(nic_client.whois_lookup(options.__dict__, args[1], flags))
