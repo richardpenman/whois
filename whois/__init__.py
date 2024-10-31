@@ -23,7 +23,7 @@ IPV4_OR_V6 = re.compile(
 )
 
 
-def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=False):
+def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=False, convert_punycode=True):
     # clean domain to expose netloc
     ip_match = IPV4_OR_V6.match(url)
     if ip_match:
@@ -43,10 +43,9 @@ def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=
     else:
         # try builtin client
         nic_client = NICClient()
-        if domain.endswith(".tr"):
-            text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
-        else:
-            text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
+        if convert_punycode:
+            domain = domain.encode("idna")
+        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
