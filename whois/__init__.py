@@ -44,8 +44,9 @@ def whois(url, command=False, flags=0, executable="whois", inc_raw=False, quiet=
         # try builtin client
         nic_client = NICClient()
         if convert_punycode:
-            domain = domain.encode("idna")
-        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
+            text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
+        else:
+            text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
