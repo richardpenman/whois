@@ -174,7 +174,7 @@ class WhoisEntry(dict):
         def handler(e):
             return str(e)
 
-        return json.dumps(self, indent=2, default=handler)
+        return json.dumps(self, indent=2, default=handler, ensure_ascii=False)
 
     def __getstate__(self):
         return self.__dict__
