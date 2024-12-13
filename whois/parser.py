@@ -1221,6 +1221,7 @@ class WhoisDe(WhoisEntry):
         "fax": r"Fax: *(.+)",
         "name_servers": r"Nserver: *(.+)",  # list of name servers
         "emails": EMAIL_REGEX,  # list of email addresses
+        "created": r"created: *(.+)",
     }
 
     def __init__(self, domain, text):
