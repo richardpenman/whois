@@ -2077,6 +2077,7 @@ class WhoisAi(WhoisEntry):
     regex = {
         "domain_name": r"Domain Name\s*:\s*(.+)",
         "domain_id": r"Registry Domain ID\s*:\s*(.+)",
+        "status": r"Domain Status:\s*(.+)",
         "creation_date": r"Creation Date:\s*(.+)",
         "registrar": r"Registrar:\s*(.+)",
         "registrar_phone": r"Registrar Abuse Contact Phone:\s*(.+)",
