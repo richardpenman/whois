@@ -23,7 +23,7 @@ IPV4_OR_V6 = re.compile(
 )
 
 
-def whois(url, command=False, flags=0, executable="whois", executable_opts=[], inc_raw=False, quiet=False, convert_punycode=True):
+def whois(url, command=False, flags=0, executable="whois", executable_opts=None, inc_raw=False, quiet=False, convert_punycode=True):
     # clean domain to expose netloc
     ip_match = IPV4_OR_V6.match(url)
     if ip_match:
@@ -38,7 +38,13 @@ def whois(url, command=False, flags=0, executable="whois", executable_opts=[], i
         domain = extract_domain(url)
     if command:
         # try native whois command
-        r = subprocess.Popen([executable] + executable_opts + ["--"] + [domain], stdout=subprocess.PIPE)
+        whois_command = [executable, domain]
+        if executable_opts:
+            if isinstance(executable_opts, list):
+                whois_command.extend(executable_opts)
+            else:
+                whois_command.append(executable_opts)
+        r = subprocess.Popen(whois_command, stdout=subprocess.PIPE)
         text = r.stdout.read().decode()
     else:
         # try builtin client
