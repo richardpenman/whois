@@ -1104,7 +1104,7 @@ class WhoisBr(WhoisEntry):
         "admin_c": r"admin-c: *(.+)",
         "tech_c": r"tech-c: *(.+)",
         "billing_c": r"billing-c: *(.+)",
-        "name_server": r"nserver: *(.+)",
+        "name_servers": r"nserver: *(.+)",
         "nsstat": r"nsstat: *(.+)",
         "nslastaa": r"nslastaa: *(.+)",
         "saci": r"saci: *(.+)",
