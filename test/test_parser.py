@@ -162,6 +162,9 @@ Domain Name: google.ai
 Registry Domain ID: 325702_nic_ai
 Registry WHOIS Server: whois.nic.ai
 Creation Date: 2017-12-16T05:37:20.801Z
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited
+Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
 Registrar: Markmonitor
 Registrar Abuse Contact Email: ccops@markmonitor.com
 Registrar Abuse Contact Phone: +1.2083895740
@@ -266,6 +269,11 @@ DNSSEC: unsigned
             "tech_phone": "+1.6502530000",
             "tech_postal_code": "94043",
             "tech_state": "CA",
+            "status": [
+              "clientTransferProhibited https://icann.org/epp#clientTransferProhibited",
+              "clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited",
+              "clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited"
+            ],
         }
         self._parse_and_compare("google.ai", data, expected_results)
 

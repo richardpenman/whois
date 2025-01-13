@@ -2077,6 +2077,7 @@ class WhoisAi(WhoisEntry):
     regex = {
         "domain_name": r"Domain Name\s*:\s*(.+)",
         "domain_id": r"Registry Domain ID\s*:\s*(.+)",
+        "status": r"Domain Status:\s*(.+)",
         "creation_date": r"Creation Date:\s*(.+)",
         "registrar": r"Registrar:\s*(.+)",
         "registrar_phone": r"Registrar Abuse Contact Phone:\s*(.+)",
@@ -3340,7 +3341,7 @@ class WhoisSite(WhoisEntry):
         "whois_server": r"Whois Server: *(.+)",
         "updated_date": r"Updated Date: *(.+)",
         "creation_date": r"Creation Date: *(.+)",
-        "expiration_date": r"Registrar Registration Expiration Date: *(.+)",
+        "expiration_date": r"Registry Expiry Date: *(.+)",
         "name_servers": r"Name Server: *(.+)",  # list of name servers
         "status": r"Domain Status: *(.+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email s
@@ -3370,7 +3371,7 @@ class WhoisDesign(WhoisEntry):
         "whois_server": r"Registrar WHOIS Server: *(.+)",
         "updated_date": r"Updated Date: *(.+)",
         "creation_date": r"Creation Date: *(.+)",
-        "expiration_date": r"Registrar Registration Expiration Date: *(.+)",
+        "expiration_date": r"Registry Expiry Date: *(.+)",
         "name_servers": r"Name Server: *(.+)",  # list of name servers
         "status": r"Domain Status: *(.+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email s
