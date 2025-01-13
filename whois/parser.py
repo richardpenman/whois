@@ -392,6 +392,8 @@ class WhoisEntry(dict):
             return WhoisEdu(domain, text)
         elif domain.endswith(".lv"):
             return WhoisLv(domain, text)
+        elif domain.endswith(".co"):
+            return WhoisCo(domain,text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3426,6 +3428,15 @@ class WhoisLv(WhoisEntry):
 
     def __init__(self, domain, text):
         if "Status: free" in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisCo(WhoisEntry):
+    """Whois parser for .co domains"""
+
+    def __init__(self, domain, text):
+        if "No Data Found" in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
