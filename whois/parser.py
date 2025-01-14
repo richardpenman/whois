@@ -393,7 +393,7 @@ class WhoisEntry(dict):
         elif domain.endswith(".lv"):
             return WhoisLv(domain, text)
         elif domain.endswith(".co"):
-            return WhoisCo(domain,text)
+            return WhoisCo(domain, text)
         else:
             return WhoisEntry(domain, text)
 
