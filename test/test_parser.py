@@ -59,7 +59,7 @@ class TestParser(unittest.TestCase):
         for path in glob(whois_path):
             # Parse whois data
             domain = os.path.basename(path)
-            with open(path) as whois_fp:
+            with open(path, encoding="utf-8") as whois_fp:
                 data = whois_fp.read()
 
             w = WhoisEntry.load(domain, data)
