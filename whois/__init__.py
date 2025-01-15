@@ -24,7 +24,16 @@ IPV4_OR_V6: Pattern[str] = re.compile(
 )
 
 
-def whois(url: str, command: bool = False, flags: int = 0, executable: str = "whois", executable_opts: Optional[list[str]] = None, inc_raw: bool = False, quiet: bool = False, convert_punycode: bool = True) -> dict[str, Any]:
+def whois(
+    url: str,
+    command: bool = False,
+    flags: int = 0,
+    executable: str = "whois",
+    executable_opts: Optional[list[str]] = None,
+    inc_raw: bool = False,
+    quiet: bool = False,
+    convert_punycode: bool = True,
+) -> dict[str, Any]:
     """
     url: the URL to search whois
     command: whether to use the native whois command (default False)
@@ -63,7 +72,9 @@ def whois(url: str, command: bool = False, flags: int = 0, executable: str = "wh
         # try builtin client
         nic_client = NICClient()
         if convert_punycode:
-            text = nic_client.whois_lookup(None, domain.encode("idna").decode("utf-8"), flags, quiet=quiet)
+            text = nic_client.whois_lookup(
+                None, domain.encode("idna").decode("utf-8"), flags, quiet=quiet
+            )
         else:
             text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)

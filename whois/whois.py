@@ -177,7 +177,6 @@ class NICClient:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         return s
 
-
     def findwhois_iana(self, tld: str) -> Optional[str]:
         s = self.get_socket()
         s.settimeout(10)
@@ -192,9 +191,16 @@ class NICClient:
         s.close()
         match = re.search(r"whois:\s+(.*?)\n", response.decode("utf-8"))
         return match.group(1) if match else None
-            
 
-    def whois(self, query: str, hostname: str, flags: int, many_results: bool = False, quiet: bool = False, timeout: int = 10) -> str:
+    def whois(
+        self,
+        query: str,
+        hostname: str,
+        flags: int,
+        many_results: bool = False,
+        quiet: bool = False,
+        timeout: int = 10,
+    ) -> str:
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
         for the region-specific whois server and do a lookup
@@ -214,7 +220,7 @@ class NICClient:
             elif hostname == NICClient.DK_HOST:
                 query_bytes = " --show-handles " + query
             elif hostname.endswith(".jp"):
-                query_bytes = query + '/e'
+                query_bytes = query + "/e"
             elif hostname.endswith(NICClient.QNICHOST_TAIL) and many_results:
                 query_bytes = "=" + query
             else:
@@ -398,7 +404,9 @@ class NICClient:
             #    server = NICClient.QNICHOST_HEAD + tld
             # return server
 
-    def whois_lookup(self, options: Optional[dict], query_arg: str, flags: int, quiet: bool = False) -> str:
+    def whois_lookup(
+        self, options: Optional[dict], query_arg: str, flags: int, quiet: bool = False
+    ) -> str:
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
         flag is false, perform a second lookup on the region-specific

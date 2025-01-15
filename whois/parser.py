@@ -10,7 +10,7 @@ import json
 import re
 from datetime import datetime
 import dateutil.parser as dp
-from typing import Any, Optional, Self
+from typing import Any, Optional, Union
 from dateutil.utils import default_tzinfo
 from .time_zones import tz_data
 
@@ -58,7 +58,7 @@ KNOWN_FORMATS: list[str] = [
     "%d/%m/%Y %H:%M:%S.%f %Z",  # 23/04/2015 12:00:07.619546 EEST
     "%B %d %Y",  # August 14 2017
     "%d.%m.%Y %H:%M:%S",  # 08.03.2014 10:28:24
-    "before %Y",     # before 2001
+    "before %Y",  # before 2001
     "before %b-%Y",  # before aug-1996
     "before %Y-%m-%d",  # before 1996-01-01
     "before %Y%m%d",  # before 19960821
@@ -71,7 +71,7 @@ class WhoisError(Exception):
     pass
 
 
-def datetime_parse(s: str) -> str | datetime:
+def datetime_parse(s: str) -> Union[str, datetime]:
     for known_format in KNOWN_FORMATS:
         try:
             return datetime.strptime(s, known_format)
@@ -80,13 +80,16 @@ def datetime_parse(s: str) -> str | datetime:
     return s
 
 
-def cast_date(s: str, dayfirst: bool = False, yearfirst: bool = False) -> str | datetime:
+def cast_date(
+    s: str, dayfirst: bool = False, yearfirst: bool = False
+) -> Union[str, datetime]:
     """Convert any date string found in WHOIS to a datetime object."""
     try:
         # Use datetime.timezone.utc to support < Python3.9
-        return default_tzinfo(dp.parse(
-            s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst
-        ), datetime.timezone.utc)
+        return default_tzinfo(
+            dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst),
+            datetime.timezone.utc,
+        )
     except Exception:
         return datetime_parse(s)
 
@@ -140,12 +143,14 @@ class WhoisEntry(dict):
         """
         for attr, regex in list(self._regex.items()):
             if regex:
-                values: list[str | datetime] = []
+                values: list[Union[str, datetime]] = []
                 for data in re.findall(regex, self.text, re.IGNORECASE | re.M):
                     matches = data if isinstance(data, tuple) else [data]
                     for value in matches:
                         value = self._preprocess(attr, value)
-                        if value and str(value).lower() not in [str(v).lower() for v in values]:
+                        if value and str(value).lower() not in [
+                            str(v).lower() for v in values
+                        ]:
                             # avoid duplicates
                             values.append(value)
 
@@ -158,8 +163,7 @@ class WhoisEntry(dict):
                 else:
                     self[attr] = None
 
-
-    def _preprocess(self, attr: str, value: str) -> str | datetime:
+    def _preprocess(self, attr: str, value: str) -> Union[str, datetime]:
         value = value.strip()
         if value and isinstance(value, str) and not value.isdigit() and "_date" in attr:
             # try casting to date format
@@ -740,7 +744,7 @@ class WhoisPl(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"DOMAIN NAME: *(.+)\n",
-        "name_servers": r"nameservers:(?:\s+(\S+)\.[^\n]*\n)(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?", # up to 4
+        "name_servers": r"nameservers:(?:\s+(\S+)\.[^\n]*\n)(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?(?:\s+(\S+)\.[^\n]*\n)?",  # up to 4
         "registrar": r"REGISTRAR:\s*(.+)",
         "registrar_url": r"URL: *(.+)",  # not available
         "status": r"Registration status:\n\s*(.+)",  # not available
@@ -960,6 +964,7 @@ class WhoisJp(WhoisEntry):
         nintendo.co.jp
 
     """
+
     not_found = "No match!!"
     regex: dict[str, str] = {
         "domain_name": r"^(?:a\. )?\[Domain Name\]\s*(.+)",
@@ -1398,6 +1403,7 @@ class WhoisStudio(WhoisBz):
             raise WhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisStyle(WhoisRu):
     """Whois parser for .style domains"""
@@ -2122,6 +2128,7 @@ class WhoisAi(WhoisEntry):
         "billing_email": r"Billing\s*Email\.*:\s*(.+)",
         "name_servers": r"Name Server\.*:\s*(.+)",
     }
+
     def __init__(self, domain: str, text: str):
         if "not registered" in text:
             raise WhoisError(text)
@@ -3410,6 +3417,7 @@ class WhoisEdu(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
 class WhoisLv(WhoisEntry):
     """Whois parser for .lv domains"""
 
@@ -3430,6 +3438,7 @@ class WhoisLv(WhoisEntry):
             raise WhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisCo(WhoisEntry):
     """Whois parser for .co domains"""
