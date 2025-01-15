@@ -27,17 +27,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import logging
 import os
 import optparse
+import re
 import socket
 import sys
-import re
-import logging
+from typing import Optional, Pattern
 
 logger = logging.getLogger(__name__)
 
 
-class NICClient(object):
+class NICClient:
     ABUSEHOST = "whois.abuse.net"
     AI_HOST = "whois.nic.ai"
     ANICHOST = "whois.arin.net"
@@ -117,13 +118,13 @@ class NICClient(object):
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
-    ip_whois = [LNICHOST, RNICHOST, PNICHOST, BNICHOST, PANDIHOST]
+    ip_whois: list[str] = [LNICHOST, RNICHOST, PNICHOST, BNICHOST, PANDIHOST]
 
     def __init__(self):
-        self.use_qnichost = False
+        self.use_qnichost: bool = False
 
     @staticmethod
-    def findwhois_server(buf, hostname, query):
+    def findwhois_server(buf: str, hostname: str, query: str) -> Optional[str]:
         """Search the initial TLD lookup results for the regional-specific
         whois server for getting contact details.
         """
@@ -133,7 +134,7 @@ class NICClient(object):
             flags=re.IGNORECASE | re.DOTALL,
         ).search(buf)
         if match:
-            nhost = match.groups()[0]
+            nhost = match.group(1)
             # if the whois address is domain.tld/something then
             # s.connect((hostname, 43)) does not work
             if nhost.count("/") > 0:
@@ -177,7 +178,7 @@ class NICClient(object):
         return s
 
 
-    def findwhois_iana(self, tld):
+    def findwhois_iana(self, tld: str) -> Optional[str]:
         s = self.get_socket()
         s.settimeout(10)
         s.connect(("whois.iana.org", 43))
@@ -189,9 +190,11 @@ class NICClient(object):
             if not d:
                 break
         s.close()
-        return re.search(r"whois:\s+(.*?)\n", response.decode("utf-8")).group(1)
+        match = re.search(r"whois:\s+(.*?)\n", response.decode("utf-8"))
+        return match.group(1) if match else None
+            
 
-    def whois(self, query, hostname, flags, many_results=False, quiet=False, timeout=10):
+    def whois(self, query: str, hostname: str, flags: int, many_results: bool = False, quiet: bool = False, timeout: int = 10) -> str:
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
         for the region-specific whois server and do a lookup
@@ -206,13 +209,6 @@ class NICClient(object):
         try:  # socket.connect in a try, in order to allow things like looping whois on different domains without
             # stopping on timeouts: https://stackoverflow.com/questions/25447803/python-socket-connection-exception
             s.connect((hostname, 43))
-            try:
-                query = query.decode("utf-8")
-            except UnicodeEncodeError:
-                pass  # Already Unicode (python2's error)
-            except AttributeError:
-                pass  # Already Unicode (python3's error)
-
             if hostname == NICClient.DENICHOST:
                 query_bytes = "-T dn,ace -C UTF-8 " + query
             elif hostname == NICClient.DK_HOST:
@@ -233,13 +229,13 @@ class NICClient(object):
             s.close()
 
             nhost = None
-            response = response.decode("utf-8", "replace")
-            if 'with "=xxx"' in response:
+            response_str = response.decode("utf-8", "replace")
+            if 'with "=xxx"' in response_str:
                 return self.whois(query, hostname, flags, True)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
-                nhost = self.findwhois_server(response, hostname, query)
+                nhost = self.findwhois_server(response_str, hostname, query)
             if nhost is not None and nhost != "":
-                response += self.whois(query, nhost, 0, quiet=True)
+                response_str += self.whois(query, nhost, 0, quiet=True)
         except (
             socket.error
         ) as exc:  # 'response' is assigned a value (also a str) even on socket timeout
@@ -248,17 +244,12 @@ class NICClient(object):
                     "Error trying to connect to socket: closing socket - {}".format(exc)
                 )
             s.close()
-            response = "Socket not responding: {}".format(exc)
-        return response
+            response_str = "Socket not responding: {}".format(exc)
+        return response_str
 
-    def choose_server(self, domain):
+    def choose_server(self, domain: str) -> Optional[str]:
         """Choose initial lookup NIC host"""
-        try:
-            domain = domain.encode("idna").decode("utf-8")
-        except TypeError:
-            domain = domain.decode("utf-8").encode("idna").decode("utf-8")
-        except AttributeError:
-            domain = domain.decode("utf-8").encode("idna").decode("utf-8")
+        domain = domain.encode("idna").decode("utf-8")
         if domain.endswith("-NORID"):
             return NICClient.NORIDHOST
         if domain.endswith("id"):
@@ -268,10 +259,10 @@ class NICClient(object):
         if domain.endswith(".pp.ua"):
             return NICClient.PPUA_HOST
 
-        domain = domain.split(".")
-        if len(domain) < 2:
+        domain_parts = domain.split(".")
+        if len(domain_parts) < 2:
             return None
-        tld = domain[-1]
+        tld = domain_parts[-1]
         if tld[0].isdigit():
             return NICClient.ANICHOST
         elif tld == "ai":
@@ -407,7 +398,7 @@ class NICClient(object):
             #    server = NICClient.QNICHOST_HEAD + tld
             # return server
 
-    def whois_lookup(self, options, query_arg, flags, quiet=False):
+    def whois_lookup(self, options: Optional[dict], query_arg: str, flags: int, quiet: bool = False) -> str:
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
         flag is false, perform a second lookup on the region-specific
@@ -444,7 +435,7 @@ class NICClient(object):
         return result
 
 
-def parse_command_line(argv):
+def parse_command_line(argv: list[str]) -> tuple[optparse.Values, list[str]]:
     """Options handling mostly follows the UNIX whois(1) man page, except
     long-form options can also be used.
     """

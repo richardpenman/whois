@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import re
-import sys
-import os
-import subprocess
-import socket
-from .parser import WhoisEntry
-from .whois import NICClient
 import logging
+import os
+import re
+import socket
+import subprocess
+import sys
+from typing import Any, Optional, Pattern
+from .parser import WhoisEntry, WhoisError
+from .whois import NICClient
 
 
 logger = logging.getLogger(__name__)
@@ -18,12 +19,21 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # thanks to https://www.regextester.com/104038
-IPV4_OR_V6 = re.compile(
+IPV4_OR_V6: Pattern[str] = re.compile(
     r"((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))"  # noqa: E501
 )
 
 
-def whois(url, command=False, flags=0, executable="whois", executable_opts=None, inc_raw=False, quiet=False, convert_punycode=True):
+def whois(url: str, command: bool = False, flags: int = 0, executable: str = "whois", executable_opts: Optional[list[str]] = None, inc_raw: bool = False, quiet: bool = False, convert_punycode: bool = True) -> dict[str, Any]:
+    """
+    url: the URL to search whois
+    command: whether to use the native whois command (default False)
+    executable: executable to use for native whois command (default 'whois')
+    flags: flags to pass to the whois client (default 0)
+    inc_raw: whether to include the raw text from whois in the result (default False)
+    quiet: whether to avoid printing output (default False)
+    convert_punycode: whether to convert the given URL punycode (default True)
+    """
     # clean domain to expose netloc
     ip_match = IPV4_OR_V6.match(url)
     if ip_match:
@@ -45,12 +55,15 @@ def whois(url, command=False, flags=0, executable="whois", executable_opts=None,
             else:
                 whois_command.append(executable_opts)
         r = subprocess.Popen(whois_command, stdout=subprocess.PIPE)
-        text = r.stdout.read().decode()
+        if r.stdout is None:
+            raise WhoisError("Whois command returned no output")
+        else:
+            text = r.stdout.read().decode()
     else:
         # try builtin client
         nic_client = NICClient()
         if convert_punycode:
-            text = nic_client.whois_lookup(None, domain.encode("idna"), flags, quiet=quiet)
+            text = nic_client.whois_lookup(None, domain.encode("idna").decode("utf-8"), flags, quiet=quiet)
         else:
             text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
@@ -59,10 +72,10 @@ def whois(url, command=False, flags=0, executable="whois", executable_opts=None,
     return entry
 
 
-suffixes = None
+suffixes: Optional[set] = None
 
 
-def extract_domain(url):
+def extract_domain(url: str) -> str:
     """Extract the domain from the given URL
 
     >>> logger.info(extract_domain('http://www.google.com.au/tos.html'))

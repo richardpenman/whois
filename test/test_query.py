@@ -26,6 +26,7 @@ class TestQuery(unittest.TestCase):
         else:
             domain_names = [whois_results["domain_name"].lower()]
 
+        print(whois_results)
         self.assertIn("1e100.net", domain_names)
         self.assertIn(
             "ns1.google.com", [_.lower() for _ in whois_results["name_servers"]]
