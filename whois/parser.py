@@ -3436,6 +3436,6 @@ class WhoisCo(WhoisEntry):
 
     def __init__(self, domain, text):
         if "No Data Found" in text:
-            raise PywhoisError(text)
+            raise WhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
