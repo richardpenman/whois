@@ -7,7 +7,7 @@ import socket
 import subprocess
 import sys
 from typing import Any, Optional, Pattern
-from .parser import WhoisEntry, WhoisError
+from .parser import WhoisEntry, PywhoisError
 from .whois import NICClient
 
 
@@ -65,7 +65,7 @@ def whois(
                 whois_command.append(executable_opts)
         r = subprocess.Popen(whois_command, stdout=subprocess.PIPE)
         if r.stdout is None:
-            raise WhoisError("Whois command returned no output")
+            raise PywhoisError("Whois command returned no output")
         else:
             text = r.stdout.read().decode()
     else:
