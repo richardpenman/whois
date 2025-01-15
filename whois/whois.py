@@ -242,15 +242,14 @@ class NICClient:
                 nhost = self.findwhois_server(response_str, hostname, query)
             if nhost is not None and nhost != "":
                 response_str += self.whois(query, nhost, 0, quiet=True)
-        except (
-            socket.error
-        ) as exc:  # 'response' is assigned a value (also a str) even on socket timeout
+        except socket.error as e:
+            # 'response' is assigned a value (also a str) even on socket timeout
             if not quiet:
                 logger.error(
-                    "Error trying to connect to socket: closing socket - {}".format(exc)
+                    "Error trying to connect to socket: closing socket - {}".format(e)
                 )
             s.close()
-            response_str = "Socket not responding: {}".format(exc)
+            response_str = "Socket not responding: {}".format(e)
         return response_str
 
     def choose_server(self, domain: str) -> Optional[str]:

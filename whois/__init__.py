@@ -72,11 +72,8 @@ def whois(
         # try builtin client
         nic_client = NICClient()
         if convert_punycode:
-            text = nic_client.whois_lookup(
-                None, domain.encode("idna").decode("utf-8"), flags, quiet=quiet
-            )
-        else:
-            text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
+            domain = domain.encode("idna").decode("utf-8")
+        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
