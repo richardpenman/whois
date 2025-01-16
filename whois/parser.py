@@ -2458,7 +2458,7 @@ class WhoisUA(WhoisEntry):
         "admin_phone": r"(?<=Administrative Contacts:)[\s\W\w]*?phone:(.*)",
         "admin_fax": r"(?<=Administrative Contacts:)[\s\W\w]*?fax:(.*)",
         "updated_date": r"modified: *(.+)",
-        "creation_date": r"created: (.+)",
+        "creation_date": r"created: (.+)[\s\W\w]*?(?=Registrar:)",
         "expiration_date": r"expires: (.+)",
         "name_servers": r"nserver: *(.+)",
         "emails": EMAIL_REGEX,  # list of email addresses
