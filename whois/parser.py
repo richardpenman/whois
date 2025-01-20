@@ -569,6 +569,7 @@ class WhoisRu(WhoisEntry):
         "registrar": r"registrar: *(.+)",
         "creation_date": r"created: *(.+)",
         "expiration_date": r"paid-till: *(.+)",
+        "free_date": r"free-date: *(.+)",
         "name_servers": r"nserver: *(.+)",  # list of name servers
         "status": r"state: *(.+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email addresses
