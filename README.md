@@ -1,15 +1,12 @@
-Goal
-====
+# Goal
 
--  Create a simple importable Python module which will produce parsed
-   WHOIS data for a given domain.
--  Able to extract data for all the popular TLDs (com, org, net, ...)
--  Query a WHOIS server directly instead of going through an
-   intermediate web service like many others do.
+- Create a simple importable Python module which will produce parsed
+  WHOIS data for a given domain.
+- Able to extract data for all the popular TLDs (com, org, net, ...)
+- Query a WHOIS server directly instead of going through an
+  intermediate web service like many others do.
 
-
-Example
-=======
+# Example
 
 ```python
 >>> import whois
@@ -21,7 +18,7 @@ u'\nDomain Name: EXAMPLE.COM
 Registry Domain ID: 2336799_DOMAIN_COM-VRSN
 ...'
 
->>> print(w)  # print values of all found attributes    
+>>> print(w)  # print values of all found attributes
 {
   "creation_date": "1995-08-14 04:00:00",
   "expiration_date": "2022-08-13 04:00:00",
@@ -34,8 +31,7 @@ Registry Domain ID: 2336799_DOMAIN_COM-VRSN
   ...
 ```
 
-Install
-=======
+# Install
 
 Install from pypi:
 
@@ -56,12 +52,11 @@ Run test cases:
 python -m pytest
 ```
 
-Problems?
-=========
+# Problems?
 
-Pull requests are welcome! 
+Pull requests are welcome!
 
-Thanks to the many who have sent patches for additional TLDs. If you want to add or fix a TLD it's quite straightforward. 
+Thanks to the many who have sent patches for additional TLDs. If you want to add or fix a TLD it's quite straightforward.
 See example domains in [whois/parser.py](https://github.com/richardpenman/whois/blob/master/whois/parser.py)
 
 Basically each TLD has a similar format to the following:
@@ -79,7 +74,7 @@ class WhoisOrg(WhoisEntry):
 
   def __init__(self, domain, text):
     if text.strip() == 'NOT FOUND':
-      raise PywhoisError(text)
+      raise WhoisDomainNotFoundError(text)
     else:
       WhoisEntry.__init__(self, domain, text)
 ```

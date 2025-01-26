@@ -1,26 +1,30 @@
 class PywhoisError(Exception):
     pass
 
-
-class UnknownTldError(PywhoisError):
+#backwards compatibility
+class WhoisError(PywhoisError):
     pass
 
 
-class WhoisDomainNotFoundError(PywhoisError):
+class UnknownTldError(WhoisError):
     pass
 
 
-class FailedParsingWhoisOutputError(PywhoisError):
+class WhoisDomainNotFoundError(WhoisError):
     pass
 
 
-class WhoisQuotaExceededError(PywhoisError):
+class FailedParsingWhoisOutputError(WhoisError):
     pass
 
 
-class UnknownDateFormatError(PywhoisError):
+class WhoisQuotaExceededError(WhoisError):
     pass
 
 
-class WhoisCommandFailedError(PywhoisError):
+class WhoisUnknownDateFormatError(WhoisError):
+    pass
+
+
+class WhoisCommandFailedError(WhoisError):
     pass

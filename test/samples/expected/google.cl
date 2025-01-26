@@ -1,1 +1,1 @@
-{"domain_name": "google.cl", "expiration_date": "2019-11-20 14:48:02 CLST", "updated_date": null, "registrar": "MarkMonitor Inc.", "registrar_url": "https://markmonitor.com/", "creation_date": "2002-10-22 17:48:23 CLST", "status": null}
+{"domain_name": "google.cl", "expiration_date": "2019-11-20 14:48:02", "updated_date": null, "registrar": "MarkMonitor Inc.", "registrar_url": "https://markmonitor.com/", "creation_date": "2002-10-22 17:48:23", "status": null}
