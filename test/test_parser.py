@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import os
 import datetime
 import json
-from glob import glob
+import os
 import unittest
+from glob import glob
+
+from whois.exceptions import WhoisUnknownDateFormatError
 from whois.parser import (
+    WhoisCa,
     WhoisEntry,
     cast_date,
-    WhoisCa,
+    datetime_parse,
 )
 
 
@@ -31,6 +34,10 @@ class TestParser(unittest.TestCase):
         for d in dates:
             r = cast_date(d).strftime("%Y-%m-%d")
             self.assertEqual(r, "2008-04-14")
+
+    def test_unknown_date_format(self):
+        with self.assertRaises(WhoisUnknownDateFormatError):
+            datetime_parse("UNKNOWN")
 
     def test_com_allsamples(self):
         """
