@@ -12,7 +12,6 @@ from .exceptions import WhoisError
 from .parser import WhoisEntry
 from .whois import NICClient
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()

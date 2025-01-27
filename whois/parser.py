@@ -9,8 +9,9 @@
 import json
 import re
 from datetime import datetime
-import dateutil.parser as dp
 from typing import Any, Callable, Optional, Union
+
+import dateutil.parser as dp
 from dateutil.utils import default_tzinfo
 
 from .exceptions import WhoisDomainNotFoundError, WhoisUnknownDateFormatError
