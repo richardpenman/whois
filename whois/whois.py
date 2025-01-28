@@ -28,8 +28,8 @@ THE SOFTWARE.
 """
 
 import logging
-import os
 import optparse
+import os
 import re
 import socket
 import sys

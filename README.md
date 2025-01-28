@@ -76,5 +76,5 @@ class WhoisOrg(WhoisEntry):
     if text.strip() == 'NOT FOUND':
       raise WhoisDomainNotFoundError(text)
     else:
-      WhoisEntry.__init__(self, domain, text)
+      WhoisEntry.__init__(self, domain, text, self.regex)
 ```
