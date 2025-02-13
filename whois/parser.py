@@ -411,6 +411,8 @@ class WhoisEntry(dict):
             return WhoisLv(domain, text)
         elif domain.endswith(".co"):
             return WhoisCo(domain, text)
+        elif domain.endswith(".ga"):
+            return WhoisGa(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3462,6 +3464,28 @@ class WhoisLv(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisGa(WhoisEntry):
+    """Whois parser for .ga domains"""
+
+    regex: dict[str, str] = {
+        "domain_name": r"Nom de domaine: *(.+)",
+        "registrant_name": r"\[HOLDER\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+(.*)",
+        "registrant_address": r"\[HOLDER\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+.*\r\nAdresse:\s+(.*)",
+        "tech_name": r"\[TECH_C\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+(.*)",
+        "tech_address": r"\[TECH_C\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+.*\r\nAdresse:\s+(.*)",
+        "registrar_name": r"Registrar: +(.+)",
+        "name_servers": r"Serveur de noms: +(.+)",
+        "creation_date": r"Date de création: +(.+)",
+        "updated_date": r"Dernière modification: +(.+)",
+        "expiration_date": r"Date d'expiration: +(.+)"
+    }
+
+    def __init__(self, domain: str, text: str):
+        if "%% NOT FOUND" in text:
+            raise WhoisDomainNotFoundError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 
 class WhoisCo(WhoisEntry):
     """Whois parser for .co domains"""
@@ -3471,3 +3495,4 @@ class WhoisCo(WhoisEntry):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
