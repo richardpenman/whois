@@ -3448,12 +3448,12 @@ class WhoisLv(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"\[Domain\]\nDomain: *(.+)",
-        "registrant_name": r"\[Holder\]\n\s+Type: .*\n\s+Name: *(.+)",
-        "registrant_address": r"\[Holder\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
-        "tech_name": r"\[Tech\]\n\s+Type: .*\n\s+Name: *(.+)",
-        "tech_address": r"\[Tech\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
-        "registrar_name": r"\[Registrar\]\n\s+Type: .*\n\s+Name: *(.+)",
-        "registrar_address": r"\[Registrar\]\n\s+Type: .*\n\s+Name: .*\n\s+Address: *(.+)",
+        "registrant_name": r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*(.+)",        
+        "registrant_address": r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*.*?\s*Address:\s*(.+)",
+        "tech_name": r"\[Tech\]\n\s+Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*(.+)",
+        "tech_address": r"\[Tech\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name: .*\n\s+Address: *(.+)",
+        "registrar_name": r"\[Registrar\]\s*Type: .*\s*Name: *(.+)",
+        "registrar_address": r"\[Registrar\]\s*Type: .*\s*Name: .*\s*Address: *(.+)",
         "name_servers": r"Nserver: *(.+)",
         "updated_date": r"\[Whois\]\nUpdated: (.+)",
     }
