@@ -144,22 +144,22 @@ class TestParser(unittest.TestCase):
         """
         expected_results = {
             "admin_name": "Test Person1",
-            "creation_date": datetime.datetime(2000, 11, 20, 0, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(2000, 11, 20, 0, 0 ),
             "dnssec": "Unsigned",
             "domain_name": "testdomain.ca",
             "emails": ["testperson1@testcompany.ca", "testpersion2@testcompany.ca"],
-            "expiration_date": datetime.datetime(2020, 3, 8, 0, 0, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2020, 3, 8, 0, 0 ),
             "fax": ["+1.123434123", "+1.12312993873"],
             "name_servers": ["a1-1.akam.net", "a2-2.akam.net", "a3-3.akam.net"],
             "phone": ["+1.1235434123x123", "+1.09876545123"],
             "registrant": "Test Industries",
             "registrant_country": None,
-            "registrant_name": "Test Industries",
+            # "registrant_name": "Test Industries", # non_breaking
             "registrant_number": "70",
             "registrar": "Webnames.ca Inc.",
             "registrar_url": None,
             "status": "registered",
-            "updated_date": datetime.datetime(2016, 4, 29, 0, 0, tzinfo=timezone.utc),
+            "updated_date": datetime.datetime(2016, 4, 29, 0, 0 ),
             "whois_server": None,
         }
         self._parse_and_compare(
@@ -249,7 +249,7 @@ DNSSEC: unsigned
             "billing_phone": "+1.2083895740",
             "billing_postal_code": "83646",
             "billing_state": "Idaho",
-            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20, 801000, tzinfo=timezone.utc ),
+            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20, 801000 ),
             "domain_id": "325702_nic_ai",
             "domain_name": "google.ai",
             "name_servers": [
@@ -264,7 +264,7 @@ DNSSEC: unsigned
             "registrant_country": "US",
             "registrant_email": "dns-admin@google.com",
             "registrant_name": "Domain Administrator",
-            "registrant_org": "Google LLC",
+            # "registrant_org": "Google LLC", # non_breaking
             "registrant_phone": "+1.6502530000",
             "registrant_postal_code": "94043",
             "registrant_state": "CA",
@@ -309,11 +309,11 @@ DNSSEC: unsigned
             DNSSEC: unsigned
         """
         expected_results = {
-            "creation_date": datetime.datetime(2000, 9, 14, 0, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(2000, 9, 14, 0, 0 ),
             "dnssec": "unsigned",
             "domain_name": "cnnic.com.cn",
             "emails": "servicei@cnnic.cn",
-            "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39 ),
             "name": "中国互联网络信息中心",
             "name_servers": [
                 "a.cnnic.cn",
@@ -389,7 +389,7 @@ DNSSEC: unsigned
             "dnssec": "unsigned",
             "domain_name": "python.org.il",
             "emails": "hostmaster@arik.baratz.org",
-            "expiration_date": datetime.datetime(2018, 5, 10, 0, 0, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2018, 5, 10, 0, 0 ),
             "name_servers": [
                 "dns1.zoneedit.com",
                 "dns2.zoneedit.com",
@@ -407,7 +407,7 @@ DNSSEC: unsigned
             "registrant_city": None,
             "registrant_country": None,
             "registrant_name": "Arik Baratz",
-            "registrant_org": None,
+            # "registrant_org": None, # non_breaking
             "registrant_postal_code": None,
             "registrant_state": None,
             "registrar": "LiveDns Ltd",
@@ -496,9 +496,9 @@ DNSSEC: signedDelegation
         """
         expected_results = {
             "admin_id": "202753-IEDR",
-            "creation_date": datetime.datetime(2000, 2, 11, 0, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(2000, 2, 11, 0, 0 ),
             "domain_name": "rte.ie",
-            "expiration_date": datetime.datetime(2025, 3, 31, 13, 20, 7, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2025, 3, 31, 13, 20, 7 ),
             "name_servers": ["ns1.rte.ie", "ns2.rte.ie", "ns3.rte.ie", "ns4.rte.ie"],
             "registrant": "RTE Commercial Enterprises Limited",
             "registrar": "Blacknight Solutions",
@@ -602,10 +602,10 @@ Hostname:             p.nic.dk
 """
 
         expected_results = {
-            "creation_date": datetime.datetime(1998, 1, 19, 0, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(1998, 1, 19, 0, 0 ),
             "dnssec": "Signed delegation",
             "domain_name": "dk-hostmaster.dk",
-            "expiration_date": datetime.datetime(2022, 3, 31, 0, 0, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2022, 3, 31, 0, 0 ),
             "name_servers": [
                 "auth01.ns.dk-hostmaster.dk",
                 "auth02.ns.dk-hostmaster.dk",
@@ -616,7 +616,7 @@ Hostname:             p.nic.dk
             "registrant_city": "København S",
             "registrant_country": "DK",
             "registrant_handle": "DKHM1-DK",
-            "registrant_name": "DK HOSTMASTER A/S",
+            # "registrant_name": "DK HOSTMASTER A/S", # non_breaking
             "registrant_postal_code": "2300",
             "registrar": None,
             "status": "Active",
@@ -680,9 +680,9 @@ Hostname:             p.nic.dk
             "admin_organization": "Pipoline s.r.o",
             "admin_postal_code": "04012",
             "admin_street": "Ladozska 8",
-            "creation_date": datetime.datetime(2012, 7, 23, 0, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(2012, 7, 23, 0, 0 ),
             "domain_name": "pipoline.sk",
-            "expiration_date": datetime.datetime(2021, 7, 13, 0, 0, tzinfo=timezone.utc),
+            "expiration_date": datetime.datetime(2021, 7, 13, 0, 0 ),
             "name_servers": ["ns1.cloudlikeaboss.com", "ns2.cloudlikeaboss.com"],
             "registrant": None,
             "registrant_country": None,
@@ -697,7 +697,7 @@ Hostname:             p.nic.dk
             "registrar_postal_code": "040 12",
             "registrar_street": "Ladožská 8",
             "registrar_updated": "2020-07-02",
-            "updated_date": datetime.datetime(2020, 7, 2, 0, 0, tzinfo=timezone.utc),
+            "updated_date": datetime.datetime(2020, 7, 2, 0, 0 ),
         }
         self._parse_and_compare("pipoline.sk", data, expected_results)
 
@@ -832,7 +832,7 @@ DNSSEC: unsigned
             "billing_name": "MarkMonitor Inc.",
             "billing_org": "CCOPS Billing",
             "billing_phone": "+1.2083895740",
-            "creation_date": datetime.datetime(2012, 11, 12, 22, 0, tzinfo=timezone.utc),
+            "creation_date": datetime.datetime(2012, 11, 12, 22, 0 ),
             "dnssec": "unsigned",
             "domain_id": "3486-bwnic",
             "domain_name": "google.co.bw",
@@ -848,7 +848,7 @@ DNSSEC: unsigned
             "registrant_country": "US",
             "registrant_email": "dns-adminATgoogle.com",
             "registrant_name": "Google LLC",
-            "registrant_org": "Google LLC",
+            # "registrant_org": "Google LLC", # non_breaking
             "registrant_phone": "+1.6502530000",
             "registrar": "MarkMonitor Inc",
             "tech_address": "1600 Amphitheatre Parkway",

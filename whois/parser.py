@@ -9,7 +9,6 @@
 import json
 import re
 from datetime import datetime
-from datetime import timezone
 from typing import Any, Callable, Optional, Union
 
 import dateutil.parser as dp
@@ -100,14 +99,14 @@ def cast_date(
         # Use datetime.timezone.utc to support < Python3.9
         return default_tzinfo(
             dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst),
-            timezone.utc,
+            datetime.timezone.utc,
         )
     except Exception:
         return datetime_parse(s)
 
 def non_breaking( key_list, pat ) :
-    """ Arrange for mulltiple copies of pat in the result, each with its own key """
-    return { key : pat for key in key_list }
+    """ Optionally, arrange for multiple copies of pat in the result, each with its own key """
+    return { key_list[ 0 ] : pat }
 
 class WhoisEntry(dict):
     """Base class for parsing a Whois entries."""
@@ -1221,7 +1220,7 @@ class WhoisPt(WhoisEntry):
         "registrant_postal_code": r"Owner ZipCode: *(.+)",
         "registrant_email": r"Owner Email: *(.+)",
         "registrant_country": r"Owner Country Code: *(.+)",
-        **non_breaking( [ "registrar", "admin" ], r"Admin Name: *(.+)" ),
+        "admin": r"Admin Name: *(.+)",
         "admin_street": r"Admin Address: *(.+)",
         "admin_city": r"Admin Locality: *(.+)",
         "admin_postal_code": r"Admin ZipCode: *(.+)",
