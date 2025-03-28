@@ -104,10 +104,6 @@ def cast_date(
     except Exception:
         return datetime_parse(s)
 
-def non_breaking( key_list, pat ) :
-    """ Optionally, arrange for multiple copies of pat in the result, each with its own key """
-    return { key_list[ 0 ] : pat }
-
 class WhoisEntry(dict):
     """Base class for parsing a Whois entries."""
 
@@ -128,12 +124,12 @@ class WhoisEntry(dict):
         "emails": EMAIL_REGEX,  # list of email s
         "dnssec": r"dnssec: *([\S]+)",
         "name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant\s*Organization: *(.+)" ),
+        "registrant": r"Registrant\s*Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
     }
 
     # allows for data string manipulation before casting to date
@@ -437,7 +433,7 @@ class WhoisCl(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"Domain name: *(.+)",
         "registrant_name": r"Registrant name: *(.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant organisation: *(.+)" ),
+        "registrant": r"Registrant organisation: *(.+)",
         "registrar": r"registrar name: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
         "creation_date": r"Creation date: *(.+)",
@@ -464,7 +460,7 @@ class WhoisSG(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"Domain name: *(.+)",
         "status": r"Domain Status: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant:?\s*Name:\s*(.+)" ),
+        "registrant": r"Registrant:?\s*Name:\s*(.+)",
         "registrar": r"Registrar: *(.+)",
         "creation_date": r"Creation date: *(.+)",
         "updated_date": r"Updated Date: *(.+)",
@@ -502,7 +498,7 @@ class WhoisPe(WhoisEntry):
         "domain_name": r"Domain name: *(.+)",
         "status": r"Domain Status: *(.+)",
         "whois_server": r"WHOIS Server: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant name: *(.+)" ),
+        "registrant": r"Registrant name: *(.+)",
         "registrar": r"Sponsoring Registrar: *(.+)",
         "admin": r"Admin Name: *(.+)",
         "admin_email": r"Admin Email: *(.+)",
@@ -607,7 +603,7 @@ class WhoisRu(WhoisEntry):
         "name_servers": r"nserver: *(.+)",  # list of name servers
         "status": r"state: *(.+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email addresses
-        **non_breaking( [ "registrant", "org" ], r"org: *(.+)" ),
+        "registrant": r"org: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -726,7 +722,7 @@ class WhoisUs(WhoisEntry):
         "status": r"Domain Status: *(.+)",  # list of statuses
         "registrant_id": r"Registry Registrant ID: *(.+)",
         "registrant_name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "registrant_street": r"Registrant Street: *(.+)",
         "registrant_city": r"Registrant City: *(.+)",
         "registrant_state_province": r"Registrant State/Province: *(.+)",
@@ -831,7 +827,7 @@ class WhoisCa(WhoisEntry):
         "whois_server": r"Registrar WHOIS Server: *(.+)",
         "registrar": r"Registrar: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ],  r"Registrant Name: *(.+)" ),
+        "registrant": r"Registrant Name: *(.+)",
         "registrant_number": r"Registry Registrant ID: *(.+)",
         "registrant_country": r"Registry Country: *(.+)",
         "admin_name": r"Admin Name: *(.+)",
@@ -866,7 +862,7 @@ class WhoisMe(WhoisEntry):
         "status": r"Domain Status:(.+)",  # list of statuses
         "registrant_id": r"Registrant ID:(.+)",
         "registrant_name": r"Registrant Name:(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant Organization:(.+)" ),
+        "registrant": r"Registrant Organization:(.+)",
         "registrant_address": r"Registrant Address:(.+)",
         "registrant_address2": r"Registrant Address2:(.+)",
         "registrant_address3": r"Registrant Address3:(.+)",
@@ -927,7 +923,7 @@ class WhoisUk(WhoisEntry):
         "registrar": r"Registrar:\s*(.+)",
         "registrar_url": r"URL:\s*(.+)",
         "status": r"Registration status:\s*(.+)",  # list of statuses
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant:\s*(.+)" ),
+        "registrant": r"Registrant:\s*(.+)",
         "registrant_type": r"Registrant type:\s*(.+)",
         "registrant_street": r"Registrant\'s address:\s*(?:.*\n){2}\s+(.*)",
         "registrant_city": r"Registrant\'s address:\s*(?:.*\n){3}\s+(.*)",
@@ -971,7 +967,7 @@ class WhoisFi(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"domain\.*: *([\S]+)",
-        **non_breaking( [ "registrant", "name" ], r"Holder\s*name\.*: (.+)" ),
+        "registrant": r"Holder\s*name\.*: (.+)",
         "registrant_contry": r"(?<=Holder:)[\s\S]*country:\s*(.*)",
         "address": r"[Holder\w\W]address\.*: (.+)",
         "phone": r"Holder[\s\w\W]+phone\.*: (.+)",
@@ -1008,7 +1004,7 @@ class WhoisJp(WhoisEntry):
     not_found = "No match!!"
     regex: dict[str, str] = {
         "domain_name": r"^(?:a\. )?\[Domain Name\]\s*(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"^(?:g\. )?\[(?:Organization|Registrant)\](.+)" ),
+        "registrant": r"^(?:g\. )?\[(?:Organization|Registrant)\](.+)",
         # 'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
         "organization_type": r"^(?:l\. )?\[Organization Type\]\s*(.+)$",
         "creation_date": r"\[(?:Created on)\]\s*(.+)",
@@ -1067,7 +1063,7 @@ class WhoisRs(WhoisEntry):
         "updated_date": r"Modification date: *(.+)",
         "expiration_date": r"Expiration date: *(.+)",
         "registrar": r"Registrar: *(.+)",
-        **non_breaking( [ "registrant", "name" ], r"Registrant: *(.+)" ),
+        "registrant": r"Registrant: *(.+)",
         "address": r"Registrant: *.+\nAddress: *(.+)",
         "admin_name": r"Administrative contact: *(.+)",
         "admin_address": r"Administrative contact: *.+\nAddress: *(.+)",
@@ -1147,9 +1143,9 @@ class WhoisBr(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"domain: *(.+)\n",
-        **non_breaking( [ "registrant", "registrant_name" ], r"owner: *([\S ]+)" ),
+        "registrant": r"owner: *([\S ]+)",
         "registrant_id": r"ownerid: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"country: *(.+)" ),
+        "registrant_country": r"country: *(.+)",
         "owner_c": r"owner-c: *(.+)",
         "admin_c": r"admin-c: *(.+)",
         "tech_c": r"tech-c: *(.+)",
@@ -1187,7 +1183,7 @@ class WhoisKr(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"Domain Name\s*: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant\s*: *(.+)" ),
+        "registrant": r"Registrant\s*: *(.+)",
         "registrant_address": r"Registrant Address\s*: *(.+)",
         "registrant_postal_code": r"Registrant Zip Code\s*: *(.+)",
         "admin_name": r"Administrative Contact\(AC\)\s*: *(.+)",
@@ -1214,7 +1210,7 @@ class WhoisPt(WhoisEntry):
         "domain_name": r"Domain: *(.+)",
         "creation_date": r"Creation Date: *(.+)",
         "expiration_date": r"Expiration Date: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Owner Name: *(.+)" ),
+        "registrant": r"Owner Name: *(.+)",
         "registrant_street": r"Owner Address: *(.+)",
         "registrant_city": r"Owner Locality: *(.+)",
         "registrant_postal_code": r"Owner ZipCode: *(.+)",
@@ -1270,12 +1266,12 @@ class WhoisDe(WhoisEntry):
         "address": r"Address: *(.+)",
         "registrant_postal_code": r"PostalCode: *(.+)",
         "city": r"City: *(.+)",
-        **non_breaking( [ "registrant_country", "country_code" ], r"CountryCode: *(.+)" ),
+        "registrant_country": r"CountryCode: *(.+)",
         "phone": r"Phone: *(.+)",
         "fax": r"Fax: *(.+)",
         "name_servers": r"Nserver: *(.+)",  # list of name servers
         "emails": EMAIL_REGEX,  # list of email addresses
-        **non_breaking( [ "creation_date", "created" ], r"created: *(.+)" ),
+        "creation_date": r"created: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -1293,11 +1289,11 @@ class WhoisAt(WhoisEntry):
         "registrar": r"registrar: *(.+)",
         "name_servers": r"nserver: *(.+)",
         "name": r"personname: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"organization: *(.+)" ),
+        "registrant": r"organization: *(.+)",
         "address": r"street address: *(.+)",
         "registrant_postal_code": r"postal code: *(.+)",
         "city": r"city: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"country: *(.+)" ),
+        "registrant_country": r"country: *(.+)",
         "phone": r"phone: *(.+)",
         "fax": r"fax-no: *(.+)",
         "updated_date": r"changed: *(.+)",
@@ -1350,12 +1346,12 @@ class WhoisInfo(WhoisEntry):
         "status": r"Status: *(.+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email addresses
         "name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
     }
 
     def __init__(self, domain, text):
@@ -1392,7 +1388,7 @@ class WhoisBz(WhoisRu):
         "status": r"Domain Status: *(.+)",  # list of statuses
         "registrant_id": r"Registry Registrant ID: *(.+)",
         "registrant_name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "registrant_street": r"Registrant Street: *(.+)",
         "registrant_city": r"Registrant City: *(.+)",
         "registrant_state_province": r"Registrant State/Province: *(.+)",
@@ -1559,7 +1555,7 @@ class WhoisIo(WhoisEntry):
         "registrar_id": r"Registrar IANA ID: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
         "status": r"Domain Status: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "registrant_state_province": r"Registrant State/Province: *(.+)",
         "registrant_country": r"Registrant Country: *(.+)",
         "name_servers": r"Name Server: *(.+)",
@@ -1644,7 +1640,7 @@ class WhoisMobi(WhoisEntry):
         "status": r"Domain Status:(.+)",  # list of statuses
         "registrant_id": r"Registrant ID:(.+)",
         "registrant_name": r"Registrant Name:(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant Organization:(.+)" ),
+        "registrant": r"Registrant Organization:(.+)",
         "registrant_address": r"Registrant Address:(.+)",
         "registrant_address2": r"Registrant Address2:(.+)",
         "registrant_address3": r"Registrant Address3:(.+)",
@@ -1703,7 +1699,7 @@ class WhoisKg(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"Domain\s*([\w]+\.[\w]{2,5})",
         "registrar": r"Domain support: \s*(.+)",
-	**non_breaking( [ "registrant", "registrant_name" ], r"(?<=Administrative Contact)[\s\S]*?Name:(.*)" ),
+	"registrant": r"(?<=Administrative Contact)[\s\S]*?Name:(.*)",
         "registrant_address": r"Address: *(.+)",
         "registrant_phone_number": r"phone: *(.+)",
         "registrant_email": r"Email: *(.+)",
@@ -1727,7 +1723,7 @@ class WhoisChLi(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"\nDomain name:\n*(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Holder of domain name:\s*(?:.*\n){1}\s*(.+)" ),
+        "registrant": r"Holder of domain name:\s*(?:.*\n){1}\s*(.+)",
         "registrant_address": r"Holder of domain name:\s*(?:.*\n){2}\s*(.+)",
         "registrar": r"Registrar:\n*(.+)",
         "creation_date": r"First registration date:\n*(.+)",
@@ -1762,7 +1758,7 @@ class WhoisID(WhoisEntry):
         "status": r"Status:(.+)",  # list of statuses
         "registrant_id": r"Registrant ID:(.+)",
         "registrant_name": r"Registrant Name:(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant Organization:(.+)" ),
+        "registrant": r"Registrant Organization:(.+)",
         "registrant_address": r"Registrant Street1:(.+)",
         "registrant_address2": r"Registrant Street2:(.+)",
         "registrant_address3": r"Registrant Street3:(.+)",
@@ -1787,7 +1783,7 @@ class WhoisSe(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"domain\.*: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"holder\.*: *(.+)" ),
+        "registrant": r"holder\.*: *(.+)",
         "creation_date": r"created\.*: *(.+)",
         "updated_date": r"modified\.*: *(.+)",
         "expiration_date": r"expires\.*: *(.+)",
@@ -1814,12 +1810,12 @@ class WhoisJobs(WhoisEntry):
         "status": r"Domain Status: *(.+)",
         "whois_server": r"Registrar WHOIS Server: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
-        **non_breaking( [ "registrar", "registrar_name" ], r"Registrar: *(.+)" ),
+        "registrar": r"Registrar: *(.+)",
         "registrar_email": r"Registrar Abuse Contact Email: *(.+)",
         "registrar_phone": r"Registrar Abuse Contact Phone: *(.+)",
         "registrant_name": r"Registrant Name: (.+)",
         "registrant_id": r"Registry Registrant ID: (.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant Organization: (.+)" ),
+        "registrant": r"Registrant Organization: (.+)",
         "registrant_city": r"Registrant City: (.*)",
         "registrant_street": r"Registrant Street: (.*)",
         "registrant_state_province": r"Registrant State/Province: (.*)",
@@ -1884,7 +1880,7 @@ class WhoisIt(WhoisEntry):
         "expiration_date": r"(?<! )Expire Date: *(.+)",
         "status": r"Status: *(.+)",  # list of statuses
         "name_servers": r"Nameservers[\s]((?:.+\n)*)",  # servers in one string sep by \n
-        **non_breaking( [ "registrant", "registrant_organization" ], r"(?<=Registrant)[\s\S]*?Organization:(.*)" ),
+        "registrant": r"(?<=Registrant)[\s\S]*?Organization:(.*)",
         "registrant_address": r"(?<=Registrant)[\s\S]*?Address:(.*)",
         "admin_address": r"(?<=Admin Contact)[\s\S]*?Address:(.*)",
         "admin_organization": r"(?<=Admin Contact)[\s\S]*?Organization:(.*)",
@@ -1913,7 +1909,7 @@ class WhoisSa(WhoisEntry):
         "updated_date": r"Last Updated on: *(.+)",
         "name_servers": r"Name Servers:[\s]((?:.+\n)*)",  # servers in one string sep by \n
         "registrar": r"organisation: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ],r"Registrant:\s*(.+)" ),
+        "registrant": r"Registrant:\s*(.+)",
         "registrant_address": r"(?<=Registrant)[\s\S]*?Address:((?:.+\n)*)",
         "admin_address": r"(?<=Administrative Contact)[\s\S]*?Address:((?:.+\n)*)",
         "admin": r"Administrative Contact:\s*(.*)",
@@ -1977,7 +1973,7 @@ class WhoisMx(WhoisEntry):
         "url": r"URL: *(.+)",
         "name_servers": r"DNS: (.*)",  # servers in one string sep by \n
         "registrar": r"Registrar:\s*(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"(?<=Registrant)[\s\S]*?Name:\s*(.*)" ),
+        "registrant": r"(?<=Registrant)[\s\S]*?Name:\s*(.*)",
         "registrant_city": r"(?<=Registrant)[\s\S]*?City:(.*)",
         "registrant_state": r"(?<=Registrant)[\s\S]*?State:(.*)",
         "registrant_country": r"(?<=Registrant)[\s\S]*?Country:(.*)",
@@ -2014,7 +2010,7 @@ class WhoisTw(WhoisEntry):
         "registrar": r"Registration Service Provider: *(.+)",
         "registrar_url": r"Registration Service URL: *(.+)",
         "registrant_name": r"(?<=Registrant:)\s+(.*)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"(?<=Registrant:)\s*(.*)" ),
+        "registrant": r"(?<=Registrant:)\s*(.*)",
         "registrant_city": r"(?<=Registrant:)\s*(?:.*\n){5}\s+(.*),",
         "registrant_street": r"(?<=Registrant:)\s*(?:.*\n){4}\s+(.*)",
         "registrant_state_province": r"(?<=Registrant:)\s*(?:.*\n){5}.*, (.*)",
@@ -2050,7 +2046,7 @@ class WhoisTr(WhoisEntry):
         "frozen_status": r"Frozen Status: *(.+)",
         "status": r"Transfer Status: *(.+)",
         "name_servers": r"[**] Domain servers:((?:\s.+)*)",  # servers in one string sep by \n
-        **non_breaking( [ "registrant", "registrant_name" ], r"(?<=[**] Registrant:)[\s\S]((?:\s.+)*)" ),
+        "registrant": r"(?<=[**] Registrant:)[\s\S]((?:\s.+)*)",
         "admin": r"(?<=[**] Administrative Contact:)[\s\S]*?NIC Handle\s+: (.*)",
         "admin_organization": r"(?<=[**] Administrative Contact:)[\s\S]*?Organization Name\s+: (.*)",
         "admin_address": r"(?<=[**] Administrative Contact)[\s\S]*?Address\s+: (.*)",
@@ -2110,7 +2106,7 @@ class WhoisDk(WhoisEntry):
         "dnssec": r"Dnssec: *(.+)",
         "status": r"Status: *(.+)",
         "registrant_handle": r"Registrant\s*(?:.*\n){1}\s*Handle: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant\s*(?:.*\n){2}\s*Name:\s*(.+)" ),
+        "registrant": r"Registrant\s*(?:.*\n){2}\s*Name:\s*(.+)",
         "registrant_address": r"Registrant\s*(?:.*\n){3}\s*Address: *(.+)",
         "registrant_postal_code": r"Registrant\s*(?:.*\n){4}\s*Postalcode: *(.+)",
         "registrant_city": r"Registrant\s*(?:.*\n){5}\s*City: *(.+)",
@@ -2148,7 +2144,7 @@ class WhoisAi(WhoisEntry):
         "registrar_phone": r"Registrar Abuse Contact Phone:\s*(.+)",
         "registrar_email": r"Registrar Abuse Contact Email:\s*(.+)",
         "registrant_name": r"Registrant\s*Name:\s*(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant\s*Organization:\s*(.+)" ),
+        "registrant": r"Registrant\s*Organization:\s*(.+)",
         "registrant_address": r"Registrant\s*Street:\s*(.+)",
         "registrant_city": r"Registrant\s*City:\s*(.+)",
         "registrant_state": r"Registrant\s*State.*:\s*(.+)",
@@ -2209,7 +2205,7 @@ class WhoisIl(WhoisEntry):
         "registrar_phone": r"Registrar Abuse Contact Phone:\s*(.+)",
         "registrar_email": r"Registrar Abuse Contact Email:\s*(.+)",
         "registrant_name": r"(?:person|Registrant\s*Name):\s*(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant\s*Organization:\s*(.+)" ),
+        "registrant": r"Registrant\s*Organization:\s*(.+)",
         "registrant_address": r"(?:address|Registrant\s*Street):\s*(.+)",
         "registrant_city": r"Registrant\s*City:\s*(.+)",
         "registrant_state": r"Registrant\s*State.*:\s*(.+)",
@@ -2244,11 +2240,11 @@ class WhoisIn(WhoisEntry):
         "creation_date": r"Creation Date: *(.+)|Created On: *(.+)",
         "expiration_date": r"Expiration Date: *(.+)|Registry Expiry Date: *(.+)",
         "name_servers": r"Name Server: *(.+)",
-        **non_breaking( [ "registrant", "organization" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "status": r"Status: *(.+)",
         "emails": EMAIL_REGEX,
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
         "dnssec": r"DNSSEC: *([\S]+)",
     }
 
@@ -2322,7 +2318,7 @@ class WhoisNz(WhoisEntry):
         "address": r"registrant_contact_address\d*:\s*([^\n\r]+)",
         "city": r"registrant_contact_city:\s*([^\n\r]+)",
         "registrant_postal_code": r"registrant_contact_postalcode:\s*([^\n\r]+)",
-        **non_breaking( [ "registrant_country", "country" ], r"registrant_contact_country:\s*([^\n\r]+)" ),
+        "registrant_country": r"registrant_contact_country:\s*([^\n\r]+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -2372,7 +2368,7 @@ class WhoisCz(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"domain: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"registrant: *(.+)" ),
+        "registrant": r"registrant: *(.+)",
         "registrar": r"registrar: *(.+)",
         "creation_date": r"registered: *(.+)",
         "updated_date": r"changed: *(.+)",
@@ -2433,7 +2429,7 @@ class WhoisHr(WhoisEntry):
         "creation_date": r"Creation Date: *(.+)",
         "expiration_date": r"Registrar Registration Expiration Date: *(.+)",
         "name_servers": r"Name Server: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant Name:\s(.+)" ),
+        "registrant": r"Registrant Name:\s(.+)",
         "registrant_address": r"Reigstrant Street:\s*(.+)",
     }
 
@@ -2455,7 +2451,7 @@ class WhoisHk(WhoisEntry):
         "registrar_url": r"Registrar URL: *(.+)",
         "registrar": r"Registrar Name: *(.+)",
         "registrar_email": r"Registrar Contact Information: Email: *(.+)",
-        **non_breaking( [ "registrant", "registrant_company_name" ], r"Registrant Contact Information:\s*Company English Name.*:(.+)" ),
+        "registrant": r"Registrant Contact Information:\s*Company English Name.*:(.+)",
         "registrant_address": r"(?<=Registrant Contact Information:)[\s\S]*?Address: (.*)",
         "registrant_country": r"[Registrant Contact Information\w\W]+Country: ([\S\ ]+)",
         "registrant_email": r"[Registrant Contact Information\w\W]+Email: ([\S\ ]+)",
@@ -2507,7 +2503,7 @@ class WhoisUA(WhoisEntry):
         "registrar_city": r"(?<=Registrar:)[\s\W\w]*?city:\s+(.*)\n",
         "registrar_address": r"(?<=Registrar:)[\s\W\w]*?abuse-postal:\s+(.*)\n",
         "registrar_email": r"(?<=Registrar:)[\s\W\w]*?abuse-email:(.*)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"(?<=Registrant:)[\s\W\w]*?organization-loc:(.*)" ),
+        "registrant": r"(?<=Registrant:)[\s\W\w]*?organization-loc:(.*)",
         "registrant_country": r"(?<=Registrant:)[\s\W\w]*?country-loc:(.*)",
         "registrant_city": r"(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){2}address-loc:\s+(.*)\n",
         "registrant_state": r"(?<=Registrant:)[\s\W\w]*?(?:address\-loc:\s+.*\n){1}address-loc:\s+(.*)\n",
@@ -2647,7 +2643,7 @@ class WhoisHn(WhoisEntry):
         "whois_server": r"WHOIS Server: *(.+)",
         "registrar_url": r"Registrar URL: *(.+)",
         "registrar": r"Registrar: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant Name: (.+)" ),
+        "registrant": r"Registrant Name: (.+)",
         "registrant_id": r"Registrant ID: (.+)",
         "registrant_organization": r"Registrant Organization: (.+)",
         "registrant_city": r"Registrant City: (.*)",
@@ -2718,7 +2714,7 @@ class WhoisLat(WhoisEntry):
         "registrar_phone": r"Registrar Abuse Contact Phone: *(.+)",
         "registrant_name": r"Registrant Name: (.+)",
         "registrant_id": r"Registry Registrant ID: (.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant Organization: (.+)" ),
+        "registrant": r"Registrant Organization: (.+)",
         "registrant_city": r"Registrant City: (.*)",
         "registrant_street": r"Registrant Street: (.*)",
         "registrant_state_province": r"Registrant State/Province: (.*)",
@@ -2803,12 +2799,12 @@ class WhoisApp(WhoisEntry):
         "registrant_country": r"Registrant Country: *(.+)",
         "dnssec": r"dnssec: *([\S]+)",
         "name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant\s*Organization: *(.+)" ),
+        "registrant": r"Registrant\s*Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"sRegistrant Country: *(.+)" ),
+        "registrant_country": r"sRegistrant Country: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -2835,12 +2831,12 @@ class WhoisMoney(WhoisEntry):
         "registrant_phone": r"Registrant Phone: *(.+)",
         "dnssec": r"DNSSEC: *(.+)",
         "name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -2863,7 +2859,7 @@ class WhoisAr(WhoisEntry):
         "name_servers": r"nserver: *(.+) \(.*\)",  # list of name servers
         "status": r"Domain Status: *(.+)",
         "emails": EMAIL_REGEX,  # list of emails
-        **non_breaking( [ "registrant", "name" ], r"name: *(.+)" ),
+        "registrant": r"name: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -2885,7 +2881,7 @@ class WhoisBy(WhoisEntry):
         "name_servers": r"Name Server: *(.+)",  # list of name servers
         "status": r"Domain Status: *(.+)",  # could not be found in sample, but might be correct
         "name": r"Person: *(.+)",  # could not be found in sample, but might be correct
-        **non_breaking( [ "registrant", "org" ], r"Org: *(.+)" ),
+        "registrant": r"Org: *(.+)",
         "registrant_country": r"Country: *(.+)",
         "registrant_address": r"Address: *(.+)",
         "registrant_phone": r"Phone: *(.+)",
@@ -2912,7 +2908,7 @@ class WhoisCr(WhoisEntry):
         "status": r"status: *(.+)",
         "contact": r"contact: *(.+)",
         "name": r"name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"org: *(.+)" ),
+        "registrant": r"org: *(.+)",
         "address": r"address: *(.+)",
         "phone": r"phone: *(.+)",
     }
@@ -2989,7 +2985,7 @@ class WhoisDo(WhoisEntry):
         "registrar_country": r"Registrar Country: *(.+)",
         "status": r"Domain Status: *(.+)",  # list of statuses
         "registrant_id": r"Registrant ID: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"Registrant Name: *(.+)" ),
+        "registrant": r"Registrant Name: *(.+)",
         "registrant_organization": r"Registrant Organization: *(.+)",
         "registrant_address": r"Registrant Street: *(.+)",
         "registrant_city": r"Registrant City: *(.+)",
@@ -3068,7 +3064,7 @@ class WhoisSi(WhoisEntry):
         "domain_name": r"domain: *(.+)",
         "registrar": r"registrar: *(.+)",
         "name_servers": r"nameserver: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"registrant:\s*(.+)" ),
+        "registrant": r"registrant:\s*(.+)",
         "creation_date": r"created: *(.+)",
         "expiration_date": r"expire: *(.+)",
     }
@@ -3107,7 +3103,7 @@ class WhoisKZ(WhoisEntry):
         "registrant": r"(?<=Organization Using Domain Name)[\s\S]*Organization Name\.*:\s*(.*)",
         "registrant_country": r"(?<=Organization Using Domain Name)[\s\S]*Country\.*:\s*(.*)",
         "creation_date": r"Domain created: *(.+)",
-        **non_breaking( [ "updated_date", "last_modified" ], r"Last modified : *(.+)" ),
+        "updated_date": r"Last modified : *(.+)",
         "name_servers": r"server.*: *(.+)",  # list of name servers
         "status": r" (.+?) -",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email addresses
@@ -3127,7 +3123,7 @@ class WhoisIR(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"domain: *(.+)",
         "registrar": r"organisation:\s*(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"(?:\(Domain Holder\)|person): *(.+)" ),
+        "registrant": r"(?:\(Domain Holder\)|person): *(.+)",
         "registrant_organization": r"org: *(.+)",
         "created_date": r"created: *(.+)",
         "updated_date": r"(?:changed|last-updated): *(.+)",
@@ -3148,7 +3144,7 @@ class WhoisLife(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"Domain Name:: *(.+)",
-        **non_breaking( [ "registrar", "registrar_name" ], r"Registrar: *(.+)" ),
+        "registrar": r"Registrar: *(.+)",
         "registrant": r"Registrant Organization: *(.+)",
         "registrant_country": r"Registrant Country: *(.+)",
         "updated_date": r"Updated Date: *(.+)",
@@ -3259,7 +3255,7 @@ class WhoisZa(WhoisEntry):
         "status": r"Domain Status: *(.+)",
         "registrant_id": r"Registry Registrant ID: *(.+)",
         "registrant_name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "registrant_organization" ], r"Registrant Organization: *(.+)" ),
+        "registrant": r"Registrant Organization: *(.+)",
         "registrant_street": r"Registrant Street: *(.+)",
         "registrant_city": r"Registrant City: *(.+)",
         "registrant_state_province": r"Registrant State/Province: *(.+)",
@@ -3344,7 +3340,7 @@ class WhoisBw(WhoisEntry):
         "creation_date": r"Creation Date: (.+)",
         "registrar": r"Registrar: (.+)",
         "registrant_name": r"RegistrantName: *(.+)",
-        **non_breaking( [ "registrant", "registrant_org" ], r"Registrant\s*Organization: (.+)" ),
+        "registrant": r"Registrant\s*Organization: (.+)",
         "registrant_address": r"RegistrantStreet: *(.+)",
         "registrant_city": r"RegistrantCity: *(.+)",
         "registrant_country": r"Registrant\s*Country\.*: *(.+)",
@@ -3447,12 +3443,12 @@ class WhoisSite(WhoisEntry):
         "emails": EMAIL_REGEX,  # list of email s
         "dnssec": r"DNSSEC: *([\S]+)",
         "name": r"Registrant Name: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant\s*Organization: *(.+)" ),
+        "registrant": r"Registrant\s*Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -3478,12 +3474,12 @@ class WhoisDesign(WhoisEntry):
         "dnssec": r"DNSSEC: *([\S]+)",
         "name": r"Registrant Name: *(.+)",
         "phone": r"Registrant Phone: *(.+)",
-        **non_breaking( [ "registrant", "org" ], r"Registrant\s*Organization: *(.+)" ),
+        "registrant": r"Registrant\s*Organization: *(.+)",
         "address": r"Registrant Street: *(.+)",
         "city": r"Registrant City: *(.+)",
         "state": r"Registrant State/Province: *(.+)",
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
-        **non_breaking( [ "registrant_country", "country" ], r"Registrant Country: *(.+)" ),
+        "registrant_country": r"Registrant Country: *(.+)",
     }
 
     def __init__(self, domain: str, text: str):
@@ -3501,7 +3497,7 @@ class WhoisEdu(WhoisEntry):
         "registrar": r"domain: *EDU\n*organisation: *(.+)",
         "registrant" : r"Registrant:\n*(.+)",
         "creation_date": "Domain record activated: *(.+)",
-        **non_breaking( [ "updated_date", "lats_modified" ], "Domain record last updated: *(.+)" ),
+        "updated_date": "Domain record last updated: *(.+)",
         "expiration_date": "Domain expires: *(.+)",
     }
 
@@ -3517,12 +3513,12 @@ class WhoisLv(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"\[Domain\]\nDomain: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ], r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*(.+)" ),
+        "registrant": r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*(.+)",
         "registrant_address": r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*.*?\s*Address:\s*(.+)",
         "registrant_country": r"\[Holder\]\s*Type:\s*.*?\s*Country:\s*(.+)",
         "tech_name": r"\[Tech\]\n\s+Type:\s*.*?\s*Country:\s*.*?\s*Name:\s*(.+)",
         "tech_address": r"\[Tech\]\s*Type:\s*.*?\s*Country:\s*.*?\s*Name: .*\n\s+Address: *(.+)",
-        **non_breaking( [ "registrar", "registrar_name" ], r"\[Registrar\]\s*Type: .*\s*Name: *(.+)" ),
+        "registrar": r"\[Registrar\]\s*Type: .*\s*Name: *(.+)",
         "registrar_address": r"\[Registrar\]\s*Type: .*\s*Name: .*\s*Address: *(.+)",
         "name_servers": r"Nserver: *(.+)",
         "updated_date": r"\[Whois\]\nUpdated: (.+)",
@@ -3539,7 +3535,7 @@ class WhoisGa(WhoisEntry):
 
     regex: dict[str, str] = {
         "domain_name": r"Nom de domaine: *(.+)",
-        **non_breaking( [ "registrant", "registrant_name" ],  r"\[HOLDER\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+(.*)" ),
+        "registrant": r"\[HOLDER\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+(.*)",
         "registrant_address": r"\[HOLDER\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+.*\r\nAdresse:\s+(.*)",
         "tech_name": r"\[TECH_C\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+(.*)",
         "tech_address": r"\[TECH_C\]\r\nID Contact:.+\r\nType:.+\r\nNom:\s+.*\r\nAdresse:\s+(.*)",
