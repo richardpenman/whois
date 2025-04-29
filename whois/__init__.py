@@ -33,6 +33,7 @@ def whois(
     executable_opts: Optional[list[str]] = None,
     inc_raw: bool = False,
     quiet: bool = False,
+    ignore_socket_errors: bool = True,
     convert_punycode: bool = True,
 ) -> dict[str, Any]:
     """
@@ -42,6 +43,7 @@ def whois(
     flags: flags to pass to the whois client (default 0)
     inc_raw: whether to include the raw text from whois in the result (default False)
     quiet: whether to avoid printing output (default False)
+    ignore_socket_errors: whether to ignore socket errors (default True)
     convert_punycode: whether to convert the given URL punycode (default True)
     """
     # clean domain to expose netloc
@@ -74,7 +76,7 @@ def whois(
         nic_client = NICClient()
         if convert_punycode:
             domain = domain.encode("idna").decode("utf-8")
-        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet)
+        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
