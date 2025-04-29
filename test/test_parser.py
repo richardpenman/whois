@@ -166,64 +166,62 @@ class TestParser(unittest.TestCase):
     def test_ai_parse(self):
         data = """
 Domain Name: google.ai
-Registry Domain ID: 325702_nic_ai
-Registry WHOIS Server: whois.nic.ai
-Creation Date: 2017-12-16T05:37:20.801Z
+Registry Domain ID: 6eddd132ab114b12bd2bd4cf9c492a04-DONUTS
+Registrar WHOIS Server: whois.markmonitor.com
+Registrar URL: http://www.markmonitor.com
+Updated Date: 2025-01-23T22:17:03Z
+Creation Date: 2017-12-16T05:37:20Z
+Registry Expiry Date: 2025-09-25T05:37:20Z
+Registrar: MarkMonitor Inc.
+Registrar IANA ID: 292
+Registrar Abuse Contact Email: abusecomplaints@markmonitor.com
+Registrar Abuse Contact Phone: +1.2083895740
+Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
 Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
 Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited
-Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
-Registrar: Markmonitor
-Registrar Abuse Contact Email: ccops@markmonitor.com
-Registrar Abuse Contact Phone: +1.2083895740
-Registry RegistrantID: Vlmri-g0QZU
-RegistrantName: Domain Administrator
-RegistrantOrganization: Google LLC
-RegistrantStreet: 1600 Amphitheatre Parkway
-RegistrantCity: Mountain View
-RegistrantState/Province: CA
-RegistrantPostal Code: 94043
-RegistrantCountry: US
-RegistrantPhone: +1.6502530000
-RegistrantFax: +1.6502530001
-RegistrantEmail: dns-admin@google.com
-Registry AdminID: F4699-Tinjk
-AdminName: Domain Administrator
-AdminOrganization: Google LLC
-AdminStreet: 1600 Amphitheatre Parkway
-AdminCity: Mountain View
-AdminState/Province: CA
-AdminPostal Code: 94043
-AdminCountry: US
-AdminPhone: +1.6502530000
-AdminFax: +1.6502530001
-AdminEmail: dns-admin@google.com
-Registry TechID: htY0V-EnRVF
-TechName: Domain Administrator
-TechOrganization: Google LLC
-TechStreet: 1600 Amphitheatre Parkway
-TechCity: Mountain View
-TechState/Province: CA
-TechPostal Code: 94043
-TechCountry: US
-TechPhone: +1.6502530000
-TechFax: +1.6502530001
-TechEmail: dns-admin@google.com
-Registry BillingID: REFum-eZX0X
-BillingName: CCOPS Billing
-BillingOrganization: MarkMonitor Inc.
-BillingStreet: 3540 East Longwing Lane
-BillingStreet: Suite 300
-BillingCity: Meridian
-BillingState/Province: Idaho
-BillingPostal Code: 83646
-BillingCountry: US
-BillingPhone: +1.2083895740
-BillingFax: +1.2083895771
-BillingEmail: ccopsbilling@markmonitor.com
+Registry Registrant ID: 93b24aca40c6451785c486627aa03267-DONUTS
+Registrant Name: Domain Administrator
+Registrant Organization: Google LLC
+Registrant Street: 1600 Amphitheatre Parkway
+Registrant City: Mountain View
+Registrant State/Province: CA
+Registrant Postal Code: 94043
+Registrant Country: US
+Registrant Phone: +1.6502530000
+Registrant Phone Ext: 
+Registrant Fax: +1.6502530001
+Registrant Fax Ext: 
+Registrant Email: dns-admin@google.com
+Registry Admin ID: 93b24aca40c6451785c486627aa03267-DONUTS
+Admin Name: Domain Administrator
+Admin Organization: Google LLC
+Admin Street: 1600 Amphitheatre Parkway
+Admin City: Mountain View
+Admin State/Province: CA
+Admin Postal Code: 94043
+Admin Country: US
+Admin Phone: +1.6502530000
+Admin Phone Ext: 
+Admin Fax: +1.6502530001
+Admin Fax Ext: 
+Admin Email: dns-admin@google.com
+Registry Tech ID: 93b24aca40c6451785c486627aa03267-DONUTS
+Tech Name: Domain Administrator
+Tech Organization: Google LLC
+Tech Street: 1600 Amphitheatre Parkway
+Tech City: Mountain View
+Tech State/Province: CA
+Tech Postal Code: 94043
+Tech Country: US
+Tech Phone: +1.6502530000
+Tech Phone Ext: 
+Tech Fax: +1.6502530001
+Tech Fax Ext: 
+Tech Email: dns-admin@google.com
+Name Server: ns2.zdns.google
 Name Server: ns3.zdns.google
 Name Server: ns4.zdns.google
 Name Server: ns1.zdns.google
-Name Server: ns2.zdns.google
 DNSSEC: unsigned
         """
 
@@ -237,23 +235,24 @@ DNSSEC: unsigned
             "admin_phone": "+1.6502530000",
             "admin_postal_code": "94043",
             "admin_state": "CA",
-            "billing_address": ["3540 East Longwing Lane", "Suite 300"],
-            "billing_city": "Meridian",
-            "billing_country": "US",
-            "billing_email": "ccopsbilling@markmonitor.com",
-            "billing_name": "CCOPS Billing",
-            "billing_org": "MarkMonitor Inc.",
-            "billing_phone": "+1.2083895740",
-            "billing_postal_code": "83646",
-            "billing_state": "Idaho",
-            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20, 801000),
-            "domain_id": "325702_nic_ai",
+            "billing_address": None,
+            "billing_city": None,
+            "billing_country": None,
+            "billing_email": None,
+            "billing_name": None,
+            "billing_org": None,
+            "billing_phone": None,
+            "billing_postal_code": None,
+            "billing_state": None,
+            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20),
+            "domain_id": "6eddd132ab114b12bd2bd4cf9c492a04-DONUTS",
             "domain_name": "google.ai",
+            'expiration_date': datetime.datetime(2025, 9, 25, 5, 37, 20),
             "name_servers": [
+                "ns2.zdns.google",
                 "ns3.zdns.google",
                 "ns4.zdns.google",
                 "ns1.zdns.google",
-                "ns2.zdns.google",
             ],
             "registrant_address": "1600 Amphitheatre Parkway",
             "registrant_city": "Mountain View",
@@ -264,8 +263,8 @@ DNSSEC: unsigned
             "registrant_phone": "+1.6502530000",
             "registrant_postal_code": "94043",
             "registrant_state": "CA",
-            "registrar": "Markmonitor",
-            "registrar_email": "ccops@markmonitor.com",
+            "registrar": "MarkMonitor Inc.",
+            "registrar_email": "abusecomplaints@markmonitor.com",
             "registrar_phone": "+1.2083895740",
             "tech_address": "1600 Amphitheatre Parkway",
             "tech_city": "Mountain View",
@@ -277,11 +276,13 @@ DNSSEC: unsigned
             "tech_postal_code": "94043",
             "tech_state": "CA",
             "status": [
-              "clientTransferProhibited https://icann.org/epp#clientTransferProhibited",
-              "clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited",
-              "clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited"
-            ],
+                'clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited',
+                'clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
+                'clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited'
+            ]
         }
+        with open('samples/expected/google.ai', 'w') as f:
+            json.dump(expected_results, f, default=str)
         self._parse_and_compare("google.ai", data, expected_results)
 
     def test_cn_parse(self):
@@ -612,7 +613,7 @@ Hostname:             p.nic.dk
     ):
         actual_results = whois_entry.load(domain_name, data)
         # import pprint; pprint.pprint(actual_results)
-        self.assertEqual(actual_results, expected_results)
+        self.assertEqual(expected_results, actual_results)
 
     def test_sk_parse(self):
         data = """
