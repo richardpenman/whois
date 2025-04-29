@@ -240,11 +240,11 @@ class NICClient:
             nhost = None
             response_str = response.decode("utf-8", "replace")
             if 'with "=xxx"' in response_str:
-                return self.whois(query, hostname, flags, True)
+                return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response_str, hostname, query)
             if nhost is not None and nhost != "":
-                response_str += self.whois(query, nhost, 0, quiet=True, ignore_socket_errors=ignore_socket_errors)
+                response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
         except socket.error as e:
             if not quiet:
                 logger.error(
