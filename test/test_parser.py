@@ -281,8 +281,6 @@ DNSSEC: unsigned
                 'clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited'
             ]
         }
-        with open('samples/expected/google.ai', 'w') as f:
-            json.dump(expected_results, f, default=str)
         self._parse_and_compare("google.ai", data, expected_results)
 
     def test_cn_parse(self):
