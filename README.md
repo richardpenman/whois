@@ -52,6 +52,13 @@ Run test cases:
 python -m pytest
 ```
 
+# Using a proxy.
+
+Set your environment SOCKS variable
+```bash
+export SOCKS="username:password@proxy_address:port"
+```
+
 # Problems?
 
 Pull requests are welcome!
