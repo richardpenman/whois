@@ -2105,6 +2105,7 @@ class WhoisAi(WhoisEntry):
         "domain_id": r"Registry Domain ID\s*:\s*(.+)",
         "status": r"Domain Status:\s*(.+)",
         "creation_date": r"Creation Date:\s*(.+)",
+        "updated_date": r"Updated Date:\s*(.+)",
         "expiration_date": r"Registry Expiry Date: *(.+)",
         "registrar": r"Registrar:\s*(.+)",
         "registrar_phone": r"Registrar Abuse Contact Phone:\s*(.+)",
