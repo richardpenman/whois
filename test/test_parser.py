@@ -245,6 +245,7 @@ DNSSEC: unsigned
             "billing_postal_code": None,
             "billing_state": None,
             "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20),
+            "updated_date": datetime.datetime(2016, 4, 29, 0, 0),
             "domain_id": "6eddd132ab114b12bd2bd4cf9c492a04-DONUTS",
             "domain_name": "google.ai",
             'expiration_date': datetime.datetime(2025, 9, 25, 5, 37, 20),
