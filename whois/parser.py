@@ -71,6 +71,7 @@ KNOWN_FORMATS: list[str] = [
     "%Y-%b-%d.",  # 2024-Apr-02.
 ]
 
+
 def datetime_parse(s: str) -> Union[str, datetime]:
     for known_format in KNOWN_FORMATS:
         try:
@@ -413,6 +414,8 @@ class WhoisEntry(dict):
             return WhoisCo(domain, text)
         elif domain.endswith(".ga"):
             return WhoisGa(domain, text)
+        elif domain.endswith(".cm"):
+            return WhoisCm(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -441,7 +444,7 @@ class WhoisCl(WhoisEntry):
                 text,
                 self.regex,
                 lambda x: x.replace(" CLST", "").replace(" CLT", "")
-                )
+            )
 
 
 class WhoisSG(WhoisEntry):
@@ -3465,6 +3468,7 @@ class WhoisLv(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
 class WhoisGa(WhoisEntry):
     """Whois parser for .ga domains"""
 
@@ -3497,3 +3501,24 @@ class WhoisCo(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+
+class WhoisCm(WhoisEntry):
+    """Whois parser for .cm domains"""
+
+    regex: dict[str, str] = {
+        "domain_name": r"Domain Name: *(.+)",
+        "registry_domain_id": r"Registry Domain ID: *(.+)",
+        "registrar": r"Registrar: *(.+)",
+        "reseller": r"Reseller: *(.+)",
+        "updated_date": r"Updated Date: *(.+)",
+        "creation_date": r"Creation Date: *(.+)",
+        "expiration_date": r"Expir\w+ Date: *(.+)",
+        "name_servers": r"Name Server: *(.+)",  # list of name servers
+        "status": r"Status: *(.+)",  # list of statuses
+    }
+
+    def __init__(self, domain: str, text: str):
+        if 'No match for "' in text:
+            raise WhoisDomainNotFoundError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)

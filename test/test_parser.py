@@ -841,6 +841,54 @@ DNSSEC: unsigned
         }
         self._parse_and_compare("google.co.bw", data, expected_results)
 
+    def test_cm_parse(self):
+        data = """
+Domain Name: icp.cm
+Registry Domain ID: 1104110-RegCM
+Updated Date: 2025-05-27T04:46:44.214Z
+Creation Date: 2024-08-24T13:17:43.633Z
+Registry Expiry Date: 2026-08-24T13:17:44.316Z
+Domain Status: ok https://icann.org/epp#ok
+Registrar: Netcom.cm Sarl
+Reseller: NetSto Inc. - https://www.netsto.com
+Name Server: ns1.huaweicloud-dns.com
+Name Server: ns1.huaweicloud-dns.net
+Name Server: ns1.huaweicloud-dns.cn
+Name Server: ns1.huaweicloud-dns.org
+>>> Last update of WHOIS database: 2025-05-28T04:47:00.968Z <<<
+
+For more information on EPP status codes, please visit https://icann.org/epp
+
+TERMS OF USE: You are not authorized to access or query our Whois
+database through the use of electronic processes that are high-volume and
+automated.  Whois database is provided by ANTIC as a service to the internet
+community on behalf of ANTIC accredited registrars and resellers.
+
+The data is for information purposes only. ANTIC does not
+guarantee its accuracy. By submitting a Whois query, you agree to abide
+by the following terms of use: You agree that you may use this Data only
+for lawful purposes and that under no circumstances will you use this Data
+to: (1) allow, enable, or otherwise support the transmission of mass
+unsolicited, commercial advertising or solicitations via e-mail, telephone,
+or facsimile; or (2) enable high volume, automated, electronic processes
+that apply to ANTIC members (or their computer systems). The
+compilation, repackaging, dissemination or other use of this Data is prohibited.
+"""
+
+        expected_results = {
+            "domain_name": "icp.cm",
+            "registry_domain_id": "1104110-RegCM",
+            "updated_date": datetime.datetime(2025, 5, 27, 4, 46, 44, 214000),
+            "creation_date": datetime.datetime(2024, 8, 24, 13, 17, 43, 633000),
+            "expiration_date": datetime.datetime(2026, 8, 24, 13, 17, 44, 316000),
+            "status": "ok https://icann.org/epp#ok",
+            "registrar": "Netcom.cm Sarl",
+            "reseller": "NetSto Inc. - https://www.netsto.com",
+            "name_servers": ['ns1.huaweicloud-dns.com', 'ns1.huaweicloud-dns.net', 'ns1.huaweicloud-dns.cn',
+                             'ns1.huaweicloud-dns.org']
+        }
+        self._parse_and_compare("icp.cm", data, expected_results)
+
 
 if __name__ == "__main__":
     unittest.main()
