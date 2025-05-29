@@ -50,6 +50,7 @@ class NICClient:
     CA_HOST = "whois.ca.fury.ca"
     CHAT_HOST = "whois.nic.chat"
     CL_HOST = "whois.nic.cl"
+    CM_HOST = "whois.netcom.cm"
     CR_HOST = "whois.nic.cr"
     DEFAULT_PORT = "nicname"
     DENICHOST = "whois.denic.de"
@@ -293,6 +294,8 @@ class NICClient:
             return NICClient.CHAT_HOST
         elif tld == "cl":
             return NICClient.CL_HOST
+        elif tld == "cm":
+            return NICClient.CM_HOST
         elif tld == "cr":
             return NICClient.CR_HOST
         elif tld == "de":
