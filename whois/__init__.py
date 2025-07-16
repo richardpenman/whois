@@ -13,11 +13,6 @@ from .parser import WhoisEntry
 from .whois import NICClient
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler.setFormatter(formatter)
-logger.addHandler(handler)
 
 # thanks to https://www.regextester.com/104038
 IPV4_OR_V6: Pattern[str] = re.compile(
