@@ -3051,7 +3051,7 @@ class WhoisKZ(WhoisEntry):
         "registrar_created": r"Registr?ar Created: *(.+)",
         "registrar": r"Current Registr?ar: *(.+)",
         "creation_date": r"Domain created: *(.+)",
-        "last_modified": r"Last modified : *(.+)",
+        "updated_date": r"Last modified : *(.+)",
         "name_servers": r"server.*: *(.+)",  # list of name servers
         "status": r" (.+?) -",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email addresses
@@ -3436,7 +3436,7 @@ class WhoisEdu(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": "Domain name: *(.+)",
         "creation_date": "Domain record activated: *(.+)",
-        "last_modified": "Domain record last updated: *(.+)",
+        "updated_date": "Domain record last updated: *(.+)",
         "expiration_date": "Domain expires: *(.+)",
     }
 
