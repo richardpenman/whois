@@ -3436,7 +3436,7 @@ class WhoisEdu(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": "Domain name: *(.+)",
         "creation_date": "Domain record activated: *(.+)",
-        "lats_modified": "Domain record last updated: *(.+)",
+        "last_modified": "Domain record last updated: *(.+)",
         "expiration_date": "Domain expires: *(.+)",
     }
 
