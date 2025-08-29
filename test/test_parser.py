@@ -245,7 +245,6 @@ DNSSEC: unsigned
             "billing_postal_code": None,
             "billing_state": None,
             "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20),
-            "updated_date": datetime.datetime(2016, 4, 29, 0, 0),
             "domain_id": "6eddd132ab114b12bd2bd4cf9c492a04-DONUTS",
             "domain_name": "google.ai",
             'expiration_date': datetime.datetime(2025, 9, 25, 5, 37, 20),
@@ -280,7 +279,8 @@ DNSSEC: unsigned
                 'clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited',
                 'clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
                 'clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited'
-            ]
+            ],
+            "updated_date": datetime.datetime(2025, 1, 23, 22, 17, 3)
         }
         self._parse_and_compare("google.ai", data, expected_results)
 
