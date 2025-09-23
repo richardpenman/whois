@@ -72,6 +72,8 @@ def whois(
         if convert_punycode:
             domain = domain.encode("idna").decode("utf-8")
         text = nic_client.whois_lookup(None, domain, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+        if not text:
+            raise WhoisError("Whois command returned no output")
     entry = WhoisEntry.load(domain, text)
     if inc_raw:
         entry["raw"] = text
