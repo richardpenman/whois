@@ -623,7 +623,7 @@ class WhoisNl(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.endswith("is free"):
+        if text.rstrip().endswith("is free"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -944,7 +944,7 @@ class WhoisFr(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "No entries found" in text:
+        if "No entries found" in text or "NOT FOUND" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1033,7 +1033,7 @@ class WhoisAU(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.strip() == "No Data Found":
+        if text.strip() == "No Data Found" or text.lstrip().startswith("Domain not found"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1085,7 +1085,7 @@ class WhoisEu(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.strip() == "Status: AVAILABLE":
+        if text.strip() == "Status: AVAILABLE" or "Status: AVAILABLE" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1147,7 +1147,7 @@ class WhoisBr(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Not found:" in text:
+        if "Not found:" in text or "No match for " in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1279,7 +1279,7 @@ class WhoisAt(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Status: free" in text:
+        if "Status: free" in text or text.rstrip().endswith('nothing found'):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1301,7 +1301,7 @@ class WhoisBe(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Status: AVAILABLE" in text:
+        if "Status: AVAILABLE" in text or "Status:\tAVAILABLE" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1540,7 +1540,7 @@ class WhoisIo(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "is available for purchase" in text:
+        if "is available for purchase" in text or 'Domain not found.' in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1868,7 +1868,7 @@ class WhoisIt(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "not found." in text:
+        if "not found." in text or "Status:             AVAILABLE" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2083,7 +2083,7 @@ class WhoisDk(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "No match for " in text:
+        if "No match for " in text or "No entries found for the selected source" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2154,7 +2154,7 @@ class WhoisAi(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "not registered" in text:
+        if "not registered" in text or text.startswith("Domain not found."):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2211,7 +2211,7 @@ class WhoisIn(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "NOT FOUND" in text:
+        if "NOT FOUND" in text or "is available for registration" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
