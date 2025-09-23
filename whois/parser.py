@@ -2267,13 +2267,14 @@ class WhoisNz(WhoisEntry):
     """Whois parser for .nz domains"""
 
     regex: dict[str, str] = {
-        "domain_name": r"domain_name:\s*([^\n\r]+)",
-        "registrar": r"registrar_name:\s*([^\n\r]+)",
-        "updated_date": r"domain_datelastmodified:\s*([^\n\r]+)",
-        "creation_date": r"domain_dateregistered:\s*([^\n\r]+)",
+        "domain_name": r"(?:Domain Name|domain_name):\s*([^\n\r]+)",
+        "registrar": r"(?:Registrar|registrar_name):\s*([^\n\r]+)",
+        "registrar_url": r"Registrar URL:\s*([^\n\r]+)",
+        "updated_date": r"(?:Updated Date|domain_datelastmodified):\s*([^\n\r]+)",
+        "creation_date": r"(?:Creation Date|domain_dateregistered):\s*([^\n\r]+)",
         "expiration_date": r"domain_datebilleduntil:\s*([^\n\r]+)",
-        "name_servers": r"ns_name_\d*:\s*([^\n\r]+)",  # list of name servers
-        "status": r"status:\s*([^\n\r]+)",  # list of statuses
+        "name_servers": r"(?:Name Server|ns_name_\d*):\s*([^\n\r]+)",  # list of name servers
+        "status": r"(?:Domain Status|status):\s*([^\n\r]+)",  # list of statuses
         "emails": EMAIL_REGEX,  # list of email s
         "name": r"registrant_contact_name:\s*([^\n\r]+)",
         "address": r"registrant_contact_address\d*:\s*([^\n\r]+)",
@@ -2283,7 +2284,7 @@ class WhoisNz(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "no matching objects" in text:
+        if "no matching objects" in text or text.startswith('Not found'):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
