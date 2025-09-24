@@ -191,8 +191,11 @@ class NICClient:
             if not d:
                 break
         s.close()
-        match = re.search(r"whois:\s+(.*?)\n", response.decode("utf-8"))
-        return match.group(1) if match else None
+        match = re.search(r"whois:[ \t]+(.*?)\n", response.decode("utf-8"))
+        if match and match.group(1):
+            return match.group(1)
+        else:
+            return None
 
     def whois(
         self,
