@@ -416,6 +416,8 @@ class WhoisEntry(dict):
             return WhoisGa(domain, text)
         elif domain.endswith(".cm"):
             return WhoisCm(domain, text)
+        elif domain.endswith(".hu"):
+            return WhoisHu(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -3520,6 +3522,21 @@ class WhoisCm(WhoisEntry):
 
     def __init__(self, domain: str, text: str):
         if 'No match for "' in text:
+            raise WhoisDomainNotFoundError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisHu(WhoisEntry):
+    """Whois parser for .hu domains"""
+
+    regex: dict[str, str] = {
+        "domain_name": r"domain: *(.+)",
+        "creation_date": r"record created: *(.+)",
+    }
+
+    def __init__(self, domain: str, text: str):
+        if text.strip().endswith("No match"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
