@@ -122,7 +122,7 @@ class WhoisEntry(dict):
         "registrant_postal_code": r"Registrant Postal Code: *(.+)",
         "country": r"Registrant Country: *(.+)",
         "tech_name": r"Tech Name: *(.+)",
-        "tech_org": r":Tech Organization: *(.+)",
+        "tech_org": r"Tech Organization: *(.+)",
         "admin_name": r"Admin Name: *(.+)",
         "admin_org": r"Admin Organization: *(.+)"
     }
