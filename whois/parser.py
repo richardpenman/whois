@@ -8,7 +8,7 @@
 
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Any, Callable, Optional, Union
 
 import dateutil.parser as dp
@@ -994,9 +994,8 @@ class WhoisJp(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"^(?:a\. )?\[Domain Name\]\s*(.+)",
         "registrant_org": r"^(?:g\. )?\[(?:Organization|Registrant)\](.+)",
-        # 'creation_date': r'\[(?:Registered Date|Created on)\]\s*(.+)',
+        "creation_date": r"\[(?:Registered Date|Created on)\][ \t]*(.+)",
         "organization_type": r"^(?:l\. )?\[Organization Type\]\s*(.+)$",
-        "creation_date": r"\[(?:Created on)\]\s*(.+)",
         "technical_contact_name": r"^(?:n. )?\[(?:Technical Contact)\]\s*(.+)",
         "administrative_contact_name": r"^(?:m. )?(?:\[Administrative Contact\]\s*(.+)|Contact Information:\s+^\[Name\](.*))",
         # These don't need the X. at the beginning, I just was too lazy to split the pattern off
@@ -1018,6 +1017,17 @@ class WhoisJp(WhoisEntry):
 
         super().__init__(domain, text, self.regex)
 
+    def _preprocess(self, attr, value):
+        # handle named timezone.  cast_date can't handle it, since datetime.parse doesn't support the format and
+        # strptime doesn't handle custom timezone names.
+        value = value.strip()
+        if value and isinstance(value, str) and "_date" in attr and value.endswith(" (JST)"):
+            value = value.replace(' (JST)', '')
+            value = cast_date(value, dayfirst=self.dayfirst, yearfirst=self.yearfirst)
+            value = value.replace(tzinfo=timezone(timedelta(seconds=tz_data['JST'])))
+            return value
+        else:
+            return super()._preprocess(attr, value)
 
 class WhoisAU(WhoisEntry):
     """Whois parser for .au domains"""
