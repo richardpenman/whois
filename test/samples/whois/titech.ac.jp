@@ -1,0 +1,18 @@
+[ JPRS database provides information on network administration. Its use is    ]
+[ restricted to network administration purposes. For further information,     ]
+[ use 'whois -h whois.jprs.jp help'. To suppress Japanese output, add'/e'     ]
+[ at the end of command, e.g. 'whois -h whois.jprs.jp xxx/e'.                 ]
+Domain Information:
+a. [Domain Name]                TITECH.AC.JP
+g. [Organization]               Institute of Science Tokyo
+l. [Organization Type]          University
+m. [Administrative Contact]     YK87359JP
+n. [Technical Contact]          YS79730JP
+p. [Name Server]                ns.fujisawa.wide.ad.jp
+p. [Name Server]                titechns2-o.noc.titech.ac.jp
+p. [Name Server]                titechns2-s.noc.titech.ac.jp
+s. [Signing Key]
+[State]                         Connected (2026/03/31)
+[Registered Date]
+[Connected Date]                2025/05/26
+[Last Update]                   2025/05/29 10:45:59 (JST)
