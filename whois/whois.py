@@ -244,11 +244,11 @@ class NICClient:
             nhost = None
             response_str = response.decode("utf-8", "replace")
             if 'with "=xxx"' in response_str:
-                return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+                return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response_str, hostname, query)
             if nhost is not None and nhost != "":
-                response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+                response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
         except socket.error as e:
             if not quiet:
                 logger.error(
@@ -419,7 +419,7 @@ class NICClient:
             # return server
 
     def whois_lookup(
-        self, options: Optional[dict], query_arg: str, flags: int, quiet: bool = False, ignore_socket_errors: bool = True
+        self, options: Optional[dict], query_arg: str, flags: int, quiet: bool = False, ignore_socket_errors: bool = True, timeout: int = 10
     ) -> str:
         """Main entry point: Perform initial lookup on TLD whois server,
         or other server to get region-specific whois server, then if quick
@@ -447,16 +447,17 @@ class NICClient:
                 options["country"] + NICClient.QNICHOST_TAIL,
                 flags,
                 quiet=quiet,
-                ignore_socket_errors=ignore_socket_errors
+                ignore_socket_errors=ignore_socket_errors,
+                timeout=timeout
             )
         elif self.use_qnichost:
             nichost = self.choose_server(query_arg)
             if nichost is not None:
-                result = self.whois(query_arg, nichost, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+                result = self.whois(query_arg, nichost, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
             else:
                 result = ""
         else:
-            result = self.whois(query_arg, options["whoishost"], flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+            result = self.whois(query_arg, options["whoishost"], flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
         return result
 
 
@@ -601,6 +602,14 @@ def parse_command_line(argv: list[str]) -> tuple[optparse.Values, list[str]]:
         const=NICClient.PANDIHOST,
         dest="whoishost",
         help="Lookup using host " + NICClient.PANDIHOST,
+    )
+    parser.add_option(
+        "-t",
+        "--timeout",
+        action="store",
+        type="int",
+        dest="timeout",
+        help="Set timeout for WHOIS request",
     )
     parser.add_option("-?", "--help", action="help")
 

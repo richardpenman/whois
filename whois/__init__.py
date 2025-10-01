@@ -30,6 +30,7 @@ def whois(
     quiet: bool = False,
     ignore_socket_errors: bool = True,
     convert_punycode: bool = True,
+    timeout: int = 10,
 ) -> dict[str, Any]:
     """
     url: the URL to search whois
@@ -40,6 +41,7 @@ def whois(
     quiet: whether to avoid printing output (default False)
     ignore_socket_errors: whether to ignore socket errors (default True)
     convert_punycode: whether to convert the given URL punycode (default True)
+    timeout: timeout for WHOIS request (default 10 seconds)
     """
     # clean domain to expose netloc
     ip_match = IPV4_OR_V6.match(url)
@@ -71,7 +73,7 @@ def whois(
         nic_client = NICClient()
         if convert_punycode:
             domain = domain.encode("idna").decode("utf-8")
-        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors)
+        text = nic_client.whois_lookup(None, domain, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
         if not text:
             raise WhoisError("Whois command returned no output")
     entry = WhoisEntry.load(domain, text)
