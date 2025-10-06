@@ -1,1 +1,1 @@
-{"domain_name": "google.do", "expiration_date": "2020-03-08 04:00:00", "updated_date": "2019-02-07 17:54:31.560000", "registrar": "Registrar NIC .DO (midominio.do)", "registrar_url": null, "creation_date": "2010-03-08 04:00:00", "status": "ok https://icann.org/epp#ok"}
+{"domain_name": "google.do", "expiration_date": "2020-03-08 04:00:00+00:00", "updated_date": "2019-02-07 17:54:31.560000+00:00", "registrar": "Registrar NIC .DO (midominio.do)", "registrar_url": null, "creation_date": "2010-03-08 04:00:00+00:00", "status": "ok https://icann.org/epp#ok"}

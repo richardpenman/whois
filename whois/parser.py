@@ -89,9 +89,9 @@ def cast_date(
         # Use datetime.timezone.utc to support < Python3.9
         return default_tzinfo(
             dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst),
-            datetime.timezone.utc,
+            timezone.utc,
         )
-    except Exception:
+    except dp.ParserError:
         return datetime_parse(s)
 
 
