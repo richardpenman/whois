@@ -75,9 +75,13 @@ KNOWN_FORMATS: list[str] = [
 def datetime_parse(s: str) -> Union[str, datetime]:
     for known_format in KNOWN_FORMATS:
         try:
-            return datetime.strptime(s, known_format)
+            parsed = datetime.strptime(s, known_format)
         except ValueError:
             pass  # Wrong format, keep trying
+        else:
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed
     raise WhoisUnknownDateFormatError(f"Unknown date format: {s}")
 
 
