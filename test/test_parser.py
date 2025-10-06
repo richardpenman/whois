@@ -34,7 +34,11 @@ class TestParser(unittest.TestCase):
         self.assertEqual(expires, "2018-02-21")
 
     def test_cast_date(self):
-        dates = ["14-apr-2008", "2008-04-14"]
+        dates = [
+            "14-apr-2008",
+            "2008-04-14",
+            "2008-04-14 18:55:20Z.0Z",
+        ]
         for d in dates:
             r = cast_date(d).strftime("%Y-%m-%d")
             self.assertEqual(r, "2008-04-14")
