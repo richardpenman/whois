@@ -1,1 +1,1 @@
-{"domain_name": "allegro.pl", "expiration_date": "2018-10-26 15:00:00", "updated_date": ["2017-10-17 07:01:25", "2017-03-27 00:00:00"], "registrar": "Corporation Service Company", "registrar_url": null, "creation_date": "1999-10-27 13:00:00", "status": null}
+{"domain_name": "allegro.pl", "expiration_date": "2018-10-26 15:00:00+00:00", "updated_date": ["2017-10-17 07:01:25+00:00", "2017-03-27 00:00:00+00:00"], "registrar": "Corporation Service Company", "registrar_url": null, "creation_date": "1999-10-27 13:00:00+00:00", "status": null}

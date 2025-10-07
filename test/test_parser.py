@@ -6,6 +6,8 @@ import os
 import unittest
 from glob import glob
 
+from dateutil.tz import tzoffset
+
 from whois.exceptions import WhoisUnknownDateFormatError
 from whois.parser import (
     WhoisCa,
@@ -13,6 +15,8 @@ from whois.parser import (
     cast_date,
     datetime_parse,
 )
+
+utc = tzoffset('UTC', 0)
 
 
 class TestParser(unittest.TestCase):
@@ -30,7 +34,11 @@ class TestParser(unittest.TestCase):
         self.assertEqual(expires, "2018-02-21")
 
     def test_cast_date(self):
-        dates = ["14-apr-2008", "2008-04-14"]
+        dates = [
+            "14-apr-2008",
+            "2008-04-14",
+            "2008-04-14 18:55:20Z.0Z",
+        ]
         for d in dates:
             r = cast_date(d).strftime("%Y-%m-%d")
             self.assertEqual(r, "2008-04-14")
@@ -106,7 +114,7 @@ class TestParser(unittest.TestCase):
                 if isinstance(result, datetime.datetime):
                     result = str(result)
                 expected = expected_results.get(key)
-                self.assertEqual(expected, result)
+                self.assertEqual(expected, result, '{}: {} != {} for {}'.format(key, expected, result, domain))
 
     def test_ca_parse(self):
         data = """
@@ -143,11 +151,11 @@ class TestParser(unittest.TestCase):
         """
         expected_results = {
             "admin_name": "Test Person1",
-            "creation_date": datetime.datetime(2000, 11, 20, 0, 0),
+            "creation_date": datetime.datetime(2000, 11, 20, 0, 0, tzinfo=utc),
             "dnssec": "Unsigned",
             "domain_name": "testdomain.ca",
             "emails": ["testperson1@testcompany.ca", "testpersion2@testcompany.ca"],
-            "expiration_date": datetime.datetime(2020, 3, 8, 0, 0),
+            "expiration_date": datetime.datetime(2020, 3, 8, 0, 0, tzinfo=utc),
             "fax": ["+1.123434123", "+1.12312993873"],
             "name_servers": ["a1-1.akam.net", "a2-2.akam.net", "a3-3.akam.net"],
             "phone": ["+1.1235434123x123", "+1.09876545123"],
@@ -156,7 +164,7 @@ class TestParser(unittest.TestCase):
             "registrar": "Webnames.ca Inc.",
             "registrar_url": None,
             "status": "registered",
-            "updated_date": datetime.datetime(2016, 4, 29, 0, 0),
+            "updated_date": datetime.datetime(2016, 4, 29, 0, 0, tzinfo=utc),
             "whois_server": None,
         }
         self._parse_and_compare(
@@ -244,10 +252,10 @@ DNSSEC: unsigned
             "billing_phone": None,
             "billing_postal_code": None,
             "billing_state": None,
-            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20),
+            "creation_date": datetime.datetime(2017, 12, 16, 5, 37, 20, tzinfo=utc),
             "domain_id": "6eddd132ab114b12bd2bd4cf9c492a04-DONUTS",
             "domain_name": "google.ai",
-            'expiration_date': datetime.datetime(2025, 9, 25, 5, 37, 20),
+            'expiration_date': datetime.datetime(2025, 9, 25, 5, 37, 20, tzinfo=utc),
             "name_servers": [
                 "ns2.zdns.google",
                 "ns3.zdns.google",
@@ -280,7 +288,7 @@ DNSSEC: unsigned
                 'clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
                 'clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited'
             ],
-            "updated_date": datetime.datetime(2025, 1, 23, 22, 17, 3)
+            "updated_date": datetime.datetime(2025, 1, 23, 22, 17, 3, tzinfo=utc)
         }
         self._parse_and_compare("google.ai", data, expected_results)
 
@@ -305,11 +313,11 @@ DNSSEC: unsigned
             DNSSEC: unsigned
         """
         expected_results = {
-            "creation_date": datetime.datetime(2000, 9, 14, 0, 0),
+            "creation_date": datetime.datetime(2000, 9, 14, 0, 0, tzinfo=utc),
             "dnssec": "unsigned",
             "domain_name": "cnnic.com.cn",
             "emails": "servicei@cnnic.cn",
-            "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39),
+            "expiration_date": datetime.datetime(2023, 8, 16, 16, 26, 39, tzinfo=utc),
             "name": "中国互联网络信息中心",
             "name_servers": [
                 "a.cnnic.cn",
@@ -383,7 +391,7 @@ DNSSEC: unsigned
             "dnssec": "unsigned",
             "domain_name": "python.org.il",
             "emails": "hostmaster@arik.baratz.org",
-            "expiration_date": datetime.datetime(2018, 5, 10, 0, 0),
+            "expiration_date": datetime.datetime(2018, 5, 10, 0, 0, tzinfo=utc),
             "name_servers": [
                 "dns1.zoneedit.com",
                 "dns2.zoneedit.com",
@@ -482,9 +490,9 @@ DNSSEC: signedDelegation
         """
         expected_results = {
             "admin_id": "202753-IEDR",
-            "creation_date": datetime.datetime(2000, 2, 11, 0, 0),
+            "creation_date": datetime.datetime(2000, 2, 11, 0, 0, tzinfo=utc),
             "domain_name": "rte.ie",
-            "expiration_date": datetime.datetime(2025, 3, 31, 13, 20, 7),
+            "expiration_date": datetime.datetime(2025, 3, 31, 13, 20, 7, tzinfo=utc),
             "name_servers": ["ns1.rte.ie", "ns2.rte.ie", "ns3.rte.ie", "ns4.rte.ie"],
             "registrar": "Blacknight Solutions",
             "registrar_contact": "abuse@blacknight.com",
@@ -587,10 +595,10 @@ Hostname:             p.nic.dk
 """
 
         expected_results = {
-            "creation_date": datetime.datetime(1998, 1, 19, 0, 0),
+            "creation_date": datetime.datetime(1998, 1, 19, 0, 0, tzinfo=utc),
             "dnssec": "Signed delegation",
             "domain_name": "dk-hostmaster.dk",
-            "expiration_date": datetime.datetime(2022, 3, 31, 0, 0),
+            "expiration_date": datetime.datetime(2022, 3, 31, 0, 0, tzinfo=utc),
             "name_servers": [
                 "auth01.ns.dk-hostmaster.dk",
                 "auth02.ns.dk-hostmaster.dk",
@@ -664,9 +672,9 @@ Hostname:             p.nic.dk
             "admin_organization": "Pipoline s.r.o",
             "admin_postal_code": "04012",
             "admin_street": "Ladozska 8",
-            "creation_date": datetime.datetime(2012, 7, 23, 0, 0),
+            "creation_date": datetime.datetime(2012, 7, 23, 0, 0, tzinfo=utc),
             "domain_name": "pipoline.sk",
-            "expiration_date": datetime.datetime(2021, 7, 13, 0, 0),
+            "expiration_date": datetime.datetime(2021, 7, 13, 0, 0, tzinfo=utc),
             "name_servers": ["ns1.cloudlikeaboss.com", "ns2.cloudlikeaboss.com"],
             "registrar": "Pipoline s.r.o.",
             "registrar_city": "Košice",
@@ -679,7 +687,7 @@ Hostname:             p.nic.dk
             "registrar_postal_code": "040 12",
             "registrar_street": "Ladožská 8",
             "registrar_updated": "2020-07-02",
-            "updated_date": datetime.datetime(2020, 7, 2, 0, 0),
+            "updated_date": datetime.datetime(2020, 7, 2, 0, 0, tzinfo=utc),
         }
         self._parse_and_compare("pipoline.sk", data, expected_results)
 
@@ -814,7 +822,7 @@ DNSSEC: unsigned
             "billing_name": "MarkMonitor Inc.",
             "billing_org": "CCOPS Billing",
             "billing_phone": "+1.2083895740",
-            "creation_date": datetime.datetime(2012, 11, 12, 22, 0),
+            "creation_date": datetime.datetime(2012, 11, 12, 22, 0, tzinfo=utc),
             "dnssec": "unsigned",
             "domain_id": "3486-bwnic",
             "domain_name": "google.co.bw",
@@ -879,9 +887,9 @@ compilation, repackaging, dissemination or other use of this Data is prohibited.
         expected_results = {
             "domain_name": "icp.cm",
             "registry_domain_id": "1104110-RegCM",
-            "updated_date": datetime.datetime(2025, 5, 27, 4, 46, 44, 214000),
-            "creation_date": datetime.datetime(2024, 8, 24, 13, 17, 43, 633000),
-            "expiration_date": datetime.datetime(2026, 8, 24, 13, 17, 44, 316000),
+            "updated_date": datetime.datetime(2025, 5, 27, 4, 46, 44, 214000, tzinfo=utc),
+            "creation_date": datetime.datetime(2024, 8, 24, 13, 17, 43, 633000, tzinfo=utc),
+            "expiration_date": datetime.datetime(2026, 8, 24, 13, 17, 44, 316000, tzinfo=utc),
             "status": "ok https://icann.org/epp#ok",
             "registrar": "Netcom.cm Sarl",
             "reseller": "NetSto Inc. - https://www.netsto.com",

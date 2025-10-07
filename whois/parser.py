@@ -56,9 +56,10 @@ KNOWN_FORMATS: list[str] = [
     "%Y-%m-%dt%H:%M:%S%z",  # 2011-03-30T19:36:27+0200
     "%Y-%m-%dt%H:%M:%S.%f%z",  # 2011-09-08T14:44:51.622265+03:00
     "%Y-%m-%d %H:%M:%SZ",  # 2000-08-22 18:55:20Z
+    "%Y-%m-%d %H:%M:%SZ.0Z",  # 2000-08-22 18:55:20Z.0Z
     "%Y-%m-%d %H:%M:%S",  # 2000-08-22 18:55:20
     "%d %b %Y %H:%M:%S",  # 08 Apr 2013 05:44:00
-    "%d/%m/%Y %H:%M:%S",  # 23/04/2015 12:00:07 EEST
+    "%d/%m/%Y %H:%M:%S",  # 23/04/2015 12:00:07
     "%d/%m/%Y %H:%M:%S %Z",  # 23/04/2015 12:00:07 EEST
     "%d/%m/%Y %H:%M:%S.%f %Z",  # 23/04/2015 12:00:07.619546 EEST
     "%B %d %Y",  # August 14 2017
@@ -75,9 +76,13 @@ KNOWN_FORMATS: list[str] = [
 def datetime_parse(s: str) -> Union[str, datetime]:
     for known_format in KNOWN_FORMATS:
         try:
-            return datetime.strptime(s, known_format)
+            parsed = datetime.strptime(s, known_format)
         except ValueError:
             pass  # Wrong format, keep trying
+        else:
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed
     raise WhoisUnknownDateFormatError(f"Unknown date format: {s}")
 
 
@@ -89,9 +94,9 @@ def cast_date(
         # Use datetime.timezone.utc to support < Python3.9
         return default_tzinfo(
             dp.parse(s, tzinfos=tz_data, dayfirst=dayfirst, yearfirst=yearfirst),
-            datetime.timezone.utc,
+            timezone.utc,
         )
-    except Exception:
+    except dp.ParserError:
         return datetime_parse(s)
 
 
