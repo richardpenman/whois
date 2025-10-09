@@ -1090,26 +1090,36 @@ class WhoisRs(WhoisEntry):
 class WhoisEu(WhoisEntry):
     """Whois parser for .eu domains"""
 
-    regex: dict[str, str] = {
-        "domain_name": r"Domain: *([^\n\r]+)",
-        "tech_name": r"Technical: *Name: *([^\n\r]+)",
-        "tech_org": r"Technical: *Name: *[^\n\r]+\s*Organisation: *([^\n\r]+)",
-        "tech_phone": r"Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *(["
-        r"^\n\r]+)",
-        "tech_fax": r"Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *["
-        r"^\n\r]+\s*Fax: *([^\n\r]+)",
-        "tech_email": r"Technical: *Name: *[^\n\r]+\s*Organisation: *[^\n\r]+\s*Language: *[^\n\r]+\s*Phone: *["
-        r"^\n\r]+\s*Fax: *[^\n\r]+\s*Email: *([^\n\r]+)",
-        "registrar": r"Registrar:\n *Name: *([^\n\r]+)",
-        "registrar_url": r"\n *Website: *([^\n\r]+)",
-        "name_servers": r"Name servers:\n *([\n\S\s]+)",  # list of name servers
+    _SECTION_BOUNDARY = r"(?:Registrar|On-site(s)|Reseller|Registrant|Name servers|Keys|Please visit www.eurid.eu for more information.)"
+
+    regex = {
+        "domain_name": r"Domain:\s*([^\n\r]+)",
+        "script": r"Script:\s*([^\n\r]+)",
+        "reseller_org": rf"Reseller:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Organisation:\s*([^\n\r]+)",
+        "reseller_lang": rf"Reseller:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Language:\s*([^\n\r]+)",
+        "reseller_email": rf"Reseller:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Email:\s*([^\n\r]+)",
+        "tech_org": rf"Technical:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Organisation:\s*([^\n\r]+)",
+        "tech_lang": rf"Technical:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Language:\s*([^\n\r]+)",
+        "tech_email": rf"Technical:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Email:\s*([^\n\r]+)",
+        "registrar": rf"Registrar:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Name:\s*([^\n\r]+)",
+        "registrar_url": rf"Registrar:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?^\s*Website:\s*([^\n\r]+)",
+        "name_servers": rf"Name servers:\s*((?:^(?!\s*$)(?!^(?:{_SECTION_BOUNDARY})\s*:).+\n)+)",
+        "dnssec_flags": rf"Keys:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?flags:\s*([^\s]+)",
+        "dnssec_protocol": rf"Keys:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?protocol:\s*([0-9]+)",
+        "dnssec_algorithm": rf"Keys:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?algorithm:\s*([A-Z0-9_]+)",
+        "dnssec_pubkey": rf"Keys:\s*(?:(?!\n(?:{_SECTION_BOUNDARY})\s*:)[\s\S])*?pubKey:\s*([A-Za-z0-9+/=]+)",
     }
 
-    def __init__(self, domain: str, text: str):
-        if text.strip() == "Status: AVAILABLE" or "Status: AVAILABLE" in text:
+    def __init__(self, domain, text):
+        if text.strip().endswith("Status: AVAILABLE"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+            
+    def _preprocess(self, attr, value):
+        if attr == "name_servers" and isinstance(value, str):
+            return [ln.strip() for ln in value.strip().splitlines() if ln.strip()]
+        return value
 
 
 class WhoisEe(WhoisEntry):
