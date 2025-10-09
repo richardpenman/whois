@@ -1112,7 +1112,7 @@ class WhoisEu(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip().endswith("Status: AVAILABLE"):
-            raise PywhoisError(text)
+            raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
             
