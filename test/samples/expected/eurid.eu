@@ -1,1 +1,29 @@
-{"domain_name": "eurid.eu", "expiration_date": null, "updated_date": null, "registrar": "EURid vzw", "registrar_url": "https://www.eurid.eu", "creation_date": null, "status": null}
+{
+    "domain_name": "eurid.eu",
+    "script": "LATIN",
+    "reseller_org": null,
+    "reseller_lang": null,
+    "reseller_email": null,
+    "tech_org": "EURid vzw",
+    "tech_lang": "en",
+    "tech_email": "tech@eurid.eu",
+    "registrar": "EURid vzw",
+    "registrar_url": "https://www.eurid.eu",
+    "name_servers": [
+        "ns3.eurid.eu (185.36.4.253)",
+        "ns3.eurid.eu (2001:67c:9c:3937::253)",
+        "nsx.eurid.eu (185.151.141.1)",
+        "nsx.eurid.eu (2a02:568:fe00::6575)",
+        "ns1.eurid.eu (2001:67c:9c:3937::252)",
+        "ns1.eurid.eu (185.36.4.252)",
+        "ns2.eurid.eu (2001:67c:40:3937::252)",
+        "ns2.eurid.eu (185.36.6.252)",
+        "ns4.eurid.eu (2001:67c:40:3937::253)",
+        "ns4.eurid.eu (185.36.6.253)",
+        "nsp.netnod.se"
+    ],
+    "dnssec_flags": "KSK",
+    "dnssec_protocol": "3",
+    "dnssec_algorithm": "RSA_SHA256",
+    "dnssec_pubkey": "AwEAAcOQldGtC33GLx8s335UscKMPlWjDXCqbhR2QyAYcfS4CZS6YHg3A1Zz/K3VurTZF68aSaRkNupZuEgt4jozE3v4+t+2qOfiATvoOCrf74hWduBPwk9Go0z7FVlDkok1/qMQmqOtih8TFP85b+w6F/uyLMZS1JowMDUzRurmHJVoT4lW9+OCdrhuQFK9vU24Y8BmacoRy6mWBCFlysizlOIodwmquOf5A+3Nz0B3TLCK4fIYJYVxCUVlpRJ7uaBS+GLD7afuxkEesReYHgPWZFSDMbXk9Ugh+qUi8tEKKFls9TM3lK9BPBcciXUhI1bRJSHftqcNpMmLqg/79SwoWGc="
+}
