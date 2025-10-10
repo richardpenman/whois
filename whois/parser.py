@@ -3570,3 +3570,32 @@ class WhoisHu(WhoisEntry):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+
+class WhoisXyz(WhoisEntry):
+    """Whois parser for .xyz domains"""
+
+    regex: dict[str, str] = {
+        "domain_name": r"Domain Name: *(.+)",
+        "registry_domain_id": r"Registry Domain ID: *(.+)",
+        "whois_server": r"Registrar WHOIS Server: *(.+)",
+        "registrar_url": r"Registrar URL: *(.+)",
+        "updated_date": r"Updated Date: *(.+)",
+        "creation_date": r"Creation Date: *(.+)",
+        "expiration_date": r"Registry Expiry Date: *(.+)",
+        "registrar": r"Registrar: *(.+)",
+        "registrar_id": r"Registrar IANA ID: *(.+)",
+        "status": r"Domain Status: *(.+)", # list of statuses
+        "name_servers": r"Name Server: *(.+)",  # list of name servers
+        "dnssec": r"DNSSEC: *(.+)",
+        "registrar_email": r"Registrar Abuse Contact Email: *(.+)",
+        "registrar_phone": r"Registrar Abuse Contact Phone: *(.+)",
+    }
+
+    def __init__(self, domain: str, text: str):
+        if 'The queried object does not exist: DOMAIN NOT FOUND' in text:
+            raise WhoisDomainNotFoundError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+
