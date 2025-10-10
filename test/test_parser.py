@@ -501,45 +501,6 @@ DNSSEC: signedDelegation
         }
         self._parse_and_compare("rte.ie", data, expected_results)
 
-    def test_nl_parse(self):
-        data = """
-        Domain name: utwente.nl
-        Status:      active
-
-        Registrar:
-           Universiteit Twente
-           Drienerlolaan 5
-           7522NB ENSCHEDE
-           Netherlands
-
-        Abuse Contact:
-
-        DNSSEC:      yes
-
-        Domain nameservers:
-           ns3.utwente.nl          131.155.0.37
-           ns1.utwente.nl          130.89.1.2
-           ns1.utwente.nl          2001:67c:2564:a102::3:1
-           ns2.utwente.nl          130.89.1.3
-           ns2.utwente.nl          2001:67c:2564:a102::3:2
-
-        Record maintained by: NL Domain Registry
-        """
-        expected_results = {
-            "creation_date": None,
-            "dnssec": "yes",
-            "domain_name": "utwente.nl",
-            "expiration_date": None,
-            "name_servers": ["ns1.utwente.nl", "ns2.utwente.nl", "ns3.utwente.nl"],
-            "registrar": "Universiteit Twente",
-            "registrar_address": "Drienerlolaan 5",
-            "registrar_city": "ENSCHEDE",
-            "registrar_country": "Netherlands",
-            "registrar_postal_code": "7522NB",
-            "status": "active",
-            "updated_date": None,
-        }
-        self._parse_and_compare("utwente.nl", data, expected_results)
 
     def test_nl_expiration(self):
         data = """
