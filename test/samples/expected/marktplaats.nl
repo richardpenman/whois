@@ -1,1 +1,0 @@
-{"domain_name": "marktplaats.nl", "expiration_date": null, "updated_date": null, "registrar": "MarkMonitor Inc.", "registrar_url": null, "creation_date": null, "status": "active"}

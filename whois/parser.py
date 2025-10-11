@@ -630,6 +630,13 @@ class WhoisNl(WhoisEntry):
         "registrar_postal_code": r"Registrar:\s*(?:.*\n){2}\s*(\S*)\s(?:.*)",
         "registrar_city": r"Registrar:\s*(?:.*\n){2}\s*(?:\S*)\s(.*)",
         "registrar_country": r"Registrar:\s*(?:.*\n){3}\s*(.*)",
+        "reseller": r"Reseller:\s*(.*\n)",
+        "reseller_address": r"Reseller:\s*(?:.*\n){1}\s*(.*)",
+        "reseller_postal_code": r"Reseller:\s*(?:.*\n){2}\s*(\S*)\s(?:.*)",
+        "reseller_city": r"Reseller:\s*(?:.*\n){2}\s*(?:\S*)\s(.*)",
+        "reseller_country": r"Reseller:\s*(?:.*\n){3}\s*(.*)",
+        "abuse_phone": r"Abuse Contact:\s*(.*\n)",
+        "abuse_email": r"Abuse Contact:\s*(?:.*\n){1}\s*(.*)",
         "dnssec": r"DNSSEC: *(.+)",
     }
 
@@ -643,9 +650,11 @@ class WhoisNl(WhoisEntry):
             r"Domain nameservers:(.*?)Record maintained by", re.DOTALL
         ).search(text)
         if match:
-            duplicate_nameservers_with_ip = [
-                line.strip() for line in match.groups()[0].strip().splitlines()
-            ]
+            duplicate_nameservers_with_ip = []
+            for line in match.groups()[0].strip().splitlines():
+                if line.strip() == "":
+                    break
+                duplicate_nameservers_with_ip.append(line.strip())
             duplicate_nameservers_without_ip = [
                 nameserver.split(" ")[0] for nameserver in duplicate_nameservers_with_ip
             ]
