@@ -1,0 +1,1 @@
+{"domain_name": "google.co.il", "expiration_date": "2026-06-05 00:00:00+00:00", "updated_date": null, "registrar": "Domain The Net Technologies Ltd", "registrar_url": null, "creation_date": "1999-06-05 00:00:00+00:00", "status": "Transfer Locked"}

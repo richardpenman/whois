@@ -2208,6 +2208,7 @@ class WhoisIl(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"domain: *(.+)",
         "expiration_date": r"validity: *(.+)",
+        "creation_date": r"assigned: *(.+)",
         "registrant_name": r"person: *(.+)",
         "registrant_address": r"address *(.+)",
         "dnssec": r"DNSSEC: *(.+)",
@@ -2313,7 +2314,7 @@ class WhoisNz(WhoisEntry):
         "registrar": r"(?:Registrar|registrar_name):\s*([^\n\r]+)",
         "registrar_url": r"Registrar URL:\s*([^\n\r]+)",
         "updated_date": r"(?:Updated Date|domain_datelastmodified):\s*([^\n\r]+)",
-        "creation_date": r"(?:Creation Date|domain_dateregistered):\s*([^\n\r]+)",
+        "creation_date": r"(?:Creation Date|domain_dateregistered|created):\s*([^\n\r]+)",
         "expiration_date": r"domain_datebilleduntil:\s*([^\n\r]+)",
         "name_servers": r"(?:Name Server|ns_name_\d*):\s*([^\n\r]+)",  # list of name servers
         "status": r"(?:Domain Status|status):\s*([^\n\r]+)",  # list of statuses
