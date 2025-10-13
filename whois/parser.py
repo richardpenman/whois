@@ -427,6 +427,8 @@ class WhoisEntry(dict):
             return WhoisCm(domain, text)
         elif domain.endswith(".hu"):
             return WhoisHu(domain, text)
+        elif domain.endswith(".xyz"):
+            return WhoisXyz(domain, text)
         else:
             return WhoisEntry(domain, text)
 
