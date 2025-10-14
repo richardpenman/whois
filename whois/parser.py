@@ -427,6 +427,8 @@ class WhoisEntry(dict):
             return WhoisCm(domain, text)
         elif domain.endswith(".hu"):
             return WhoisHu(domain, text)
+        elif domain.endswith(".xyz"):
+            return WhoisXyz(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -446,7 +448,7 @@ class WhoisCl(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if 'No match for "' in text:
+        if 'No match for "' in text or "no entries found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(
@@ -474,7 +476,7 @@ class WhoisSG(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Domain Not Found" in text:
+        if "Domain Not Found" in text or text.lstrip().startswith('Not found: '):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -511,7 +513,7 @@ class WhoisPe(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if 'No match for "' in text:
+        if 'No match for "' in text or "Domain Status: No Object Found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -521,7 +523,7 @@ class WhoisSpace(WhoisEntry):
     """Whois parser for .space domains"""
 
     def __init__(self, domain: str, text: str):
-        if 'No match for "' in text:
+        if 'No match for "' in text or "The queried object does not exist: DOMAIN NOT FOUND" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
@@ -588,7 +590,7 @@ class WhoisRo(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.strip() == "NOT FOUND":
+        if text.strip() == "NOT FOUND" or "No entries found for the selected source" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -672,7 +674,7 @@ class WhoisLt(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.endswith("available"):
+        if text.rstrip().endswith("available"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -917,7 +919,7 @@ class WhoisMe(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "NOT FOUND" in text:
+        if "NOT FOUND" in text or "Domain not found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1155,7 +1157,7 @@ class WhoisEe(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.strip() == "Domain not found":
+        if text.strip().startswith("Domain not found"):
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1220,7 +1222,7 @@ class WhoisKr(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if text.endswith(" no match"):
+        if text.endswith(" no match") or "The requested domain was not found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -1266,7 +1268,7 @@ class WhoisBg(WhoisEntry):
     dayfirst = True
 
     def __init__(self, domain: str, text: str):
-        if "does not exist in database!" in text:
+        if "does not exist in database!" in text or "registration status: available" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2003,7 +2005,7 @@ class WhoisMx(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "not found." in text:
+        if "not found." in text or "Object_Not_Found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2040,7 +2042,7 @@ class WhoisTw(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "not found." in text:
+        if "not found." in text or "No Found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2075,7 +2077,7 @@ class WhoisTr(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "not found." in text:
+        if "not found." in text or "No match found for " in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2206,6 +2208,7 @@ class WhoisIl(WhoisEntry):
     regex: dict[str, str] = {
         "domain_name": r"domain: *(.+)",
         "expiration_date": r"validity: *(.+)",
+        "creation_date": r"assigned: *(.+)",
         "registrant_name": r"person: *(.+)",
         "registrant_address": r"address *(.+)",
         "dnssec": r"DNSSEC: *(.+)",
@@ -2297,7 +2300,7 @@ class WhoisIe(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "no matching objects" in text:
+        if "no matching objects" in text or "Not found: " in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2311,7 +2314,7 @@ class WhoisNz(WhoisEntry):
         "registrar": r"(?:Registrar|registrar_name):\s*([^\n\r]+)",
         "registrar_url": r"Registrar URL:\s*([^\n\r]+)",
         "updated_date": r"(?:Updated Date|domain_datelastmodified):\s*([^\n\r]+)",
-        "creation_date": r"(?:Creation Date|domain_dateregistered):\s*([^\n\r]+)",
+        "creation_date": r"(?:Creation Date|domain_dateregistered|created):\s*([^\n\r]+)",
         "expiration_date": r"domain_datebilleduntil:\s*([^\n\r]+)",
         "name_servers": r"(?:Name Server|ns_name_\d*):\s*([^\n\r]+)",  # list of name servers
         "status": r"(?:Domain Status|status):\s*([^\n\r]+)",  # list of statuses
@@ -2411,7 +2414,7 @@ class WhoisOnline(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Not found:" in text:
+        if "Not found:" in text or "The queried object does not exist: DOMAIN NOT FOUND" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -2530,7 +2533,7 @@ class WhoisUA(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "ERROR: No entries found" in text:
+        if "No entries found" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(
@@ -3538,7 +3541,7 @@ class WhoisCo(WhoisEntry):
     """Whois parser for .co domains"""
 
     def __init__(self, domain, text):
-        if "No Data Found" in text:
+        if "No Data Found" in text or 'The queried object does not exist: DOMAIN NOT FOUND' in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
