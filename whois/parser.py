@@ -1759,18 +1759,19 @@ class WhoisID(WhoisEntry):
     """Whois parser for .id domains"""
 
     regex: dict[str, str] = {
-        "domain_id": r"Domain ID:(.+)",
+        "domain_id": r"Registry Domain ID:(.+)",
         "domain_name": r"Domain Name:(.+)",
-        "creation_date": r"Created On:(.+)",
-        "expiration_date": r"Expiration Date:(.+)",
-        "updated_date": r"Last Updated On:(.+)",
+        "creation_date": r"Creation Date:(.+)",
+        "expiration_date": r"Registry Expiry Date:(.+)",
+        "updated_date": r"Updated Date:(.+)",
         "dnssec": r"DNSSEC:(.+)",
-        "registrar": r"Sponsoring Registrar Organization:(.+)",
+        "registrar": r"Registrar:(.+)",
         "registrar_city": r"Sponsoring Registrar City:(.+)",
         "registrar_postal_code": r"Sponsoring Registrar Postal Code:(.+)",
         "registrar_country": r"Sponsoring Registrar Country:(.+)",
         "registrar_phone": r"Sponsoring Registrar Phone:(.+)",
         "registrar_email": r"Sponsoring Registrar Contact Email:(.+)",
+        "registrar_url": r"Registrar URL:(.+)",
         "status": r"Status:(.+)",  # list of statuses
         "registrant_id": r"Registrant ID:(.+)",
         "registrant_name": r"Registrant Name:(.+)",
