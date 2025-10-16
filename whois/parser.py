@@ -2854,7 +2854,7 @@ class WhoisAr(WhoisEntry):
         "registrar": r"registrar: *(.+)",
         "whois_server": r"whois: *(.+)",
         "updated_date": r"changed: *(.+)",
-        "creation_date": r"created: *(.+)",
+        "creation_date": r"registered: *(.+)",
         "expiration_date": r"expire: *(.+)",
         "name_servers": r"nserver: *(.+) \(.*\)",  # list of name servers
         "status": r"Domain Status: *(.+)",
