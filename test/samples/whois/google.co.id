@@ -1,19 +1,28 @@
-Domain ID:PANDI-DO246796
-Domain Name:GOOGLE.CO.ID
-Created On:18-Dec-2004 13:33:21 UTC
-Last Updated On:06-Dec-2018 09:07:33 UTC
-Expiration Date:01-Sep-2019 23:59:59 UTC
-Status:clientTransferProhibited
-Status:serverTransferProhibited
-=======================================================
-Sponsoring Registrar Organization:Digital Registra
-Sponsoring Registrar City:Sleman
-Sponsoring Registrar Postal Code:55281
-Sponsoring Registrar Country:ID
-Sponsoring Registrar Phone:0274882257
-Sponsoring Registrar Contact Email:info@digitalregistra.co.id
-Name Server:NS2.GOOGLE.COM
-Name Server:NS4.GOOGLE.COM
-Name Server:NS1.GOOGLE.COM
-Name Server:NS3.GOOGLE.COM
-DNSSEC:Unsigned
+# whois.id
+
+Domain Name: GOOGLE.CO.ID
+Registry Domain ID: 166626_DOMAIN_ID-ID
+Registrar WHOIS Server:
+Registrar URL: www.digitalregistra.co.id
+Updated Date: 2025-08-05T05:00:20Z
+Creation Date: 2004-12-18T13:33:21Z
+Registry Expiry Date: 2026-09-01T23:59:59Z
+Registrar: PT Digital Registra Indonesia
+Registrar IANA ID: 1
+Registrar Abuse Contact Email: info@digitalregistra.co.id
+Registrar Abuse Contact Phone:
+Domain Status: clientDeleteProhibited
+Domain Status: clientRenewProhibited
+Domain Status: clientTransferProhibited
+Domain Status: clientUpdateProhibited
+Domain Status: serverDeleteProhibited
+Domain Status: serverRenewProhibited
+Domain Status: serverTransferProhibited
+Domain Status: serverUpdateProhibited
+Name Server: NS1.GOOGLE.COM
+Name Server: NS2.GOOGLE.COM
+Name Server: NS3.GOOGLE.COM
+Name Server: NS4.GOOGLE.COM
+DNSSEC: unsigned
+URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+>>> Last update of WHOIS database: 2025-10-16T19:03:31Z <<<
