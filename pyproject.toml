@@ -1,0 +1,37 @@
+[project]
+name = "python-whois"
+version = "0.9.6"
+description = "Whois querying and parsing of domain registration information."
+authors = [
+    {name = "Richard Penman", email = "richard.penman@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-dateutil (>=2.9.0.post0,<3.0.0)"
+]
+license = {text = "MIT"}
+keywords = ["whois", "python"]
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Internet :: WWW/HTTP",
+    "Programming Language :: Python :: 3",
+]
+[project.urls]
+Homepage = "https://github.com/richardpenman/whois"
+Repository = "https://github.com/richardpenman/whois"
+
+[tool.poetry]
+packages = [{include = "whois"}]
+include = ["whois/data/*"]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
