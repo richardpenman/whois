@@ -180,9 +180,9 @@ class NICClient:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         return s
 
-    def findwhois_iana(self, tld: str) -> Optional[str]:
+    def findwhois_iana(self, tld: str, timeout: int = 10) -> Optional[str]:
         s = self.get_socket()
-        s.settimeout(10)
+        s.settimeout(timeout)
         s.connect(("whois.iana.org", 43))
         s.send(bytes(tld, "utf-8") + b"\r\n")
         response = b""
@@ -264,7 +264,7 @@ class NICClient:
             s.close()
         return response_str
 
-    def choose_server(self, domain: str) -> Optional[str]:
+    def choose_server(self, domain: str, timeout: int = 10) -> Optional[str]:
         """Choose initial lookup NIC host"""
         domain = domain.encode("idna").decode("utf-8")
         if domain.endswith("-NORID"):
@@ -413,7 +413,7 @@ class NICClient:
         elif tld == "xyz":
             return NICClient.XYZ_HOST
         else:
-            return self.findwhois_iana(tld)
+            return self.findwhois_iana(tld, timeout=timeout)
             # server = tld + NICClient.QNICHOST_TAIL
             # try:
             #    socket.gethostbyname(server)
@@ -454,7 +454,7 @@ class NICClient:
                 timeout=timeout
             )
         elif self.use_qnichost:
-            nichost = self.choose_server(query_arg)
+            nichost = self.choose_server(query_arg, timeout=timeout)
             if nichost is not None:
                 result = self.whois(query_arg, nichost, flags, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
             else:
