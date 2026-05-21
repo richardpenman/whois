@@ -1,0 +1,129 @@
+%%
+%% This is the AFNIC Whois server.
+%%
+%% complete date format: YYYY-MM-DDThh:mm:ssZ
+%%
+%% Rights restricted by copyright.
+%% See https://www.afnic.fr/en/domain-names-and-support/everything-there-is-to-know-about-domain-names/find-a-domain-name-or-a-holder-using-whois/
+%%
+%%
+
+domain:                        univ-paris8.fr
+status:                        ACTIVE
+eppstatus:                     active
+hold:                          NO
+holder-c:                      UPH1-FRNIC
+admin-c:                       ANO00-FRNIC
+tech-c:                        CTC3167397-FRNIC
+tech-c:                        CTC3167398-FRNIC
+registrar:                     GIP RENATER
+Expiry Date:                   2026-12-31T23:00:00Z
+created:                       1994-12-31T23:00:00Z
+last-update:                   2026-01-31T23:05:07.728924Z
+source:                        FRNIC
+
+nserver:                       ns.univ-paris8.fr
+nserver:                       ns2.univ-paris8.fr
+source:                        FRNIC
+
+registrar:                     GIP RENATER
+address:                       Array
+address:                       75013 PARIS
+country:                       FR
+phone:                         +33.153942030
+fax-no:                        +33.153942031
+e-mail:                        domaine@renater.fr
+website:                       http://www.renater.fr
+anonymous:                     No
+registered:                    1997-12-29T00:00:00Z
+source:                        FRNIC
+
+nic-hdl:                       UPH1-FRNIC
+type:                          ORGANIZATION
+contact:                       Universite Paris 8
+address:                       Univ. Paris 8
+address:                       2, rue de la Liberte
+address:                       93526 Saint Denis
+country:                       FR
+phone:                         +33.149407026
+e-mail:                        dsi.secretariat@univ-paris8.fr
+registrar:                     GIP RENATER
+changed:                       2024-03-20T07:07:28.098152Z
+anonymous:                     NO
+obsoleted:                     NO
+eppstatus:                     associated
+eppstatus:                     active
+eligstatus:                    not identified
+reachstatus:                   not identified
+source:                        FRNIC
+
+nic-hdl:                       ANO00-FRNIC
+type:                          PERSON
+contact:                       Ano Nymous
+registrar:                     GIP RENATER
+changed:                       2026-05-11T16:03:06.594191Z
+anonymous:                     YES
+remarks:                       -------------- WARNING --------------
+remarks:                       While the registrar knows him/her,
+remarks:                       this person chose to restrict access
+remarks:                       to his/her personal data. So PLEASE,
+remarks:                       don't send emails to Ano Nymous. This
+remarks:                       address is bogus and there is no hope
+remarks:                       of a reply.
+remarks:                       -------------- WARNING --------------
+obsoleted:                     NO
+eppstatus:                     associated
+eppstatus:                     active
+eligstatus:                    not identified
+reachstatus:                   ok
+reachmedia:                    email
+reachsource:                   REGISTRAR
+reachdate:                     2024-03-20T07:07:51.613279Z
+source:                        FRNIC
+
+nic-hdl:                       CTC3167397-FRNIC
+type:                          PERSON
+contact:                       Jérôme TISSET
+address:                       Université de Paris 8
+address:                       2, rue de la Liberté
+address:                       93526 Saint Denis
+country:                       FR
+phone:                         +33.149407026
+e-mail:                        jerome.tisset@univ-paris8.fr
+registrar:                     GIP RENATER
+changed:                       2026-05-11T16:03:06.604163Z
+anonymous:                     NO
+obsoleted:                     NO
+eppstatus:                     associated
+eppstatus:                     active
+eligstatus:                    not identified
+reachstatus:                   ok
+reachmedia:                    email
+reachsource:                   REGISTRAR
+reachdate:                     2024-03-20T07:08:19.284269Z
+source:                        FRNIC
+
+nic-hdl:                       CTC3167398-FRNIC
+type:                          PERSON
+contact:                       Valerian MILLET
+address:                       Université de Paris 8
+address:                       2, rue de la Liberté
+address:                       93526 Saint Denis
+country:                       FR
+phone:                         +33.149407026
+e-mail:                        valerian.millet02@univ-paris8.fr
+registrar:                     GIP RENATER
+changed:                       2026-05-11T16:03:06.599168Z
+anonymous:                     NO
+obsoleted:                     NO
+eppstatus:                     associated
+eppstatus:                     active
+eligstatus:                    not identified
+reachstatus:                   ok
+reachmedia:                    email
+reachsource:                   REGISTRAR
+reachdate:                     2024-03-20T07:08:37.325169Z
+source:                        FRNIC
+
+>>> Last update of WHOIS database: 2026-05-21T21:53:52.954966Z <<<
+

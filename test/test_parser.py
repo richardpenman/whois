@@ -838,6 +838,68 @@ compilation, repackaging, dissemination or other use of this Data is prohibited.
         }
         self._parse_and_compare("google.fr", data, expected_results)
 
+    def test_fr_multi_tech_contact_parse(self):
+        # AFNIC records may list a role more than once (issue #311):
+        # univ-paris8.fr has two tech-c handles pointing at distinct
+        # contacts. Resolving them must aggregate into lists instead of
+        # raising "TypeError: unhashable type: 'list'".
+        sample_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "samples",
+            "whois",
+            "univ-paris8.fr",
+        )
+        with open(sample_path, encoding="utf-8") as f:
+            data = f.read()
+
+        expected_results = {
+            "domain_name": "univ-paris8.fr",
+            "registrar": "GIP RENATER",
+            "creation_date": datetime.datetime(1994, 12, 31, 23, 0, tzinfo=utc),
+            "expiration_date": datetime.datetime(2026, 12, 31, 23, 0, tzinfo=utc),
+            "updated_date": datetime.datetime(
+                2026, 1, 31, 23, 5, 7, 728924, tzinfo=utc
+            ),
+            "name_servers": ["ns.univ-paris8.fr", "ns2.univ-paris8.fr"],
+            "status": ["ACTIVE", "associated", "not identified", "ok"],
+            "emails": [
+                "domaine@renater.fr",
+                "dsi.secretariat@univ-paris8.fr",
+                "jerome.tisset@univ-paris8.fr",
+                "valerian.millet02@univ-paris8.fr",
+            ],
+            "registrant_name": "Universite Paris 8",
+            "registrant_address": "Univ. Paris 8\n2, rue de la Liberte\n93526 Saint Denis",
+            "registrant_country": "FR",
+            "registrant_phone": "+33.149407026",
+            "registrant_email": "dsi.secretariat@univ-paris8.fr",
+            "registrant_type": "ORGANIZATION",
+            # Single admin-c handle -> scalar fields.
+            "admin_name": "Ano Nymous",
+            "admin_type": "PERSON",
+            # Two tech-c handles -> distinct values aggregate into lists,
+            # values shared by both contacts collapse back to scalars.
+            "tech_name": ["Jérôme TISSET", "Valerian MILLET"],
+            "tech_address": "Université de Paris 8\n2, rue de la Liberté\n93526 Saint Denis",
+            "tech_country": "FR",
+            "tech_phone": "+33.149407026",
+            "tech_email": [
+                "jerome.tisset@univ-paris8.fr",
+                "valerian.millet02@univ-paris8.fr",
+            ],
+            "tech_type": "PERSON",
+        }
+
+        results = WhoisEntry.load("univ-paris8.fr", data)
+        self.assertEqual(expected_results, results)
+
+        # Multi-handle role: distinct values become lists.
+        self.assertIsInstance(results["tech_name"], list)
+        self.assertIsInstance(results["tech_email"], list)
+        # Single-handle roles stay scalar.
+        self.assertIsInstance(results["registrant_name"], str)
+        self.assertIsInstance(results["admin_name"], str)
+
 
 if __name__ == "__main__":
     unittest.main()

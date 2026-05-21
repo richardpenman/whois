@@ -1013,11 +1013,24 @@ class WhoisAfnic(WhoisEntry):
         contact_blocks = self._extract_contact_blocks(text)
 
         for handle, prefix in handle_to_prefix:
-            if handle and handle in contact_blocks:
-                for afnic_field, suffix in self._contact_field_mapping.items():
-                    value = contact_blocks[handle].get(afnic_field)
-                    if value is not None:
-                        self[f"{prefix}_{suffix}"] = value
+            if not handle:
+                continue
+            # A role may appear more than once (e.g. two tech-c lines), in
+            # which case WhoisEntry.parse() stores the field as a list.
+            handles = handle if isinstance(handle, list) else [handle]
+            for afnic_field, suffix in self._contact_field_mapping.items():
+                values: list[Any] = []
+                for single_handle in handles:
+                    block = contact_blocks.get(single_handle)
+                    if block is None:
+                        continue
+                    value = block.get(afnic_field)
+                    if value is not None and value not in values:
+                        values.append(value)
+                if len(values) == 1:
+                    self[f"{prefix}_{suffix}"] = values[0]
+                elif values:
+                    self[f"{prefix}_{suffix}"] = values
 
     @staticmethod
     def _extract_contact_blocks(text: str) -> dict[str, dict[str, Any]]:

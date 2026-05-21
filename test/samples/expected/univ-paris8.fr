@@ -1,0 +1,1 @@
+{"domain_name": "univ-paris8.fr", "expiration_date": "2026-12-31 23:00:00+00:00", "updated_date": "2026-01-31 23:05:07.728924+00:00", "registrar": "GIP RENATER", "registrar_url": null, "creation_date": "1994-12-31 23:00:00+00:00", "status": ["ACTIVE", "associated", "not identified", "ok"]}
