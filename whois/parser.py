@@ -540,7 +540,7 @@ class WhoisSpace(WhoisEntry):
     """Whois parser for .space domains"""
 
     def __init__(self, domain: str, text: str):
-        if 'No match for "' in text or "The queried object does not exist: DOMAIN NOT FOUND" in text:
+        if 'No match for "' in text or "The queried object does not exist: DOMAIN NOT FOUND" in text or "is available for registration" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text)
@@ -2499,7 +2499,7 @@ class WhoisOnline(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "Not found:" in text or "The queried object does not exist: DOMAIN NOT FOUND" in text:
+        if "Not found:" in text or "The queried object does not exist: DOMAIN NOT FOUND" in text or "is available for registration" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
@@ -3523,7 +3523,7 @@ class WhoisSite(WhoisEntry):
     }
 
     def __init__(self, domain: str, text: str):
-        if "DOMAIN NOT FOUND" in text:
+        if "DOMAIN NOT FOUND" in text or "is available for registration" in text:
             raise WhoisDomainNotFoundError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
