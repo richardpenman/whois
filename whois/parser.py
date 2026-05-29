@@ -88,8 +88,12 @@ def datetime_parse(s: str) -> Union[datetime, None]:
 
 def cast_date(
     s: str, dayfirst: bool = False, yearfirst: bool = False
-) -> Union[str, datetime]:
+) -> Union[str, datetime, None]:
     """Convert any date string found in WHOIS to a datetime object."""
+
+    # explicit "not applicable" sentinel from some registries (e.g. CIRA .gc.ca)
+    if s.strip().upper() == "N/A":
+        return None
 
     # prefer our conversion before dateutil.parser
     # because dateutil.parser does %m.%d.%Y and ours has %d.%m.%Y which is more logical

@@ -43,6 +43,10 @@ class TestParser(unittest.TestCase):
             r = cast_date(d).strftime("%Y-%m-%d")
             self.assertEqual(r, "2008-04-14")
 
+    def test_cast_date_not_applicable(self):
+        self.assertIsNone(cast_date("N/A"))
+        self.assertIsNone(cast_date("n/a"))
+
     def test_unknown_date_format(self):
         with self.assertRaises(WhoisUnknownDateFormatError):
             cast_date("UNKNOWN")
