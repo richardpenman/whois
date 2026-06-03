@@ -47,6 +47,26 @@ class TestParser(unittest.TestCase):
         self.assertIsNone(cast_date("N/A"))
         self.assertIsNone(cast_date("n/a"))
 
+    def test_br_separated_response(self):
+        data = (
+            "Updated Date: 2025-11-27T00:28:03Z<br>"
+            "Creation Date: 2002-01-23T04:00:00Z<br>"
+            "Registrar Registration Expiration Date: 2027-01-23T04:00:00Z<br>"
+            "Registrar: Onlinenic Inc<br>"
+        )
+        w = WhoisEntry.load("9966.org", data)
+        tz = datetime.timezone.utc
+        self.assertEqual(
+            w.updated_date, datetime.datetime(2025, 11, 27, 0, 28, 3, tzinfo=tz)
+        )
+        self.assertEqual(
+            w.creation_date, datetime.datetime(2002, 1, 23, 4, 0, 0, tzinfo=tz)
+        )
+        self.assertEqual(
+            w.expiration_date,
+            datetime.datetime(2027, 1, 23, 4, 0, 0, tzinfo=tz),
+        )
+
     def test_unknown_date_format(self):
         with self.assertRaises(WhoisUnknownDateFormatError):
             cast_date("UNKNOWN")

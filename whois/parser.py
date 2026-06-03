@@ -157,7 +157,7 @@ class WhoisEntry(dict):
             raise WhoisDomainNotFoundError(text)
         else:
             self.domain = domain
-            self.text = text
+            self.text = re.sub(r"<br\s*/?>", "\n", text, flags=re.IGNORECASE)
             if regex is not None:
                 self._regex = regex
             if data_preprocessor is not None:
