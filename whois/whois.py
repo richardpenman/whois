@@ -114,6 +114,7 @@ class NICClient:
     SBS_HOST = "whois.nic.sbs"
     GA_HOST = "whois.nic.ga"
     XYZ_HOST = "whois.nic.xyz"
+    AU_HOST = "whois.auda.org.au"
 
     SITE_HOST = "whois.nic.site"
     DESIGN_HOST = "whois.nic.design"
@@ -442,6 +443,8 @@ class NICClient:
             return NICClient.GA_HOST
         elif tld == "xyz":
             return NICClient.XYZ_HOST
+        elif tld == "au":
+             return NICClient.AU_HOST
         else:
             return self.findwhois_iana(tld, timeout=timeout)
             # server = tld + NICClient.QNICHOST_TAIL
