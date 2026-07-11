@@ -135,7 +135,7 @@ class NICClient:
         """
         nhost = None
         match = re.compile(
-            r"Domain Name: {}\s*.*?Whois Server: (.*?)\s".format(query),
+            r"Domain Name: {}\s*.*?Whois Server: (.*?)\s".format(re.escape(query)),
             flags=re.IGNORECASE | re.DOTALL,
         ).search(buf)
         if match:
