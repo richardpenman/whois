@@ -122,6 +122,11 @@ class NICClient:
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
+    # Hardening limits (issue #312): bound resource use when talking to
+    # untrusted / referral whois servers.
+    MAX_WHOIS_RESPONSE = 10 * 1024 * 1024  # max bytes read from one server (CWE-400)
+    MAX_REFERRAL_DEPTH = 10                 # max referral-chain recursion (CWE-674)
+
     ip_whois: list[str] = [LNICHOST, RNICHOST, PNICHOST, BNICHOST, PANDIHOST]
 
     def __init__(self, prefer_ipv6: bool = False):
@@ -237,7 +242,8 @@ class NICClient:
         many_results: bool = False,
         quiet: bool = False,
         timeout: int = 10,
-        ignore_socket_errors: bool = True
+        ignore_socket_errors: bool = True,
+        _depth: int = 0
     ) -> str:
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result
@@ -249,6 +255,8 @@ class NICClient:
         is `False`, will raise an exception instead of returning
         a string containing the error.
         """
+        if _depth > self.MAX_REFERRAL_DEPTH:
+            return ""
         response = b""
         s = None
         try:  # socket.connect in a try, in order to allow things like looping whois on different domains without
@@ -268,18 +276,20 @@ class NICClient:
             # recv returns bytes
             while True:
                 d = s.recv(4096)
-                response += d
                 if not d:
+                    break
+                response += d
+                if len(response) > self.MAX_WHOIS_RESPONSE:
                     break
 
             nhost = None
             response_str = response.decode("utf-8", "replace")
             if 'with "=xxx"' in response_str:
-                return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
+                return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout, _depth=_depth + 1)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response_str, hostname, query)
             if nhost is not None and nhost != "":
-                response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
+                response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout, _depth=_depth + 1)
         except socket.error as e:
             if not quiet:
                 logger.error(
