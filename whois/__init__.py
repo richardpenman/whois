@@ -43,12 +43,6 @@ def whois(
     convert_punycode: whether to convert the given URL punycode (default True)
     timeout: timeout for WHOIS request (default 10 seconds)
     """
-    # Sanity-check the query before doing any work (issue #312, CWE-20).
-    # whois() legitimately accepts domains, IPs, ASNs and network blocks, so
-    # this is a conservative check rather than strict domain validation:
-    # reject control characters -- which could otherwise inject into the whois
-    # wire protocol (the query is sent as `query + "\r\n"`) -- and overly long
-    # input.
     if not isinstance(url, str) or not url.strip():
         raise WhoisError("whois query must be a non-empty string")
     if len(url) > 2048:
