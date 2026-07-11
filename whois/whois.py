@@ -27,6 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 from __future__ import annotations
+import ipaddress
 import logging
 import optparse
 import os
@@ -150,6 +151,28 @@ class NICClient:
                     nhost = nichost
                     break
         return nhost
+
+    @staticmethod
+    def _is_safe_referral_host(hostname: str) -> bool:
+        """Return True only if a WHOIS referral target resolves entirely to
+        public addresses. Referral hosts come from the ``Whois Server:`` field
+        of an upstream response and are therefore attacker-influenced; without
+        this check a malicious server can redirect the client to internal
+        services (SSRF) such as cloud metadata endpoints (issue #312, CWE-918).
+        """
+        try:
+            addr_infos = socket.getaddrinfo(hostname, 43, proto=socket.IPPROTO_TCP)
+        except socket.error:
+            return False
+        for info in addr_infos:
+            try:
+                ip = ipaddress.ip_address(info[4][0])
+            except ValueError:
+                return False
+            if (ip.is_private or ip.is_loopback or ip.is_link_local
+                    or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+                return False
+        return bool(addr_infos)
 
     @staticmethod
     def get_socks_socket():
@@ -278,7 +301,7 @@ class NICClient:
                 return self.whois(query, hostname, flags, True, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
             if flags & NICClient.WHOIS_RECURSE and nhost is None:
                 nhost = self.findwhois_server(response_str, hostname, query)
-            if nhost is not None and nhost != "":
+            if nhost is not None and nhost != "" and self._is_safe_referral_host(nhost):
                 response_str += self.whois(query, nhost, 0, quiet=quiet, ignore_socket_errors=ignore_socket_errors, timeout=timeout)
         except socket.error as e:
             if not quiet:
