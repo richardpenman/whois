@@ -2725,8 +2725,8 @@ class WhoisPpUa(WhoisEntry):
         "admin_fax": r"Admin Fax:(.+)",
         "admin_email": r"Admin Email:(.+)",
         "updated_date": r"Last Updated On: *(.+)",
-        "creation_date": r"Created On: (.+)",
-        "expiration_date": r"Expiration Date: (.+)",
+        "creation_date": r"Created On: *(.+)",
+        "expiration_date": r"Expiration Date: *(.+)",
         "name_servers": r"Name Server: *(.+)",
     }
 
