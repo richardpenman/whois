@@ -43,6 +43,12 @@ def whois(
     convert_punycode: whether to convert the given URL punycode (default True)
     timeout: timeout for WHOIS request (default 10 seconds)
     """
+    if not isinstance(url, str) or not url.strip():
+        raise WhoisError("whois query must be a non-empty string")
+    if len(url) > 2048:
+        raise WhoisError("whois query is too long")
+    if any(ord(c) < 0x20 or ord(c) == 0x7f for c in url):
+        raise WhoisError("whois query contains control characters")
     # clean domain to expose netloc
     ip_match = IPV4_OR_V6.match(url)
     if ip_match:
