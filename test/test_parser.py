@@ -524,6 +524,21 @@ Hostname:             p.nic.dk
         }
         self._parse_and_compare("dk-hostmaster.dk", data, expected_results)
 
+    def test_de_name_servers_without_glue_addresses(self):
+        data = """
+Domain: heise.de
+Nserver: ns2.pop-hannover.net
+Nserver: ns.heise.de 193.99.145.37 2a00:e68:14:800:0:0:0:d1ce
+Nserver: ns.plusline.de
+Status: connect
+Changed: 2018-12-17T17:11:43+01:00
+        """
+        results = WhoisEntry.load("heise.de", data)
+        self.assertEqual(
+            results["name_servers"],
+            ["ns2.pop-hannover.net", "ns.heise.de", "ns.plusline.de"],
+        )
+
     def _parse_and_compare(
         self, domain_name, data, expected_results, whois_entry=WhoisEntry
     ):
