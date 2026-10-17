@@ -11,7 +11,7 @@ class TestQuery(unittest.TestCase):
         whois(domain)
 
     def test_simple_unicode_domain(self):
-        domain = "нарояци.com"
+        domain = "россия.com"
         whois(domain)
 
     def test_unicode_domain_and_tld(self):
