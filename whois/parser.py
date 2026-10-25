@@ -1409,6 +1409,7 @@ class WhoisAt(WhoisEntry):
         "domain_name": r"domain: *(.+)",
         "registrar": r"registrar: *(.+)",
         "name_servers": r"nserver: *(.+)",
+        "creation_date": r"registered: *(.+)",
         "name": r"personname: *(.+)",
         "org": r"organization: *(.+)",
         "address": r"street address: *(.+)",
