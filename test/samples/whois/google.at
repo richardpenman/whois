@@ -1,4 +1,4 @@
-% Copyright (c)2019 by NIC.AT (1)
+% Copyright (c)2026 by NIC.AT (1)
 %
 % Restricted rights.
 %
@@ -20,54 +20,55 @@
 % deactivate  the  Whois-Database   entirely  or  partly  for  the user.
 % Moreover,  the  user  shall be  held liable  for  any  and all  damage
 % arising from a violation of these points.
-domain:         google.at
-registrar:      MarkMonitor Inc. ( https://nic.at/registrar/434 )
-registrant:     GI7803022-NICAT
-tech-c:         GI1919751-NICAT
-tech-c:         GI7803025-NICAT
-nserver:        ns1.google.com
-remarks:        216.239.32.10
-nserver:        ns2.google.com
-remarks:        216.239.34.10
-nserver:        ns3.google.com
-remarks:        216.239.36.10
-nserver:        ns4.google.com
-remarks:        216.239.38.10
-changed:        20110426 17:57:27
-source:         AT-DOM
-personname:     DNS Admin
-organization:   Google Inc.
-street address: 1600 Amphitheatre Parkway
-postal code:    94043
-city:           Mountain View
-country:        United States
-phone:          +16502530000
-fax-no:         +16502530001
-e-mail:         dns-admin@google.com
-nic-hdl:        GI7803022-NICAT
-changed:        20110111 00:07:31
-source:         AT-DOM
-personname:
-organization:   Google Inc.
-street address: 1600 Amphitheatre Parkway
-postal code:    USA-94043
-city:           Mountain View, CA
-country:        United States
-phone:          +16506234000
-fax-no:         +16506188571
-e-mail:         dns-admin@google.com
-nic-hdl:        GI1919751-NICAT
-changed:        20050617 21:36:20
-source:         AT-DOM
-personname:     DNS Admin
-organization:   Google Inc.
-street address: 1600 Amphitheatre Parkway
-postal code:    94043
-city:           Mountain View
-country:        United States
-phone:          +16502530000
-fax-no:         +16502530001
-e-mail:         dns-admin@google.com
-nic-hdl:        GI7803025-NICAT
-changed:        20110111 00:08:30
-source:         AT-DOM
+
+domain:            google.at
+registrar:         MarkMonitor Inc. ( https://nic.at/registrar/434 )
+registrant:        GL11783559-NICAT
+tech-c:            GI7803025-NICAT
+tech-c:            GL11783561-NICAT
+nserver:           ns1.google.com
+nserver:           ns2.google.com
+nserver:           ns3.google.com
+nserver:           ns4.google.com
+changed:           20241113 19:36:02
+registered:        20001204 20:03:13
+source:            AT-DOM
+
+personname:        Domain Administrator
+organization:      Google LLC
+street address:    1600 Amphitheatre Parkway
+postal code:       94043
+state or province:
+city:              Mountain View
+country:           United States of America (the)
+phone:             +1.6502530000
+e-mail:            dns-admin@google.com
+nic-hdl:           GL11783559-NICAT
+changed:           20180302 18:52:05
+source:            AT-DOM
+
+personname:        DNS Admin
+organization:      Google Inc.
+street address:    1600 Amphitheatre Parkway
+postal code:       94043
+state or province:
+city:              Mountain View
+country:           United States of America (the)
+phone:             +1.6502530000
+e-mail:            dns-admin@google.com
+nic-hdl:           GI7803025-NICAT
+changed:           20110111 00:08:30
+source:            AT-DOM
+
+personname:        Domain Administrator
+organization:      Google LLC
+street address:    1600 Amphitheatre Parkway
+postal code:       94043
+state or province:
+city:              Mountain View
+country:           United States of America (the)
+phone:             +1.6502530000
+e-mail:            dns-admin@google.com
+nic-hdl:           GL11783561-NICAT
+changed:           20180302 18:52:06
+source:            AT-DOM
